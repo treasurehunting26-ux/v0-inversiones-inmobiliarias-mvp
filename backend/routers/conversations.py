@@ -16,9 +16,9 @@ Prohibiciones (según tarea):
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.database import get_db
-from backend.models.conversation import Conversation, Message
-from backend.schemas.conversation import (
+from database import get_db
+from models.conversation import Conversation, Message
+from schemas.conversation import (
     ConversationCreate,
     ConversationCreated,
     MessageCreate,

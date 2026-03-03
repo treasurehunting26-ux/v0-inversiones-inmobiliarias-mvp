@@ -19,10 +19,10 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from backend.database import get_db
-from backend.models.investor import Investor
-from backend.models.lead_escalation import LeadEscalation, EscalationStatus
-from backend.schemas.lead_escalation import (
+from database import get_db
+from models.investor import Investor
+from models.lead_escalation import LeadEscalation, EscalationStatus
+from schemas.lead_escalation import (
     LeadEscalationCreate,
     LeadEscalationCreated,
 )

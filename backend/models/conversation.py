@@ -8,7 +8,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, Text, Integer, Boolean, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
 
-from backend.database import Base
+from database import Base
 
 
 def generate_uuid():

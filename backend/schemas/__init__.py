@@ -1,5 +1,5 @@
-from backend.schemas.property import PropertyRead, PropertyListResponse
-from backend.schemas.conversation import (
+from schemas.property import PropertyRead, PropertyListResponse
+from schemas.conversation import (
     ConversationCreate,
     ConversationCreated,
     MessageCreate,
