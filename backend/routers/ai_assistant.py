@@ -27,10 +27,10 @@ from sqlalchemy.orm import Session
 from typing import Optional
 import httpx
 
-from backend.database import get_db
-from backend.models.conversation import Conversation, Message
-from backend.models.property import Property
-from backend.schemas.ai_assistant import AssistantRequest, AssistantResponse
+from database import get_db
+from models.conversation import Conversation, Message
+from models.property import Property
+from schemas.ai_assistant import AssistantRequest, AssistantResponse
 
 router = APIRouter(
     prefix="/ai",

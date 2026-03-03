@@ -1,0 +1,36 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Inter", "Inter Fallback";
+  --font-serif: "Playfair Display", "Playfair Display Fallback";
+
+  --color-background: #f5f3ef;
+  --color-foreground: #1a1a18;
+  --color-card: #edeae4;
+  --color-card-foreground: #1a1a18;
+  --color-primary: #1a1a18;
+  --color-primary-foreground: #f5f3ef;
+  --color-secondary: #e8e4dc;
+  --color-secondary-foreground: #1a1a18;
+  --color-muted: #d8d3c8;
+  --color-muted-foreground: #6b6560;
+  --color-accent: #2d5a3d;
+  --color-accent-foreground: #f5f3ef;
+  --color-border: #ccc8be;
+  --color-input: #ccc8be;
+  --color-ring: #2d5a3d;
+  --radius: 0.375rem;
+}
+
+* {
+  border-color: var(--color-border);
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--color-background);
+  color: var(--color-foreground);
+}

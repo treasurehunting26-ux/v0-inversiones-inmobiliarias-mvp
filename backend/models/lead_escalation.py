@@ -9,7 +9,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, DateTime, ForeignKey, Text
 import enum
 
-from backend.database import Base
+from database import Base
 
 
 class EscalationStatus(str, enum.Enum):

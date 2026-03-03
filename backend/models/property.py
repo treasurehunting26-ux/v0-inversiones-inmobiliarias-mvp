@@ -5,7 +5,7 @@ Referencia: DATA_MODEL_AND_PERMISSIONS.md
 
 from datetime import datetime
 from sqlalchemy import Column, String, DateTime, Text
-from backend.database import Base
+from database import Base
 
 
 class Property(Base):

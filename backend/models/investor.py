@@ -9,7 +9,7 @@ from datetime import datetime
 from sqlalchemy import Column, String, DateTime, Enum
 import enum
 
-from backend.database import Base
+from database import Base
 
 
 class QualificationStatus(str, enum.Enum):

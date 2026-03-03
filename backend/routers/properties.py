@@ -10,9 +10,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from backend.schemas.property import PropertyRead, PropertyListResponse
-from backend.database import get_db
-from backend.models.property import Property
+from schemas.property import PropertyRead, PropertyListResponse
+from database import get_db
+from models.property import Property
 
 router = APIRouter(
     prefix="/properties",
