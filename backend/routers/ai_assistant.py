@@ -25,7 +25,10 @@ PROHIBICIONES:
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import Optional
-import httpx
+import urllib.request
+import urllib.error
+import json
+import os
 
 from database import get_db
 from models.conversation import Conversation, Message
@@ -153,45 +156,39 @@ async def call_ai_model(
     messages.append({"role": "user", "content": user_message})
     
     try:
-        # Llamada al AI Gateway (timeout para control)
-        async with httpx.AsyncClient(timeout=30.0) as client:
-            response = await client.post(
-                "https://api.vercel.ai/v1/chat/completions",
-                json={
-                    "model": "openai/gpt-4o-mini",  # Modelo economico para MVP
-                    "messages": messages,
-                    "max_tokens": 500,  # Limite de tokens por respuesta
-                    "temperature": 0.7,
-                },
-                headers={
-                    "Authorization": "Bearer ${AI_GATEWAY_API_KEY}",
-                    "Content-Type": "application/json",
-                },
-            )
-            
-            if response.status_code == 200:
-                data = response.json()
-                assistant_response = data["choices"][0]["message"]["content"]
-                
-                # Detectar si sugiere escalado (sin automatizar)
-                escalate_keywords = [
-                    "especialista se pondrá en contacto",
-                    "un asesor te contactará",
-                    "hablar con una persona",
-                    "contacto humano",
-                ]
-                escalate = any(kw in assistant_response.lower() for kw in escalate_keywords)
-                
-                return assistant_response, escalate
-            else:
-                # Fallo seguro: mensaje de fallback
-                return (
-                    "En este momento no puedo procesar tu consulta. "
-                    "Un especialista de nuestro equipo se pondrá en contacto contigo.",
-                    True
-                )
+        payload = json.dumps({
+            "model": "openai/gpt-4o-mini",
+            "messages": messages,
+            "max_tokens": 500,
+            "temperature": 0.7,
+        }).encode("utf-8")
+
+        api_key = os.environ.get("AI_GATEWAY_API_KEY", "")
+        req = urllib.request.Request(
+            "https://api.vercel.ai/v1/chat/completions",
+            data=payload,
+            headers={
+                "Authorization": f"Bearer {api_key}",
+                "Content-Type": "application/json",
+            },
+            method="POST",
+        )
+
+        with urllib.request.urlopen(req, timeout=30) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            assistant_response = data["choices"][0]["message"]["content"]
+
+            escalate_keywords = [
+                "especialista se pondrá en contacto",
+                "un asesor te contactará",
+                "hablar con una persona",
+                "contacto humano",
+            ]
+            escalate = any(kw in assistant_response.lower() for kw in escalate_keywords)
+
+            return assistant_response, escalate
+
     except Exception:
-        # ERROR_HANDLING: ante error, fallo seguro y escalado
         return (
             "Estamos experimentando dificultades técnicas. "
             "Un especialista de nuestro equipo se pondrá en contacto contigo pronto.",
