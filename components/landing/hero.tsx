@@ -17,7 +17,7 @@ export function Hero() {
         </p>
         <div className="flex flex-wrap items-center gap-4">
           <Link
-            href="#asistente"
+            href="/asistente"
             className="inline-flex items-center gap-2 rounded-full bg-primary px-7 py-3 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
           >
             Hablar con el asistente
