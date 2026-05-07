@@ -1,0 +1,246 @@
+# FASE2_AGENTE_CAPTADOR.md
+
+## PROPÓSITO DEL DOCUMENTO
+
+Este documento define el **contrato operativo del Agente Captador de Inversores**, correspondiente a la **Fase 2** del proyecto.
+
+Este agente está **explícitamente fuera del alcance del MVP**.  
+No se construye, no se referencia y no se integra hasta que:
+
+1. El MVP esté desplegado y funcionando en producción
+2. Existan datos reales de conversión de inversores
+3. Este documento sea aprobado formalmente por el Product Owner
+
+---
+
+## ESTADO ACTUAL
+
+**Estado:** `BLOQUEADO — PENDIENTE DE ACTIVACIÓN`  
+**Fase:** 2 (post-MVP)  
+**Versión:** 1.0  
+**Fecha de redacción:** Mayo 2026  
+**Prerequisito obligatorio:** MVP validado en producción
+
+---
+
+## CONTEXTO
+
+El MVP (Fase 1) se basa en atracción inbound: el inversor llega a la plataforma,
+el asistente lo cualifica y lo escala a un operador humano.
+
+El Agente Captador opera en la dirección opuesta — **outbound**:
+busca activamente perfiles de inversores potenciales en fuentes externas,
+los detecta antes de que lleguen solos, y los introduce al embudo del MVP.
+
+Ambos sistemas son complementarios. El MVP debe existir primero
+porque el Agente Captador necesita saber exactamente qué perfil convierte.
+Esos datos solo existen después de operar el MVP con inversores reales.
+
+---
+
+## ROL DEL AGENTE CAPTADOR
+
+> Identificar, calificar previamente y alertar sobre perfiles de inversores
+> internacionales con alta probabilidad de interés en propiedades de lujo
+> en la Costa del Sol (Marbella y zona de influencia).
+
+El agente **nunca contacta directamente** a ninguna persona sin aprobación humana explícita.  
+Su función es **detección y alerta**, no ejecución de contacto.
+
+---
+
+## JERARQUÍA DE AUTORIDAD (INVIOLABLE)
+
+Igual que el MVP, este agente opera bajo la misma jerarquía:
+
+1. Modelo de negocio definido en `BUSINESS_MODEL_AND_ASSISTANT_ROLE.md`
+2. Control humano absoluto
+3. Lógica de permisos y GDPR
+4. Experiencia del inversor potencial
+5. Optimización técnica (último lugar)
+
+**El Agente Captador nunca supera en autoridad al operador humano.**
+
+---
+
+## ALCANCE FUNCIONAL (LO QUE SÍ PUEDE HACER)
+
+El agente está autorizado a:
+
+- Monitorear fuentes públicas donde inversores manifiestan intención activa
+- Extraer señales de interés (búsquedas, publicaciones, interacciones públicas)
+- Construir perfiles preliminares de inversores potenciales
+- Puntuar cada perfil según criterios de cualificación definidos
+- Generar alertas para el operador humano con la información recopilada
+- Operar de forma autónoma en horarios configurados (modo nocturno)
+- Conectarse a la API del MVP para consultar propiedades disponibles
+- Adaptar el perfil buscado según los datos de conversión del MVP
+
+---
+
+## PROHIBICIONES ABSOLUTAS (NO NEGOCIABLES)
+
+Bajo ninguna circunstancia el agente puede:
+
+- Enviar mensajes directos, correos o contactar personas sin aprobación humana
+- Publicar contenido en nombre de la plataforma en redes externas
+- Acceder a datos privados o no públicos de ninguna persona
+- Almacenar información personal sin consentimiento explícito (GDPR)
+- Modificar propiedades, inversores o estados en la base de datos del MVP
+- Operar fuera de las fuentes aprobadas en este documento
+- Asumir intención de inversión sin señales verificables
+- Inferir datos financieros de ninguna persona
+
+---
+
+## FUENTES DE CAPTACIÓN APROBADAS
+
+### Fuentes de Alta Prioridad
+
+| Fuente | Tipo de señal buscada | Nota legal |
+|---|---|---|
+| LinkedIn (búsqueda pública) | Perfiles con keywords: "real estate investment", "property portfolio Spain", "Golden Visa", "Costa del Sol" | Solo perfiles públicos |
+| Google Alerts | Menciones públicas de inversión inmobiliaria en España/Marbella | Datos públicos indexados |
+| Foros especializados | A Place in the Sun, TheMoveChannel, Expatica | Solo posts públicos |
+| Grupos públicos (Facebook/LinkedIn) | Preguntas sobre compra de propiedades en España | Solo contenido público |
+| Plataformas de referencia | Idealista, Kyero, Rightmove Spain | Indicadores de mercado |
+
+### Fuentes Prohibidas
+
+- Bases de datos compradas o alquiladas (ilegal bajo GDPR)
+- Correos electrónicos obtenidos sin consentimiento
+- Scraping de perfiles privados o cerrados
+- Datos de terceros no verificados
+
+---
+
+## CRITERIOS DE CUALIFICACIÓN DE PERFILES
+
+Un perfil es considerado **lead potencial** si cumple al menos 3 de estos 5 criterios:
+
+1. **Presupuesto implícito** — señales de capacidad de inversión +500.000€
+2. **Intención geográfica** — menciona España, Andalucía, Costa del Sol o Marbella
+3. **Horizonte activo** — señales de búsqueda en los últimos 90 días
+4. **Perfil de inversor** — histórico de inversiones inmobiliarias o financieras
+5. **Origen compatible** — Europa (UK, DACH, Países Bajos), Oriente Medio, América Latina
+
+Cada perfil recibe una puntuación de 0 a 100. Solo se reportan perfiles con puntuación ≥ 60.
+
+---
+
+## STACK TÉCNICO PREVISTO
+
+| Componente | Tecnología | Justificación |
+|---|---|---|
+| Motor del agente | OpenClaw (o equivalente open source) | Autonomía, persistencia, bajo costo |
+| Modelo de IA | Claude API (Anthropic) | Capacidad de razonamiento sobre perfiles |
+| Búsqueda web | Herramienta de búsqueda integrada | Monitoreo de fuentes públicas |
+| Almacenamiento de leads | PostgreSQL (misma DB del MVP) | Coherencia del sistema |
+| Alertas al operador | Email + notificación en panel admin | Control humano garantizado |
+| Despliegue | Servidor VPS independiente del MVP | Aislamiento y seguridad |
+| Programación | Cron jobs configurables | Operación nocturna / bajo demanda |
+
+---
+
+## INTEGRACIÓN CON EL MVP
+
+El Agente Captador se conecta al MVP exclusivamente mediante:
+
+- `GET /properties` — para conocer el portafolio disponible y adaptar la búsqueda
+- `POST /investors` — para registrar un nuevo lead (solo con aprobación humana)
+- `POST /lead-escalations` — para notificar al operador de un perfil detectado
+
+**No tiene acceso a ningún otro endpoint.**  
+La escritura en base de datos requiere confirmación humana en todos los casos.
+
+---
+
+## FLUJO OPERATIVO
+
+```
+[Agente Captador] → Monitorea fuentes públicas
+        ↓
+[Agente Captador] → Detecta señal de interés
+        ↓
+[Agente Captador] → Construye perfil preliminar
+        ↓
+[Agente Captador] → Puntúa el perfil (0-100)
+        ↓
+¿Puntuación ≥ 60?
+   NO → Descarta (sin almacenamiento de datos personales)
+   SÍ → Genera alerta para operador humano
+        ↓
+[Operador Humano] → Revisa el perfil
+        ↓
+¿Aprueba el contacto?
+   NO → Archiva o descarta
+   SÍ → Registra en MVP como nuevo Investor
+        ↓
+[Asistente del MVP] → Toma el relevo del proceso
+```
+
+---
+
+## CUMPLIMIENTO GDPR (OBLIGATORIO)
+
+Este agente opera bajo jurisdicción española y europea.  
+El cumplimiento del GDPR no es opcional.
+
+Reglas obligatorias:
+
+- Solo se procesan datos públicos de fuentes indexadas
+- No se almacenan datos personales de perfiles descartados
+- Los perfiles aprobados se registran solo con consentimiento implícito de búsqueda activa
+- El operador humano es el responsable del tratamiento de datos (no la IA)
+- Se mantiene un log de fuentes consultadas (auditable)
+- Se implementa derecho de supresión desde el panel de administración
+
+---
+
+## PREREQUISITOS PARA ACTIVAR ESTA FASE
+
+Antes de iniciar el desarrollo del Agente Captador, se deben cumplir **todos** estos requisitos:
+
+- [ ] MVP desplegado y estable en producción mínimo 30 días
+- [ ] Al menos 20 conversaciones reales con inversores registradas
+- [ ] Perfil de inversor que convierte definido con datos reales (no supuestos)
+- [ ] Panel de administración del MVP operativo
+- [ ] Revisión legal de cumplimiento GDPR completada
+- [ ] Presupuesto de API estimado y aprobado para el agente autónomo
+- [ ] Servidor VPS dedicado aprovisionado y configurado
+- [ ] Este documento aprobado formalmente por el Product Owner
+
+---
+
+## LO QUE ESTE DOCUMENTO NO AUTORIZA
+
+- Iniciar ningún desarrollo técnico del agente antes de cumplir los prerequisitos
+- Modificar los documentos del MVP para acomodar esta fase
+- Referenciar este agente en ningún componente del MVP actual
+- Contactar inversores de ninguna forma hasta que el flujo humano esté aprobado
+
+---
+
+## CRITERIO DE ÉXITO DE ESTA FASE
+
+El Agente Captador es exitoso si:
+
+- Genera leads cualificados que el MVP convierte en conversaciones reales
+- Opera sin violar GDPR ni reputación de la plataforma
+- El operador humano mantiene control total del contacto inicial
+- El costo de operación es inferior al valor generado por los leads captados
+
+---
+
+## FIRMA DE VIGENCIA
+
+**Versión:** 1.0  
+**Estado:** BLOQUEADO — En espera de activación post-MVP  
+**Redactado:** Mayo 2026  
+**Activación autorizada por:** Product Owner (pendiente)
+
+---
+
+*Este documento es parte del sistema de control operativo del proyecto.*  
+*Solo puede modificarse con aprobación explícita del Product Owner.*  
+*Cualquier implementación que contradiga este documento se considera defecto crítico de producto.*
