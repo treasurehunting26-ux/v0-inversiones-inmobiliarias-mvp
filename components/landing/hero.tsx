@@ -12,8 +12,8 @@ export function Hero() {
           Accede a oportunidades inmobiliarias analizadas con criterio profesional
         </h1>
         <p className="text-lg leading-relaxed text-muted-foreground md:text-xl">
-          Nuestro asistente inteligente analiza tu perfil de inversor y te conecta con activos inmobiliarios
-          validados manualmente por nuestro equipo. Tú decides, nosotros facilitamos.
+          Nuestro equipo de asesores analiza tu perfil de inversor y te conecta con activos inmobiliarios
+          seleccionados y validados uno a uno. Tú decides, nosotros te acompañamos.
         </p>
         <div className="flex flex-wrap items-center gap-4">
           <Link
@@ -26,10 +26,10 @@ export function Hero() {
             </svg>
           </Link>
           <Link
-            href="#propiedades"
+            href="/oportunidades"
             className="inline-flex items-center gap-2 rounded-full border border-border px-7 py-3 text-sm font-semibold text-foreground transition-colors hover:bg-card"
           >
-            Ver propiedades
+            Ver oportunidades
           </Link>
         </div>
       </div>
@@ -37,9 +37,9 @@ export function Hero() {
       <div className="mt-20 grid grid-cols-2 gap-4 border-t border-border pt-12 md:grid-cols-4">
         {[
           { value: "+50", label: "Propiedades analizadas" },
-          { value: "100%", label: "Validación humana" },
+          { value: "100%", label: "Selección verificada" },
           { value: "8–12%", label: "ROI estimado promedio" },
-          { value: "0", label: "Decisiones automatizadas" },
+          { value: "3", label: "Mercados internacionales" },
         ].map((stat) => (
           <div key={stat.label} className="flex flex-col gap-1">
             <span className="font-serif text-3xl font-semibold text-foreground">{stat.value}</span>

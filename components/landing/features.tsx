@@ -5,14 +5,14 @@ const features = [
       "Cada propiedad pasa por un proceso de validación manual antes de publicarse. Rentabilidad estimada, riesgo y horizonte, documentados con rigor.",
   },
   {
-    title: "Asistente inteligente sin automatismos",
+    title: "Asesoramiento personalizado",
     description:
-      "La IA te guía, responde preguntas y cualifica tu perfil. Nunca toma decisiones de inversión ni ejecuta operaciones por cuenta propia.",
+      "Te guiamos, respondemos tus preguntas y entendemos tu perfil para presentarte solo lo que encaja con tus objetivos de inversión.",
   },
   {
-    title: "Control humano en decisiones críticas",
+    title: "Criterio profesional en cada decisión",
     description:
-      "Toda operación pasa por un especialista humano. El sistema está diseñado para que la tecnología acelere, pero el criterio humano prevalezca.",
+      "Toda operación pasa por un especialista. Nuestro proceso está diseñado para que el criterio profesional prevalezca en cada paso.",
   },
   {
     title: "Transparencia en el proceso",
@@ -20,14 +20,14 @@ const features = [
       "Sabes exactamente qué activos están disponibles, quién los ha validado y cuáles son los riesgos asociados. Sin letra pequeña.",
   },
   {
-    title: "Perfil de inversión personalizado",
+    title: "Selección a la medida de tu perfil",
     description:
-      "El asistente adapta las oportunidades a tu presupuesto, objetivos y tolerancia al riesgo. No recibes todo el catálogo, sino lo que tiene sentido para ti.",
+      "Adaptamos las oportunidades a tu presupuesto, objetivos y tolerancia al riesgo. No recibes todo el catálogo, sino lo que tiene sentido para ti.",
   },
   {
-    title: "Handoff seguro a asesor humano",
+    title: "Acompañamiento hasta el cierre",
     description:
-      "Cuando el momento es el adecuado, tu conversación se transfiere a un especialista que conoce tu perfil y puede acompañarte hasta el cierre.",
+      "Cuando el momento es el adecuado, un especialista que conoce tu perfil te acompaña personalmente durante toda la operación.",
   },
 ]
 
@@ -37,7 +37,7 @@ export function Features() {
       <div className="mb-16 flex flex-col gap-4 md:max-w-xl">
         <span className="text-xs font-semibold uppercase tracking-widest text-accent">Por qué elegirnos</span>
         <h2 className="font-serif text-4xl font-semibold text-foreground text-balance">
-          Tecnología al servicio de decisiones que importan
+          Criterio profesional al servicio de decisiones que importan
         </h2>
       </div>
 

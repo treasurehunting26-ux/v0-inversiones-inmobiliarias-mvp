@@ -8,21 +8,21 @@ export function NavBar() {
           InversionesInmobiliarias
         </Link>
         <nav className="hidden items-center gap-8 md:flex">
-          <Link href="#como-funciona" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/#como-funciona" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Cómo funciona
           </Link>
-          <Link href="#propiedades" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            Propiedades
+          <Link href="/oportunidades" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+            Oportunidades
           </Link>
-          <Link href="#nosotros" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link href="/#nosotros" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             Nosotros
           </Link>
         </nav>
         <Link
-          href="#asistente"
+          href="/asistente"
           className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Hablar con el asistente
+          Hablar con un asesor
         </Link>
       </div>
     </header>
