@@ -2,12 +2,12 @@ const features = [
   {
     title: "Análisis profesional en cada activo",
     description:
-      "Cada propiedad pasa por un proceso de validación manual antes de publicarse. Rentabilidad estimada, riesgo y horizonte, documentados con rigor.",
+      "Cada propiedad atraviesa un proceso de validación manual antes de publicarse. Rentabilidad estimada, riesgo y horizonte, documentados con rigor.",
   },
   {
     title: "Asesoramiento personalizado",
     description:
-      "Te guiamos, respondemos tus preguntas y entendemos tu perfil para presentarte solo lo que encaja con tus objetivos de inversión.",
+      "Le guiamos, respondemos sus preguntas y entendemos su perfil para presentarle únicamente lo que encaja con sus objetivos de inversión.",
   },
   {
     title: "Criterio profesional en cada decisión",
@@ -15,40 +15,43 @@ const features = [
       "Toda operación pasa por un especialista. Nuestro proceso está diseñado para que el criterio profesional prevalezca en cada paso.",
   },
   {
-    title: "Transparencia en el proceso",
+    title: "Transparencia absoluta",
     description:
-      "Sabes exactamente qué activos están disponibles, quién los ha validado y cuáles son los riesgos asociados. Sin letra pequeña.",
+      "Sabe exactamente qué activos están disponibles, quién los ha validado y cuáles son los riesgos asociados. Sin letra pequeña.",
   },
   {
-    title: "Selección a la medida de tu perfil",
+    title: "Selección a la medida de su perfil",
     description:
-      "Adaptamos las oportunidades a tu presupuesto, objetivos y tolerancia al riesgo. No recibes todo el catálogo, sino lo que tiene sentido para ti.",
+      "Adaptamos las oportunidades a su presupuesto, objetivos y tolerancia al riesgo. No recibe todo el catálogo, sino lo que tiene sentido para usted.",
   },
   {
     title: "Acompañamiento hasta el cierre",
     description:
-      "Cuando el momento es el adecuado, un especialista que conoce tu perfil te acompaña personalmente durante toda la operación.",
+      "Cuando el momento es el adecuado, un especialista que conoce su perfil le acompaña personalmente durante toda la operación.",
   },
 ]
 
 export function Features() {
   return (
-    <section id="nosotros" className="mx-auto max-w-6xl px-6 py-24">
-      <div className="mb-16 flex flex-col gap-4 md:max-w-xl">
-        <span className="text-xs font-semibold uppercase tracking-widest text-accent">Por qué elegirnos</span>
-        <h2 className="font-serif text-4xl font-semibold text-foreground text-balance">
-          Criterio profesional al servicio de decisiones que importan
-        </h2>
-      </div>
+    <section id="nosotros" className="bg-secondary">
+      <div className="mx-auto max-w-7xl px-6 py-28 lg:px-10 lg:py-36">
+        <div className="mb-20 flex flex-col items-center gap-5 text-center">
+          <span className="text-xs font-light uppercase tracking-[0.35em] text-gold">Por qué elegirnos</span>
+          <h2 className="max-w-2xl font-serif text-4xl font-light leading-tight text-balance text-foreground md:text-5xl">
+            Criterio profesional al servicio de decisiones que importan
+          </h2>
+        </div>
 
-      <div className="grid gap-px bg-border md:grid-cols-2 lg:grid-cols-3">
-        {features.map((feature) => (
-          <div key={feature.title} className="flex flex-col gap-4 bg-background p-8">
-            <div className="h-px w-8 bg-accent" />
-            <h3 className="text-base font-semibold text-foreground">{feature.title}</h3>
-            <p className="text-sm leading-relaxed text-muted-foreground">{feature.description}</p>
-          </div>
-        ))}
+        <div className="grid gap-x-12 gap-y-14 md:grid-cols-2 lg:grid-cols-3">
+          {features.map((feature, i) => (
+            <div key={feature.title} className="flex flex-col gap-4">
+              <span className="font-serif text-2xl font-light text-gold">{String(i + 1).padStart(2, "0")}</span>
+              <div className="h-px w-10 bg-gold/40" />
+              <h3 className="font-serif text-xl font-light text-foreground">{feature.title}</h3>
+              <p className="text-sm font-light leading-relaxed text-muted-foreground">{feature.description}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </section>
   )

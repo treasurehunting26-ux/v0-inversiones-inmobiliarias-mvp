@@ -2,31 +2,45 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-12">
-        <div className="flex flex-col items-start justify-between gap-8 md:flex-row md:items-center">
-          <div className="flex flex-col gap-2">
-            <span className="font-serif text-lg font-semibold text-foreground">InversionesInmobiliarias</span>
-            <span className="text-sm text-muted-foreground">
-              Oportunidades inmobiliarias analizadas con criterio profesional.
+    <footer className="bg-noir">
+      <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
+        <div className="flex flex-col gap-12 border-t border-noir-foreground/10 pt-12 md:flex-row md:justify-between">
+          <div className="flex max-w-sm flex-col gap-4">
+            <span className="font-serif text-2xl font-medium uppercase tracking-[0.2em] text-noir-foreground">
+              Aterra
             </span>
+            <p className="text-sm font-light leading-relaxed text-noir-foreground/50">
+              Inversiones inmobiliarias de excepción en Europa, Latinoamérica y Dubái. Cada oportunidad,
+              analizada con criterio profesional.
+            </p>
           </div>
-          <nav className="flex flex-wrap gap-6">
-            <Link href="#como-funciona" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Cómo funciona
-            </Link>
-            <Link href="#propiedades" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Propiedades
-            </Link>
-            <Link href="#asistente" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-              Asistente
-            </Link>
-          </nav>
+
+          <div className="flex gap-16">
+            <nav className="flex flex-col gap-4">
+              <span className="text-xs font-light uppercase tracking-[0.18em] text-gold">Plataforma</span>
+              <Link href="/#como-funciona" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+                Cómo funciona
+              </Link>
+              <Link href="/oportunidades" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+                Oportunidades
+              </Link>
+              <Link href="/asistente" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+                Hablar con un asesor
+              </Link>
+            </nav>
+            <nav className="flex flex-col gap-4">
+              <span className="text-xs font-light uppercase tracking-[0.18em] text-gold">Mercados</span>
+              <span className="text-sm font-light text-noir-foreground/60">Europa</span>
+              <span className="text-sm font-light text-noir-foreground/60">Latinoamérica</span>
+              <span className="text-sm font-light text-noir-foreground/60">Dubái</span>
+            </nav>
+          </div>
         </div>
-        <div className="mt-8 border-t border-border pt-8">
-          <p className="text-xs text-muted-foreground">
-            © {new Date().getFullYear()} InversionesInmobiliarias. Toda inversión conlleva riesgos. La información
-            disponible en esta plataforma no constituye asesoramiento financiero.
+
+        <div className="mt-12 border-t border-noir-foreground/10 pt-8">
+          <p className="text-xs font-light leading-relaxed text-noir-foreground/40">
+            © {new Date().getFullYear()} Aterra. Toda inversión conlleva riesgos. La información disponible en esta
+            plataforma no constituye asesoramiento financiero ni una oferta de inversión.
           </p>
         </div>
       </div>
