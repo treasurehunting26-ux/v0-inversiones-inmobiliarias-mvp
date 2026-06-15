@@ -31,6 +31,7 @@ export function NavBar() {
           {[
             { label: "Cómo funciona", href: "/#como-funciona" },
             { label: "Oportunidades", href: "/oportunidades" },
+            { label: "Guías", href: "/guias" },
             { label: "Nosotros", href: "/#nosotros" },
           ].map((item) => (
             <Link

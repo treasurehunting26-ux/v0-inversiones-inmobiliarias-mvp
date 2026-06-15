@@ -24,6 +24,9 @@ export function Footer() {
               <Link href="/oportunidades" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
                 Oportunidades
               </Link>
+              <Link href="/guias" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+                Guías de inversión
+              </Link>
               <Link href="/asistente" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
                 Hablar con un asesor
               </Link>
