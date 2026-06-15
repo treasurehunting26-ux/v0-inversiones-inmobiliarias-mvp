@@ -15,6 +15,7 @@ from routers import (
     lead_escalations,
     ai_assistant,
     admin_properties,
+    contact,
 )
 
 app = FastAPI(
@@ -57,6 +58,7 @@ app.include_router(conversations.router)
 app.include_router(lead_escalations.router)
 app.include_router(ai_assistant.router)
 app.include_router(admin_properties.router)
+app.include_router(contact.router)
 
 
 @app.get("/health")

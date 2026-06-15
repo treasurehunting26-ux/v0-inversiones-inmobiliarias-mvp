@@ -30,6 +30,9 @@ export function Footer() {
               <Link href="/asistente" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
                 Hablar con un asesor
               </Link>
+              <Link href="/contacto" className="text-sm font-light text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+                Contacto
+              </Link>
             </nav>
             <nav className="flex flex-col gap-4">
               <span className="text-xs font-light uppercase tracking-[0.18em] text-gold">Mercados</span>
