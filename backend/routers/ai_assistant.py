@@ -165,7 +165,7 @@ async def call_ai_model(
 
         api_key = os.environ.get("AI_GATEWAY_API_KEY", "")
         req = urllib.request.Request(
-            "https://api.vercel.ai/v1/chat/completions",
+            "https://ai-gateway.vercel.sh/v1/chat/completions",
             data=payload,
             headers={
                 "Authorization": f"Bearer {api_key}",
