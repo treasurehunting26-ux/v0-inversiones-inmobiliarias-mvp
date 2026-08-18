@@ -19,13 +19,13 @@ export default function GuidesIndexPage() {
       <NavBar />
 
       {/* Encabezado editorial noir */}
-      <header className="bg-[var(--noir)] px-6 pb-20 pt-36 text-[var(--ivory)]">
+      <header className="bg-[var(--color-noir)] px-6 pb-20 pt-36 text-[var(--color-noir-foreground)]">
         <div className="mx-auto max-w-5xl">
-          <p className="mb-5 text-xs uppercase tracking-[0.35em] text-[var(--gold)]">Conocimiento</p>
+          <p className="mb-5 text-xs uppercase tracking-[0.35em] text-[var(--color-gold)]">Conocimiento</p>
           <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-balance md:text-6xl">
             Guías de inversión inmobiliaria internacional
           </h1>
-          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--ivory)]/70">
+          <p className="mt-6 max-w-2xl text-base leading-relaxed text-[var(--color-noir-foreground)]/70">
             Análisis prácticos y verificables para invertir con criterio en Europa, Latinoamérica y Dubái. Sin
             promesas de rentabilidad. Sin atajos. Solo información útil para decidir mejor.
           </p>
@@ -39,11 +39,11 @@ export default function GuidesIndexPage() {
             <Link
               key={guide.slug}
               href={`/guias/${guide.slug}`}
-              className="group flex flex-col justify-between rounded-sm border border-border bg-card p-8 transition-colors hover:border-[var(--gold)]"
+              className="group flex flex-col justify-between rounded-sm border border-border bg-card p-8 transition-colors hover:border-[var(--color-gold)]"
             >
               <div>
                 <div className="mb-5 flex items-center gap-3">
-                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--gold)]">{guide.category}</span>
+                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">{guide.category}</span>
                   <span className="text-xs text-muted-foreground">·</span>
                   <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{guide.region}</span>
                 </div>
@@ -56,7 +56,7 @@ export default function GuidesIndexPage() {
                 <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
                   {guide.readingTime} de lectura
                 </span>
-                <span className="text-sm text-[var(--gold)] transition-transform group-hover:translate-x-1">
+                <span className="text-sm text-[var(--color-gold)] transition-transform group-hover:translate-x-1">
                   Leer guía →
                 </span>
               </div>
