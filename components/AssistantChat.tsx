@@ -15,7 +15,18 @@ async function sendMessage(message: string, conversationId: string | null) {
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message, conversation_id: conversationId }),
   })
-  if (!res.ok) throw new Error("API error")
+  if (!res.ok) {
+    // El backend envía un mensaje explicativo en `detail` (por ejemplo al
+    // alcanzar el límite de mensajes). Lo propagamos para mostrarlo tal cual
+    // en lugar de un error genérico que desorientaría al visitante.
+    let detail = ""
+    try {
+      detail = (await res.json())?.detail ?? ""
+    } catch {
+      detail = ""
+    }
+    throw new Error(detail || "API error")
+  }
   return res.json()
 }
 
@@ -51,10 +62,17 @@ export function AssistantChat() {
         ...prev,
         { role: "assistant", content: data.response ?? data.message ?? "Sin respuesta." },
       ])
-    } catch {
+    } catch (err) {
+      const detail = err instanceof Error ? err.message : ""
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "El asesor no está disponible temporalmente. Por favor, inténtelo de nuevo en unos minutos." },
+        {
+          role: "assistant",
+          content:
+            detail && detail !== "API error"
+              ? detail
+              : "El asesor no está disponible temporalmente. Por favor, inténtelo de nuevo en unos minutos.",
+        },
       ])
     } finally {
       setLoading(false)
@@ -62,6 +80,8 @@ export function AssistantChat() {
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    // No enviar mientras un IME (chino/japonés/coreano) confirma composición.
+    if (e.nativeEvent.isComposing || e.keyCode === 229) return
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault()
       handleSend()
