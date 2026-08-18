@@ -30,8 +30,8 @@ export default function OportunidadesPage() {
 
           <p className="mt-6 max-w-2xl border-t border-[var(--color-noir-foreground)]/15 pt-8 text-sm leading-relaxed text-[var(--color-noir-foreground)]/50">
             Las rentabilidades indicadas en cada ficha son estimaciones sobre supuestos concretos, no
-            resultados garantizados. Toda inversión inmobiliaria conlleva riesgo, incluida la pérdida
-            de capital. Te recomendamos contrastar cada operación con tu asesor fiscal o financiero.
+            resultados garantizados: el valor de un inmueble puede fluctuar y la venta requiere plazos.
+            Te recomendamos contrastar cada operación con tu asesor fiscal o financiero.
           </p>
         </div>
       </section>
