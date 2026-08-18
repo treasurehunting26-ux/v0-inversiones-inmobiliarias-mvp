@@ -28,18 +28,11 @@ export default function OportunidadesPage() {
             con tu perfil y profundiza con un asesor dedicado.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-x-12 gap-y-6 border-t border-[var(--ivory)]/15 pt-8">
-            {[
-              { value: "100%", label: "Verificación manual" },
-              { value: "3", label: "Mercados internacionales" },
-              { value: "8–12%", label: "ROI estimado promedio" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col gap-1">
-                <span className="font-serif text-3xl font-light text-[var(--gold)]">{stat.value}</span>
-                <span className="text-xs uppercase tracking-widest text-[var(--ivory)]/50">{stat.label}</span>
-              </div>
-            ))}
-          </div>
+          <p className="mt-6 max-w-2xl border-t border-[var(--ivory)]/15 pt-8 text-sm leading-relaxed text-[var(--ivory)]/50">
+            Las rentabilidades indicadas en cada ficha son estimaciones sobre supuestos concretos, no
+            resultados garantizados. Toda inversión inmobiliaria conlleva riesgo, incluida la pérdida
+            de capital. Te recomendamos contrastar cada operación con tu asesor fiscal o financiero.
+          </p>
         </div>
       </section>
 
