@@ -4,10 +4,16 @@ Referencia: MVP_TECHNICAL_BLUEPRINT.md
 """
 
 import os
-from fastapi import FastAPI
+import logging
+import traceback
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
 from database import engine, Base
+
+logger = logging.getLogger("uvicorn.error")
 import models  # noqa: F401  (necesario para que SQLAlchemy registre las tablas)
 from routers import (
     properties,
@@ -30,8 +36,14 @@ def on_startup() -> None:
     """
     Crea las tablas en la base de datos si no existen.
     Idempotente: SQLAlchemy comprueba antes de crear.
+    No detiene el arranque si falla, para que /health y /health/db
+    sigan respondiendo y permitan diagnosticar el problema.
     """
-    Base.metadata.create_all(bind=engine)
+    try:
+        Base.metadata.create_all(bind=engine)
+        logger.info("[startup] Tablas verificadas/creadas correctamente")
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[startup] Fallo al crear tablas: %s: %s", exc.__class__.__name__, exc)
 
 
 # CORS: permite frontend local + Vercel preview/produccion
@@ -61,10 +73,57 @@ app.include_router(admin_properties.router)
 app.include_router(contact.router)
 
 
+@app.exception_handler(Exception)
+async def unhandled_exception_handler(request: Request, exc: Exception):
+    """
+    Captura errores no controlados y devuelve el detalle real.
+    Necesario para diagnosticar el MVP (conexion DB, tablas, driver...).
+    """
+    logger.error("[error] %s en %s\n%s", exc, request.url.path, traceback.format_exc())
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": str(exc),
+            "type": exc.__class__.__name__,
+            "path": request.url.path,
+        },
+    )
+
+
 @app.get("/health")
 def health_check():
     """Endpoint de salud."""
     return {"status": "ok"}
+
+
+@app.get("/health/db")
+def health_db():
+    """
+    Comprueba la conexion real a PostgreSQL y lista las tablas existentes.
+    Permite verificar si DATABASE_URL esta bien enlazada.
+    """
+    try:
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+            tables = [
+                row[0]
+                for row in conn.execute(
+                    text(
+                        "SELECT table_name FROM information_schema.tables "
+                        "WHERE table_schema = 'public' ORDER BY table_name"
+                    )
+                )
+            ]
+        return {"db": "ok", "tables": tables}
+    except Exception as exc:  # noqa: BLE001
+        return JSONResponse(
+            status_code=500,
+            content={
+                "db": "error",
+                "detail": str(exc),
+                "type": exc.__class__.__name__,
+            },
+        )
 
 
 if __name__ == "__main__":
