@@ -29,11 +29,14 @@ import urllib.request
 import urllib.error
 import json
 import os
+import logging
 
 from database import get_db
 from models.conversation import Conversation, Message
 from models.property import Property
 from schemas.ai_assistant import AssistantRequest, AssistantResponse
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter(
     prefix="/ai",
@@ -163,9 +166,14 @@ async def call_ai_model(
             "temperature": 0.7,
         }).encode("utf-8")
 
-        api_key = os.environ.get("AI_GATEWAY_API_KEY", "")
+        # Acepta ambos nombres de variable para mayor tolerancia de configuracion
+        api_key = (
+            os.environ.get("AI_GATEWAY_API_KEY")
+            or os.environ.get("VERCEL_AI_GATEWAY_KEY")
+            or ""
+        )
         req = urllib.request.Request(
-            "https://api.vercel.ai/v1/chat/completions",
+            "https://ai-gateway.vercel.sh/v1/chat/completions",
             data=payload,
             headers={
                 "Authorization": f"Bearer {api_key}",
@@ -188,7 +196,20 @@ async def call_ai_model(
 
             return assistant_response, escalate
 
-    except Exception:
+    except urllib.error.HTTPError as exc:
+        # Log del cuerpo real del error (clave invalida, modelo inexistente, etc.)
+        try:
+            detail = exc.read().decode("utf-8")[:500]
+        except Exception:  # noqa: BLE001
+            detail = "(sin cuerpo)"
+        logger.error("[ai] HTTPError %s del AI Gateway: %s", exc.code, detail)
+        return (
+            "Estamos experimentando dificultades técnicas. "
+            "Un especialista de nuestro equipo se pondrá en contacto contigo pronto.",
+            True
+        )
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[ai] Fallo al llamar al AI Gateway: %s: %s", exc.__class__.__name__, exc)
         return (
             "Estamos experimentando dificultades técnicas. "
             "Un especialista de nuestro equipo se pondrá en contacto contigo pronto.",

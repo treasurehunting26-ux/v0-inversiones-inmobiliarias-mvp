@@ -78,10 +78,10 @@ export function AssistantChat() {
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
             <div
-              className={`max-w-[80%] rounded-2xl px-4 py-3 text-sm leading-relaxed ${
+              className={`max-w-[80%] px-5 py-3.5 text-sm leading-relaxed ${
                 msg.role === "user"
-                  ? "bg-primary text-primary-foreground rounded-br-sm"
-                  : "bg-card text-foreground border border-border rounded-bl-sm"
+                  ? "rounded-2xl rounded-br-sm bg-[var(--noir)] text-[var(--ivory)]"
+                  : "rounded-2xl rounded-bl-sm border border-border bg-card text-foreground"
               }`}
             >
               {msg.content}
@@ -119,7 +119,7 @@ export function AssistantChat() {
             onClick={handleSend}
             disabled={loading || !input.trim()}
             aria-label="Enviar mensaje"
-            className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-40"
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[var(--noir)] text-[var(--ivory)] transition-opacity hover:opacity-90 disabled:opacity-40"
           >
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 8L14 2L8 14L7 9L2 8Z" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />

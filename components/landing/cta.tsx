@@ -2,31 +2,33 @@ import Link from "next/link"
 
 export function CTA() {
   return (
-    <section id="asistente" className="border-t border-border bg-primary">
-      <div className="mx-auto flex max-w-6xl flex-col items-start gap-8 px-6 py-24 md:flex-row md:items-center md:justify-between">
-        <div className="flex flex-col gap-4 md:max-w-xl">
-          <h2 className="font-serif text-4xl font-semibold text-primary-foreground text-balance">
-            ¿Listo para encontrar tu próxima inversión inmobiliaria?
-          </h2>
-          <p className="text-base leading-relaxed text-primary-foreground/70">
-            El asistente analiza tu perfil en minutos y te muestra oportunidades reales validadas por nuestro equipo.
-            Sin compromiso. Sin automatismos.
-          </p>
-        </div>
-        <div className="flex flex-shrink-0 flex-col gap-3">
+    <section id="asistente" className="relative overflow-hidden bg-noir">
+      <div className="mx-auto flex max-w-3xl flex-col items-center gap-8 px-6 py-28 text-center lg:py-36">
+        <span className="text-xs font-light uppercase tracking-[0.35em] text-gold">Su próxima inversión</span>
+        <h2 className="font-serif text-4xl font-light leading-tight text-balance text-noir-foreground md:text-6xl">
+          Permítanos mostrarle lo que pocos llegan a ver
+        </h2>
+        <p className="max-w-xl text-base font-light leading-relaxed text-noir-foreground/70">
+          Conversamos sobre su perfil y le presentamos oportunidades reales, validadas por nuestro
+          equipo. Con la máxima discreción y sin compromiso alguno.
+        </p>
+        <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row">
           <Link
-            href="#asistente"
-            className="inline-flex items-center justify-center gap-2 rounded-full bg-primary-foreground px-8 py-4 text-sm font-semibold text-primary transition-opacity hover:opacity-90"
+            href="/asistente"
+            className="border border-gold bg-gold px-9 py-3.5 text-xs font-light uppercase tracking-[0.2em] text-noir transition-colors hover:bg-transparent hover:text-gold"
           >
-            Hablar con el asistente
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 8H13M13 8L9 4M13 8L9 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-            </svg>
+            Hablar con un asesor
           </Link>
-          <span className="text-center text-xs text-primary-foreground/50">
-            Sin registro. Sin compromiso.
-          </span>
+          <Link
+            href="/oportunidades"
+            className="border border-noir-foreground/30 px-9 py-3.5 text-xs font-light uppercase tracking-[0.2em] text-noir-foreground transition-colors hover:border-noir-foreground"
+          >
+            Ver oportunidades
+          </Link>
         </div>
+        <span className="text-xs font-light tracking-wide text-noir-foreground/40">
+          Sin registro · Sin compromiso · Absoluta confidencialidad
+        </span>
       </div>
     </section>
   )
