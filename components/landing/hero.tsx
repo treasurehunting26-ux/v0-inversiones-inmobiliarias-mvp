@@ -44,24 +44,6 @@ export function Hero() {
         </div>
       </div>
 
-      {/* Stats strip pinned to bottom */}
-      <div className="relative z-10 mx-auto mt-20 w-full max-w-7xl px-6 lg:px-10">
-        <div className="grid grid-cols-2 gap-px overflow-hidden border-t border-noir-foreground/15 md:grid-cols-4">
-          {[
-            { value: "€1.2B+", label: "En activos analizados" },
-            { value: "3", label: "Mercados internacionales" },
-            { value: "8–12%", label: "ROI estimado promedio" },
-            { value: "100%", label: "Selección verificada" },
-          ].map((stat) => (
-            <div key={stat.label} className="py-7 pr-6">
-              <div className="font-serif text-3xl font-light text-gold-soft md:text-4xl">{stat.value}</div>
-              <div className="mt-1 text-[0.7rem] font-light uppercase tracking-[0.18em] text-noir-foreground/60">
-                {stat.label}
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
     </section>
   )
 }

@@ -12,10 +12,10 @@ export default function AsistentePage() {
   return (
     <div className="flex h-screen flex-col bg-background">
       {/* Header de marca noir */}
-      <header className="flex items-center justify-between border-b border-[var(--ivory)]/10 bg-[var(--noir)] px-6 py-4">
+      <header className="flex items-center justify-between border-b border-[var(--color-noir-foreground)]/10 bg-[var(--color-noir)] px-6 py-4">
         <Link
           href="/"
-          className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[var(--ivory)]/60 transition-colors hover:text-[var(--gold)]"
+          className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
@@ -29,9 +29,9 @@ export default function AsistentePage() {
           Volver
         </Link>
         <div className="flex flex-col items-center gap-0.5">
-          <span className="font-serif text-lg font-light tracking-[0.2em] text-[var(--ivory)]">ATERRA</span>
-          <span className="flex items-center gap-1.5 text-xs text-[var(--ivory)]/50">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
+          <span className="font-serif text-lg font-light tracking-[0.2em] text-[var(--color-noir-foreground)]">ATERRA</span>
+          <span className="flex items-center gap-1.5 text-xs text-[var(--color-noir-foreground)]/50">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
             Asesor disponible
           </span>
         </div>

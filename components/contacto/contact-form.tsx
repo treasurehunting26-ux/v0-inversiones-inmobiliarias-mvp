@@ -112,7 +112,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={!isValid || status === "submitting"}
-        className="mt-2 self-start bg-[var(--noir)] px-9 py-4 text-xs font-light uppercase tracking-[0.2em] text-[var(--ivory)] transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-2 self-start bg-[var(--color-noir)] px-9 py-4 text-xs font-light uppercase tracking-[0.2em] text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         {status === "submitting" ? "Enviando…" : "Solicitar contacto"}
       </button>

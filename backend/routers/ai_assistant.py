@@ -34,6 +34,7 @@ import logging
 from database import get_db
 from models.conversation import Conversation, Message
 from models.property import Property
+from rate_limit import enforce_ai_rate_limit
 from schemas.ai_assistant import AssistantRequest, AssistantResponse
 
 logger = logging.getLogger("uvicorn.error")
@@ -227,6 +228,7 @@ async def call_ai_model(
 async def interact_with_assistant(
     request: AssistantRequest,
     db: Session = Depends(get_db),
+    _rate_limit: None = Depends(enforce_ai_rate_limit),
 ):
     """
     POST /ai/assistant

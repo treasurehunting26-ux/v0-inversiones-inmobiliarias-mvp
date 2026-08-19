@@ -15,31 +15,24 @@ export default function OportunidadesPage() {
       <NavBar />
 
       {/* Encabezado editorial sobre fondo noir */}
-      <section className="relative overflow-hidden bg-[var(--noir)] px-6 pt-40 pb-24">
+      <section className="relative overflow-hidden bg-[var(--color-noir)] px-6 pt-40 pb-24">
         <div className="mx-auto flex max-w-6xl flex-col gap-6">
-          <span className="text-xs font-medium uppercase tracking-[0.35em] text-[var(--gold)]">
+          <span className="text-xs font-medium uppercase tracking-[0.35em] text-[var(--color-gold)]">
             Catálogo · Activos verificados
           </span>
-          <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-balance text-[var(--ivory)] md:text-6xl">
+          <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-balance text-[var(--color-noir-foreground)] md:text-6xl">
             Oportunidades de inversión, seleccionadas una a una
           </h1>
-          <p className="max-w-xl text-lg leading-relaxed text-[var(--ivory)]/70">
+          <p className="max-w-xl text-lg leading-relaxed text-[var(--color-noir-foreground)]/70">
             Cada activo ha sido revisado y aprobado por nuestro equipo antes de publicarse. Elige el que encaje
             con tu perfil y profundiza con un asesor dedicado.
           </p>
 
-          <div className="mt-6 flex flex-wrap gap-x-12 gap-y-6 border-t border-[var(--ivory)]/15 pt-8">
-            {[
-              { value: "100%", label: "Verificación manual" },
-              { value: "3", label: "Mercados internacionales" },
-              { value: "8–12%", label: "ROI estimado promedio" },
-            ].map((stat) => (
-              <div key={stat.label} className="flex flex-col gap-1">
-                <span className="font-serif text-3xl font-light text-[var(--gold)]">{stat.value}</span>
-                <span className="text-xs uppercase tracking-widest text-[var(--ivory)]/50">{stat.label}</span>
-              </div>
-            ))}
-          </div>
+          <p className="mt-6 max-w-2xl border-t border-[var(--color-noir-foreground)]/15 pt-8 text-sm leading-relaxed text-[var(--color-noir-foreground)]/50">
+            Las rentabilidades indicadas en cada ficha son estimaciones sobre supuestos concretos, no
+            resultados garantizados: el valor de un inmueble puede fluctuar y la venta requiere plazos.
+            Te recomendamos contrastar cada operación con tu asesor fiscal o financiero.
+          </p>
         </div>
       </section>
 

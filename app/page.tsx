@@ -5,7 +5,7 @@ import { Markets } from "@/components/landing/markets"
 import { HowItWorks } from "@/components/landing/how-it-works"
 import { Showcase } from "@/components/landing/showcase"
 import { Features } from "@/components/landing/features"
-import { Testimonials } from "@/components/landing/testimonials"
+import { Faq } from "@/components/landing/faq"
 import { CTA } from "@/components/landing/cta"
 import { Footer } from "@/components/landing/footer"
 
@@ -19,7 +19,7 @@ export default function Home() {
       <HowItWorks />
       <Showcase />
       <Features />
-      <Testimonials />
+      <Faq />
       <CTA />
       <Footer />
     </main>

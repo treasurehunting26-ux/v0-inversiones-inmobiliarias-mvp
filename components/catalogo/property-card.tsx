@@ -5,24 +5,24 @@ export function PropertyCard({ property }: { property: Property }) {
   return (
     <Link
       href={`/oportunidades/${property.id}`}
-      className="group flex flex-col overflow-hidden border border-border bg-card transition-all duration-300 hover:border-[var(--gold)]/50 hover:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]"
+      className="group flex flex-col overflow-hidden border border-border bg-card transition-all duration-300 hover:border-[var(--color-gold)]/50 hover:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]"
     >
       {/* Cabecera visual */}
-      <div className="relative aspect-[4/3] overflow-hidden bg-[var(--noir)]">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--noir)] via-[var(--noir)] to-[#2a2622]" />
+      <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-noir)]">
+        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-noir)] via-[var(--color-noir)] to-[#2a2622]" />
         <div className="absolute inset-0 flex items-center justify-center">
-          <span className="font-serif text-6xl font-light text-[var(--gold)]/25">
+          <span className="font-serif text-6xl font-light text-[var(--color-gold)]/25">
             {property.location?.charAt(0) ?? "·"}
           </span>
         </div>
         <div className="absolute left-5 top-5 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--ivory)]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--ivory)] backdrop-blur">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--color-noir-foreground)] backdrop-blur">
             {property.asset_type}
           </span>
         </div>
         <div className="absolute bottom-5 right-5">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--gold)]">
-            <span className="h-1.5 w-1.5 rounded-full bg-[var(--gold)]" />
+          <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
+            <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
             Validada
           </span>
         </div>
