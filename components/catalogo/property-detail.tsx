@@ -106,12 +106,6 @@ export function PropertyDetail() {
           ))}
         </div>
 
-        {/* Riesgo */}
-        <div className="mt-16 flex flex-col gap-4">
-          <h2 className="font-serif text-3xl font-light text-foreground">Consideraciones de riesgo</h2>
-          <p className="leading-relaxed text-muted-foreground">{data.risk_notes}</p>
-        </div>
-
         {/* CTA */}
         <div className="mt-16 flex flex-col items-start gap-6 border border-border bg-[var(--color-noir)] p-10 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-2 md:max-w-md">
