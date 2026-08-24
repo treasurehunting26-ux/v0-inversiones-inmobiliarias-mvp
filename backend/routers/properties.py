@@ -10,7 +10,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
 
-from schemas.property import PropertyRead, PropertyListResponse
+from schemas.property import PropertyRead, PropertyDetailRead, PropertyListResponse
 from database import get_db
 from models.property import Property
 
@@ -41,8 +41,34 @@ def get_properties(db: Session = Depends(get_db)) -> PropertyListResponse:
     )
 
 
-@router.get("/{property_id}", response_model=PropertyRead)
-def get_property(property_id: str, db: Session = Depends(get_db)) -> PropertyRead:
+@router.get("/dossier/{slug}", response_model=PropertyDetailRead)
+def get_property_dossier(slug: str, db: Session = Depends(get_db)) -> PropertyDetailRead:
+    """
+    GET /properties/dossier/{slug}
+
+    Dossier privado para compartir (ej. por WhatsApp/email) mediante un
+    enlace propio con slug aleatorio. No requiere autenticacion: el slug
+    actua como clave de acceso, por eso no es adivinable ni listado.
+
+    Disponible para propiedades en draft o published (permite compartir
+    antes de publicar en el catalogo). No disponible si esta archivada.
+    """
+    property = db.query(Property).filter(
+        Property.dossier_slug == slug,
+        Property.status != "archived",
+    ).first()
+
+    if not property:
+        raise HTTPException(
+            status_code=404,
+            detail="Dossier no encontrado o no disponible"
+        )
+
+    return PropertyDetailRead.model_validate(property)
+
+
+@router.get("/{property_id}", response_model=PropertyDetailRead)
+def get_property(property_id: str, db: Session = Depends(get_db)) -> PropertyDetailRead:
     """
     GET /properties/{id}
     
@@ -60,4 +86,4 @@ def get_property(property_id: str, db: Session = Depends(get_db)) -> PropertyRea
             detail="Propiedad no encontrada o no disponible"
         )
     
-    return PropertyRead.model_validate(property)
+    return PropertyDetailRead.model_validate(property)

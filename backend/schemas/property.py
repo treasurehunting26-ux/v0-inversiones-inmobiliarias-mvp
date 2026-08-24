@@ -27,6 +27,18 @@ class PropertyRead(BaseModel):
         from_attributes = True
 
 
+class PropertyDetailRead(PropertyRead):
+    """
+    Schema de lectura de ficha completa (detalle publico y dossier).
+    Incluye contenido enriquecido: descripcion HTML, fotos y video.
+    El HTML se sanea en el frontend antes de renderizar.
+    """
+    description_html: Optional[str] = None
+    photos: Optional[list[str]] = None
+    video_url: Optional[str] = None
+    dossier_slug: Optional[str] = None
+
+
 class PropertyListResponse(BaseModel):
     """
     Respuesta del endpoint GET /properties.

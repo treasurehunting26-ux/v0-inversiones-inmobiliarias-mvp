@@ -4,7 +4,7 @@ Referencia: DATA_MODEL_AND_PERMISSIONS.md
 """
 
 from datetime import datetime
-from sqlalchemy import Column, String, DateTime, Text
+from sqlalchemy import Column, String, DateTime, Text, JSON
 from database import Base
 
 
@@ -32,3 +32,9 @@ class Property(Base):
     approved_by = Column(String, nullable=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+    # Contenido enriquecido (ficha publica + dossier privado para compartir)
+    description_html = Column(Text, nullable=True)
+    photos = Column(JSON, nullable=True, default=list)  # lista de URLs (Vercel Blob)
+    video_url = Column(String, nullable=True)  # URL de video (Vercel Blob)
+    dossier_slug = Column(String, nullable=True, unique=True, index=True)

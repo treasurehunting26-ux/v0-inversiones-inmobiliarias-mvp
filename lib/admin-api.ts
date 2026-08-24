@@ -19,6 +19,16 @@ export type AdminProperty = {
   approved_by: string | null
   created_at: string
   updated_at: string
+  description_html: string | null
+  photos: string[] | null
+  video_url: string | null
+  dossier_slug: string | null
+}
+
+export type PropertyContentPayload = {
+  description_html?: string
+  photos?: string[]
+  video_url?: string
 }
 
 export type PropertyCreatePayload = {
@@ -84,4 +94,44 @@ export async function deleteProperty(token: string, id: string): Promise<void> {
     headers: authHeaders(token),
   })
   if (!res.ok && res.status !== 204) throw new Error(`Error ${res.status}`)
+}
+
+export async function updateContent(
+  token: string,
+  id: string,
+  payload: PropertyContentPayload,
+): Promise<AdminProperty> {
+  const res = await fetch(`${API_URL}/admin/properties/${id}/content`, {
+    method: "PATCH",
+    headers: authHeaders(token),
+    body: JSON.stringify(payload),
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
+/**
+ * Sube una foto o video al almacenamiento (Vercel Blob) a traves de la
+ * ruta protegida /api/admin/upload y devuelve la URL publica resultante.
+ */
+export async function uploadMedia(
+  token: string,
+  file: File,
+  kind: "photo" | "video",
+): Promise<string> {
+  const formData = new FormData()
+  formData.append("file", file)
+  formData.append("kind", kind)
+
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    headers: { "X-Admin-Token": token },
+    body: formData,
+  })
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.error || `Error ${res.status}`)
+  }
+  const data = await res.json()
+  return data.url as string
 }

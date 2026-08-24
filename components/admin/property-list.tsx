@@ -1,12 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Archive, CheckCircle2, Clock, Trash2 } from "lucide-react"
+import { Archive, CheckCircle2, Clock, ImagePlus, Trash2 } from "lucide-react"
 import {
   AdminProperty,
   deleteProperty,
   updateStatus,
 } from "@/lib/admin-api"
+import { PropertyContentEditor } from "@/components/admin/property-content-editor"
 
 interface PropertyListProps {
   token: string
@@ -20,6 +21,7 @@ export function PropertyList({
   onChanged,
 }: PropertyListProps) {
   const [busyId, setBusyId] = useState<string | null>(null)
+  const [editingId, setEditingId] = useState<string | null>(null)
 
   async function setStatus(p: AdminProperty, status: AdminProperty["status"]) {
     setBusyId(p.id)
@@ -92,6 +94,14 @@ export function PropertyList({
               </div>
 
               <div className="flex flex-wrap gap-2 md:flex-col md:items-end">
+                <button
+                  disabled={busy}
+                  onClick={() => setEditingId(editingId === p.id ? null : p.id)}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+                >
+                  <ImagePlus className="h-3.5 w-3.5" />
+                  {editingId === p.id ? "Cerrar contenido" : "Contenido y dossier"}
+                </button>
                 {p.status !== "published" && (
                   <button
                     disabled={busy}
@@ -132,6 +142,18 @@ export function PropertyList({
                 </button>
               </div>
             </div>
+
+            {editingId === p.id && (
+              <PropertyContentEditor
+                token={token}
+                property={p}
+                onClose={() => setEditingId(null)}
+                onSaved={() => {
+                  setEditingId(null)
+                  onChanged()
+                }}
+              />
+            )}
           </li>
         )
       })}

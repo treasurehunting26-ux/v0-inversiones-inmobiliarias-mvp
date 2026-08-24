@@ -14,6 +14,10 @@ export type Property = {
   roi_estimated: string | null
   horizon: string
   risk_notes: string
+  description_html?: string | null
+  photos?: string[] | null
+  video_url?: string | null
+  dossier_slug?: string | null
 }
 
 export type PropertyListResponse = {
@@ -33,5 +37,16 @@ export const propertyFetcher = async (path: string): Promise<Property> => {
     if (res.status === 404) throw new Error("NOT_FOUND")
     throw new Error(`Error ${res.status}`)
   }
+  return res.json()
+}
+
+/**
+ * Obtiene una ficha de dossier por su slug (enlace privado para compartir).
+ * Uso en servidor: fetch directo a la API, sin pasar por SWR.
+ */
+export async function getDossier(slug: string): Promise<Property | null> {
+  const res = await fetch(`${API_URL}/properties/dossier/${slug}`, { cache: "no-store" })
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`Error ${res.status}`)
   return res.json()
 }
