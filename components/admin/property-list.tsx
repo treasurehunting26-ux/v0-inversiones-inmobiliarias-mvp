@@ -1,7 +1,7 @@
 "use client"
 
 import { useState } from "react"
-import { Archive, CheckCircle2, Clock, ImagePlus, Trash2 } from "lucide-react"
+import { Archive, Check, CheckCircle2, Clock, Copy, ImagePlus, Trash2 } from "lucide-react"
 import {
   AdminProperty,
   deleteProperty,
@@ -22,6 +22,15 @@ export function PropertyList({
 }: PropertyListProps) {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [copiedId, setCopiedId] = useState<string | null>(null)
+
+  async function copyDossierLink(p: AdminProperty) {
+    if (!p.dossier_slug) return
+    const url = `${window.location.origin}/dossier/${p.dossier_slug}`
+    await navigator.clipboard.writeText(url)
+    setCopiedId(p.id)
+    setTimeout(() => setCopiedId(null), 2000)
+  }
 
   async function setStatus(p: AdminProperty, status: AdminProperty["status"]) {
     setBusyId(p.id)
@@ -102,6 +111,20 @@ export function PropertyList({
                   <ImagePlus className="h-3.5 w-3.5" />
                   {editingId === p.id ? "Cerrar contenido" : "Contenido y dossier"}
                 </button>
+                {p.dossier_slug && (
+                  <button
+                    disabled={busy}
+                    onClick={() => copyDossierLink(p)}
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+                  >
+                    {copiedId === p.id ? (
+                      <Check className="h-3.5 w-3.5" />
+                    ) : (
+                      <Copy className="h-3.5 w-3.5" />
+                    )}
+                    {copiedId === p.id ? "Copiado" : "Copiar enlace de dossier"}
+                  </button>
+                )}
                 {p.status !== "published" && (
                   <button
                     disabled={busy}
