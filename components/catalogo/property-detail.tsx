@@ -4,6 +4,7 @@ import useSWR from "swr"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { propertyFetcher, type Property } from "@/lib/properties-api"
+import { sanitizePropertyHtml } from "@/lib/sanitize-html"
 
 export function PropertyDetail() {
   const params = useParams()
@@ -106,11 +107,40 @@ export function PropertyDetail() {
           ))}
         </div>
 
-        {/* Riesgo */}
-        <div className="mt-16 flex flex-col gap-4">
-          <h2 className="font-serif text-3xl font-light text-foreground">Consideraciones de riesgo</h2>
-          <p className="leading-relaxed text-muted-foreground">{data.risk_notes}</p>
-        </div>
+        {/* Video */}
+        {data.video_url && (
+          <div className="mt-16">
+            <video
+              src={data.video_url}
+              controls
+              preload="none"
+              poster={data.photos?.[0]}
+              className="w-full rounded-none border border-border bg-[var(--color-noir)]"
+            />
+          </div>
+        )}
+
+        {/* Galeria de fotos */}
+        {data.photos && data.photos.length > 0 && (
+          <div className="mt-16 grid grid-cols-2 gap-2 md:grid-cols-3">
+            {data.photos.map((url, i) => (
+              <img
+                key={url}
+                src={url || "/placeholder.svg"}
+                alt={`${data.title} — foto ${i + 1}`}
+                className="aspect-[4/3] w-full border border-border object-cover"
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Contenido detallado */}
+        {data.description_html && (
+          <div
+            className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground"
+            dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(data.description_html) }}
+          />
+        )}
 
         {/* CTA */}
         <div className="mt-16 flex flex-col items-start gap-6 border border-border bg-[var(--color-noir)] p-10 md:flex-row md:items-center md:justify-between">

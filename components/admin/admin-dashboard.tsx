@@ -1,10 +1,11 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { LogOut, Plus, X } from "lucide-react"
+import { LogOut, Plus, RefreshCw, X } from "lucide-react"
 import {
   AdminProperty,
   listProperties,
+  migrateContentFields,
 } from "@/lib/admin-api"
 import { PropertyForm } from "./property-form"
 import { PropertyList } from "./property-list"
@@ -19,6 +20,8 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showForm, setShowForm] = useState(false)
+  const [migrating, setMigrating] = useState(false)
+  const [migrateResult, setMigrateResult] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
     setError(null)
@@ -37,6 +40,22 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
   useEffect(() => {
     refresh()
   }, [refresh])
+
+  async function handleMigrate() {
+    setMigrating(true)
+    setMigrateResult(null)
+    try {
+      const result = await migrateContentFields(token)
+      setMigrateResult(
+        `Base de datos actualizada correctamente (${result.slugs_assigned} enlaces de dossier generados).`,
+      )
+      refresh()
+    } catch {
+      setMigrateResult("No se pudo actualizar la base de datos. Intenta de nuevo en unos segundos.")
+    } finally {
+      setMigrating(false)
+    }
+  }
 
   const counts = {
     total: properties.length,
@@ -66,6 +85,30 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
           Salir
         </button>
       </header>
+
+      <div className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <p className="text-sm font-medium text-foreground">
+            Contenido enriquecido (fotos, video, dossier)
+          </p>
+          <p className="text-xs text-muted-foreground">
+            Ejecuta esto una vez para preparar la base de datos. Es seguro repetirlo.
+          </p>
+        </div>
+        <div className="flex flex-col items-start gap-2 sm:items-end">
+          <button
+            onClick={handleMigrate}
+            disabled={migrating}
+            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+          >
+            <RefreshCw className={`h-4 w-4 ${migrating ? "animate-spin" : ""}`} />
+            {migrating ? "Actualizando..." : "Actualizar base de datos"}
+          </button>
+          {migrateResult && (
+            <p className="text-xs text-muted-foreground text-right">{migrateResult}</p>
+          )}
+        </div>
+      </div>
 
       <section className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard label="Total" value={counts.total} />

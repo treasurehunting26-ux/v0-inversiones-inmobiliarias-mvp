@@ -32,6 +32,17 @@ class PropertyStatusUpdate(BaseModel):
     status: PropertyStatus
 
 
+class PropertyContentUpdate(BaseModel):
+    """
+    Actualizacion de contenido enriquecido (ficha y dossier privado).
+    Todos los campos son opcionales: se actualiza solo lo enviado.
+    El HTML se guarda tal cual; se sanea en el frontend antes de mostrarse.
+    """
+    description_html: Optional[str] = None
+    photos: Optional[list[str]] = None
+    video_url: Optional[str] = None
+
+
 class PropertyAdminRead(BaseModel):
     """
     Lectura admin: incluye campos internos (status, created_by, timestamps).
@@ -49,6 +60,10 @@ class PropertyAdminRead(BaseModel):
     approved_by: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+    description_html: Optional[str] = None
+    photos: Optional[list[str]] = None
+    video_url: Optional[str] = None
+    dossier_slug: Optional[str] = None
 
     class Config:
         from_attributes = True
