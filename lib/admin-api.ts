@@ -96,6 +96,22 @@ export async function deleteProperty(token: string, id: string): Promise<void> {
   if (!res.ok && res.status !== 204) throw new Error(`Error ${res.status}`)
 }
 
+/**
+ * Ejecuta la migracion puntual que anade las columnas de contenido
+ * enriquecido (fotos, video, HTML, dossier) a la base de datos.
+ * Segura de llamar varias veces: no falla si las columnas ya existen.
+ */
+export async function migrateContentFields(
+  token: string,
+): Promise<{ status: string; slugs_assigned: number }> {
+  const res = await fetch(`${API_URL}/admin/properties/migrate-content-fields`, {
+    method: "POST",
+    headers: authHeaders(token),
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
 export async function updateContent(
   token: string,
   id: string,
