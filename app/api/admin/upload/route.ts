@@ -1,4 +1,4 @@
-import { put } from "@vercel/blob"
+import { handleUpload, type HandleUploadBody } from "@vercel/blob/client"
 import { type NextRequest, NextResponse } from "next/server"
 
 // Limites pensados para fichas de propiedad: fotos ligeras, video breve
@@ -7,9 +7,19 @@ import { type NextRequest, NextResponse } from "next/server"
 const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8 MB
 const MAX_VIDEO_BYTES = 150 * 1024 * 1024 // 150 MB
 
-const ALLOWED_PHOTO_TYPES = new Set(["image/jpeg", "image/png", "image/webp", "image/avif"])
-const ALLOWED_VIDEO_TYPES = new Set(["video/mp4", "video/webm", "video/quicktime"])
+const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"]
+const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"]
 
+/**
+ * Genera un token de subida de corta duracion para que el navegador suba
+ * el archivo DIRECTAMENTE a Vercel Blob, sin pasar por esta funcion.
+ *
+ * Motivo: las funciones serverless de Vercel tienen un limite de ~4.5 MB
+ * en el cuerpo de la peticion. Antes el archivo se enviaba completo aqui
+ * (via formData) y cualquier foto o video superaba ese limite, causando
+ * error 413. Con el flujo de "client upload" solo viaja por esta funcion
+ * un token pequeno; el archivo va directo del navegador al almacenamiento.
+ */
 export async function POST(request: NextRequest) {
   const adminToken = request.headers.get("x-admin-token") || ""
   const expected = process.env.ADMIN_TOKEN || ""
@@ -21,41 +31,38 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 })
   }
 
+  const body = (await request.json()) as HandleUploadBody
+
   try {
-    const formData = await request.formData()
-    const file = formData.get("file") as File | null
-    const kind = formData.get("kind") as string | null
+    const jsonResponse = await handleUpload({
+      body,
+      request,
+      onBeforeGenerateToken: async (pathname, clientPayload) => {
+        let kind: string | null = null
+        try {
+          kind = clientPayload ? (JSON.parse(clientPayload).kind as string) : null
+        } catch {
+          kind = null
+        }
 
-    if (!file) {
-      return NextResponse.json({ error: "No se recibio ningun archivo" }, { status: 400 })
-    }
-    if (kind !== "photo" && kind !== "video") {
-      return NextResponse.json({ error: "Tipo de archivo no reconocido" }, { status: 400 })
-    }
+        if (kind !== "photo" && kind !== "video") {
+          throw new Error("Tipo de archivo no reconocido")
+        }
 
-    const allowedTypes = kind === "photo" ? ALLOWED_PHOTO_TYPES : ALLOWED_VIDEO_TYPES
-    if (!allowedTypes.has(file.type)) {
-      return NextResponse.json(
-        { error: kind === "photo" ? "Formato de foto no permitido (usa JPG, PNG o WEBP)" : "Formato de video no permitido (usa MP4, WEBM o MOV)" },
-        { status: 400 },
-      )
-    }
-
-    const maxBytes = kind === "photo" ? MAX_PHOTO_BYTES : MAX_VIDEO_BYTES
-    if (file.size > maxBytes) {
-      const maxMb = Math.round(maxBytes / (1024 * 1024))
-      return NextResponse.json({ error: `El archivo supera el limite de ${maxMb} MB` }, { status: 400 })
-    }
-
-    const folder = kind === "photo" ? "propiedades/fotos" : "propiedades/videos"
-    const blob = await put(`${folder}/${file.name}`, file, {
-      access: "public",
-      addRandomSuffix: true,
+        return {
+          allowedContentTypes: kind === "photo" ? ALLOWED_PHOTO_TYPES : ALLOWED_VIDEO_TYPES,
+          maximumSizeInBytes: kind === "photo" ? MAX_PHOTO_BYTES : MAX_VIDEO_BYTES,
+          addRandomSuffix: true,
+        }
+      },
     })
 
-    return NextResponse.json({ url: blob.url })
+    return NextResponse.json(jsonResponse)
   } catch (error) {
-    console.error("[v0] Error subiendo archivo a Blob:", error)
-    return NextResponse.json({ error: "No se pudo subir el archivo" }, { status: 500 })
+    console.error("[v0] Error generando token de subida a Blob:", error)
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "No se pudo iniciar la subida" },
+      { status: 400 },
+    )
   }
 }

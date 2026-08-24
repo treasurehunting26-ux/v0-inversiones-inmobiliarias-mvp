@@ -80,8 +80,8 @@ export function PropertyContentEditor({
         video_url: videoUrl || "",
       })
       onSaved()
-    } catch {
-      setError("No se pudo guardar el contenido")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo guardar el contenido")
     } finally {
       setSaving(false)
     }

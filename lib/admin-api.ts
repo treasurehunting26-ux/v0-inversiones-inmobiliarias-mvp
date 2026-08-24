@@ -117,37 +117,51 @@ export async function updateContent(
   id: string,
   payload: PropertyContentPayload,
 ): Promise<AdminProperty> {
-  const res = await fetch(`${API_URL}/admin/properties/${id}/content`, {
-    method: "PATCH",
-    headers: authHeaders(token),
-    body: JSON.stringify(payload),
-  })
-  if (!res.ok) throw new Error(`Error ${res.status}`)
+  let res: Response
+  try {
+    res = await fetch(`${API_URL}/admin/properties/${id}/content`, {
+      method: "PATCH",
+      headers: authHeaders(token),
+      body: JSON.stringify(payload),
+    })
+  } catch {
+    // fetch lanza esto cuando la peticion nunca llega a completarse
+    // (bloqueo de CORS, backend caido, sin conexion, etc.)
+    throw new Error("No se pudo contactar con el servidor. Revisa tu conexion e intentalo de nuevo.")
+  }
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}))
+    throw new Error(data.detail || `Error ${res.status}`)
+  }
   return res.json()
 }
 
 /**
- * Sube una foto o video al almacenamiento (Vercel Blob) a traves de la
- * ruta protegida /api/admin/upload y devuelve la URL publica resultante.
+ * Sube una foto o video directamente desde el navegador a Vercel Blob.
+ *
+ * El archivo NO pasa por nuestro servidor: solo se pide un token corto a
+ * /api/admin/upload (ruta protegida con X-Admin-Token) y con ese token el
+ * navegador sube el archivo directo al almacenamiento. Esto evita el
+ * limite de ~4.5 MB que tienen las funciones serverless de Vercel para el
+ * cuerpo de la peticion, que antes causaba error 413 en fotos y videos.
  */
 export async function uploadMedia(
   token: string,
   file: File,
   kind: "photo" | "video",
 ): Promise<string> {
-  const formData = new FormData()
-  formData.append("file", file)
-  formData.append("kind", kind)
+  const { upload } = await import("@vercel/blob/client")
+  const folder = kind === "photo" ? "propiedades/fotos" : "propiedades/videos"
 
-  const res = await fetch("/api/admin/upload", {
-    method: "POST",
-    headers: { "X-Admin-Token": token },
-    body: formData,
-  })
-  if (!res.ok) {
-    const data = await res.json().catch(() => ({}))
-    throw new Error(data.error || `Error ${res.status}`)
+  try {
+    const blob = await upload(`${folder}/${file.name}`, file, {
+      access: "public",
+      handleUploadUrl: "/api/admin/upload",
+      headers: { "X-Admin-Token": token },
+      clientPayload: JSON.stringify({ kind }),
+    })
+    return blob.url
+  } catch (err) {
+    throw new Error(err instanceof Error ? err.message : "No se pudo subir el archivo")
   }
-  const data = await res.json()
-  return data.url as string
 }
