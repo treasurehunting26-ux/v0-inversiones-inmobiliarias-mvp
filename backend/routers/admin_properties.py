@@ -12,6 +12,7 @@ import re
 import uuid
 from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, Header
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from database import get_db
@@ -69,6 +70,51 @@ def verify_admin_token(x_admin_token: str = Header(default="")) -> None:
         )
     if x_admin_token != expected:
         raise HTTPException(status_code=401, detail="No autorizado")
+
+
+@router.post("/migrate-content-fields")
+def admin_migrate_content_fields(
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> dict:
+    """
+    Migracion puntual: anade a la tabla properties las columnas de contenido
+    enriquecido (description_html, photos, video_url, dossier_slug) y genera
+    un dossier_slug para las propiedades que aun no lo tengan.
+
+    Idempotente: "ADD COLUMN IF NOT EXISTS" no falla si ya existe. Pensada
+    para ejecutarse una sola vez desde el admin tras desplegar este cambio.
+    """
+    statements = [
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS description_html TEXT",
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS photos JSON",
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS video_url VARCHAR",
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS dossier_slug VARCHAR",
+        "CREATE UNIQUE INDEX IF NOT EXISTS ix_properties_dossier_slug "
+        "ON properties (dossier_slug)",
+    ]
+    for stmt in statements:
+        db.execute(text(stmt))
+    db.commit()
+
+    # Genera slug para filas existentes que no lo tengan (creadas antes de esta migracion)
+    rows_without_slug = db.query(Property).filter(Property.dossier_slug.is_(None)).all()
+    assigned = 0
+    for prop in rows_without_slug:
+        prop.dossier_slug = generate_dossier_slug(db, prop.title)
+        assigned += 1
+    db.commit()
+
+    return {
+        "status": "ok",
+        "columns_ensured": [
+            "description_html",
+            "photos",
+            "video_url",
+            "dossier_slug",
+        ],
+        "slugs_assigned": assigned,
+    }
 
 
 @router.get("", response_model=PropertyAdminListResponse)
