@@ -198,3 +198,29 @@ export async function uploadMedia(
     clearTimeout(timeoutId)
   }
 }
+
+/**
+ * Anade una foto pegando una URL externa (por ejemplo, una ya subida a
+ * Blob a mano fuera del panel). Descarga la imagen, la comprime igual
+ * que las subidas por boton y la vuelve a subir como una foto ligera y
+ * propia de la propiedad, en vez de guardar el enlace externo tal cual.
+ */
+export async function uploadPhotoFromUrl(token: string, url: string): Promise<string> {
+  let res: Response
+  try {
+    res = await fetch(url)
+  } catch {
+    throw new Error("No se pudo descargar la imagen de ese enlace. Revisa que la URL sea correcta y publica.")
+  }
+  if (!res.ok) {
+    throw new Error(`No se pudo descargar la imagen (error ${res.status}). Revisa que la URL sea correcta.`)
+  }
+  const contentType = res.headers.get("content-type") || "image/jpeg"
+  if (!contentType.startsWith("image/")) {
+    throw new Error("Ese enlace no parece ser una imagen.")
+  }
+  const blobData = await res.blob()
+  const name = url.split("/").pop()?.split("?")[0] || "foto.jpg"
+  const file = new File([blobData], name, { type: contentType })
+  return uploadMedia(token, file, "photo")
+}

@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { Check, Copy, Loader2, Trash2, Upload, X } from "lucide-react"
-import { type AdminProperty, updateContent, uploadMedia } from "@/lib/admin-api"
+import { type AdminProperty, updateContent, uploadMedia, uploadPhotoFromUrl } from "@/lib/admin-api"
 
 interface PropertyContentEditorProps {
   token: string
@@ -72,11 +72,20 @@ export function PropertyContentEditor({
     setPhotos((prev) => prev.filter((p) => p !== url))
   }
 
-  function addPhotoByUrl() {
+  async function addPhotoByUrl() {
     const url = manualPhotoUrl.trim()
     if (!url) return
-    setPhotos((prev) => (prev.includes(url) ? prev : [...prev, url]))
-    setManualPhotoUrl("")
+    setError(null)
+    setUploadingPhoto(true)
+    try {
+      const compressedUrl = await uploadPhotoFromUrl(token, url)
+      setPhotos((prev) => (prev.includes(compressedUrl) ? prev : [...prev, compressedUrl]))
+      setManualPhotoUrl("")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo anadir la foto desde ese enlace")
+    } finally {
+      setUploadingPhoto(false)
+    }
   }
 
   function addVideoByUrl() {
@@ -191,17 +200,22 @@ export function PropertyContentEditor({
             value={manualPhotoUrl}
             onChange={(e) => setManualPhotoUrl(e.target.value)}
             placeholder="O pega aqui el enlace de una foto ya subida"
-            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary"
+            disabled={uploadingPhoto}
+            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary disabled:opacity-50"
           />
           <button
             type="button"
             onClick={addPhotoByUrl}
-            disabled={!manualPhotoUrl.trim()}
-            className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+            disabled={!manualPhotoUrl.trim() || uploadingPhoto}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
           >
-            Anadir
+            {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {uploadingPhoto ? "Comprimiendo..." : "Anadir"}
           </button>
         </div>
+        <p className="text-xs text-muted-foreground">
+          La foto se descarga y se comprime igual que las subidas por boton antes de guardarse.
+        </p>
       </div>
 
       {/* Video */}
