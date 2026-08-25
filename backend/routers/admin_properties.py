@@ -11,6 +11,7 @@ import os
 import re
 import uuid
 from datetime import datetime
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, Header
 from sqlalchemy import text
 from sqlalchemy.orm import Session
@@ -43,18 +44,30 @@ def slugify(text: str) -> str:
     return normalized or "propiedad"
 
 
-def generate_dossier_slug(db: Session, title: str) -> str:
+def generate_dossier_slug(
+    db: Session,
+    title: str,
+    exclude_id: Optional[str] = None,
+) -> str:
     """
-    Genera un slug unico para el enlace de dossier compartible.
-    Anade un sufijo corto para evitar colisiones entre titulos similares.
+    Genera el slug mas limpio posible para el enlace de dossier compartible.
+
+    Usa el titulo tal cual ("villa-los-monteros"). Solo si ese slug ya esta
+    ocupado por OTRA propiedad anade un sufijo numerico legible
+    ("villa-los-monteros-2"), en vez de un codigo aleatorio.
+
+    exclude_id permite recalcular el slug de una propiedad existente sin que
+    choque consigo misma.
     """
     base = slugify(title)
-    for _ in range(5):
-        candidate = f"{base}-{uuid.uuid4().hex[:6]}"
-        exists = db.query(Property).filter(Property.dossier_slug == candidate).first()
-        if not exists:
+    for candidate in [base] + [f"{base}-{n}" for n in range(2, 51)]:
+        query = db.query(Property).filter(Property.dossier_slug == candidate)
+        if exclude_id is not None:
+            query = query.filter(Property.id != exclude_id)
+        if not query.first():
             return candidate
-    return f"{base}-{uuid.uuid4().hex[:12]}"
+    # Salvaguarda muy improbable: 50 propiedades con el mismo titulo
+    return f"{base}-{uuid.uuid4().hex[:6]}"
 
 
 def verify_admin_token(x_admin_token: str = Header(default="")) -> None:
@@ -101,8 +114,20 @@ def admin_migrate_content_fields(
     rows_without_slug = db.query(Property).filter(Property.dossier_slug.is_(None)).all()
     assigned = 0
     for prop in rows_without_slug:
-        prop.dossier_slug = generate_dossier_slug(db, prop.title)
+        prop.dossier_slug = generate_dossier_slug(db, prop.title, exclude_id=prop.id)
         assigned += 1
+    db.commit()
+
+    # Acorta los slugs antiguos que llevan sufijo aleatorio
+    # ("villa-los-monteros-94f694" -> "villa-los-monteros") cuando el slug
+    # limpio esta libre. Idempotente: si ya esta limpio no cambia nada.
+    cleaned = 0
+    existing = db.query(Property).filter(Property.dossier_slug.isnot(None)).all()
+    for prop in existing:
+        preferred = generate_dossier_slug(db, prop.title, exclude_id=prop.id)
+        if preferred != prop.dossier_slug:
+            prop.dossier_slug = preferred
+            cleaned += 1
     db.commit()
 
     return {
@@ -114,6 +139,7 @@ def admin_migrate_content_fields(
             "dossier_slug",
         ],
         "slugs_assigned": assigned,
+        "slugs_cleaned": cleaned,
     }
 
 
