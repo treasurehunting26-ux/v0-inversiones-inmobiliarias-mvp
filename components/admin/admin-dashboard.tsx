@@ -46,9 +46,11 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
     setMigrateResult(null)
     try {
       const result = await migrateContentFields(token)
-      setMigrateResult(
-        `Base de datos actualizada correctamente (${result.slugs_assigned} enlaces de dossier generados).`,
-      )
+      const parts = [`${result.slugs_assigned} enlaces generados`]
+      if (result.slugs_cleaned > 0) {
+        parts.push(`${result.slugs_cleaned} enlaces acortados`)
+      }
+      setMigrateResult(`Base de datos actualizada correctamente (${parts.join(", ")}).`)
       refresh()
     } catch {
       setMigrateResult("No se pudo actualizar la base de datos. Intenta de nuevo en unos segundos.")
@@ -92,7 +94,7 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
             Contenido enriquecido (fotos, video, dossier)
           </p>
           <p className="text-xs text-muted-foreground">
-            Ejecuta esto una vez para preparar la base de datos. Es seguro repetirlo.
+            Prepara la base de datos y acorta los enlaces de dossier. Es seguro repetirlo.
           </p>
         </div>
         <div className="flex flex-col items-start gap-2 sm:items-end">

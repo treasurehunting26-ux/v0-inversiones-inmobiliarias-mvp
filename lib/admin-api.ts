@@ -103,7 +103,7 @@ export async function deleteProperty(token: string, id: string): Promise<void> {
  */
 export async function migrateContentFields(
   token: string,
-): Promise<{ status: string; slugs_assigned: number }> {
+): Promise<{ status: string; slugs_assigned: number; slugs_cleaned: number }> {
   const res = await fetch(`${API_URL}/admin/properties/migrate-content-fields`, {
     method: "POST",
     headers: authHeaders(token),
