@@ -2,7 +2,7 @@
 
 import { useRef, useState } from "react"
 import { Check, Copy, Loader2, Trash2, Upload, X } from "lucide-react"
-import { type AdminProperty, updateContent, uploadMedia } from "@/lib/admin-api"
+import { type AdminProperty, updateContent, uploadMedia, uploadPhotoFromUrl } from "@/lib/admin-api"
 
 interface PropertyContentEditorProps {
   token: string
@@ -25,6 +25,8 @@ export function PropertyContentEditor({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [manualPhotoUrl, setManualPhotoUrl] = useState("")
+  const [manualVideoUrl, setManualVideoUrl] = useState("")
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -68,6 +70,29 @@ export function PropertyContentEditor({
 
   function removePhoto(url: string) {
     setPhotos((prev) => prev.filter((p) => p !== url))
+  }
+
+  async function addPhotoByUrl() {
+    const url = manualPhotoUrl.trim()
+    if (!url) return
+    setError(null)
+    setUploadingPhoto(true)
+    try {
+      const compressedUrl = await uploadPhotoFromUrl(token, url)
+      setPhotos((prev) => (prev.includes(compressedUrl) ? prev : [...prev, compressedUrl]))
+      setManualPhotoUrl("")
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo anadir la foto desde ese enlace")
+    } finally {
+      setUploadingPhoto(false)
+    }
+  }
+
+  function addVideoByUrl() {
+    const url = manualVideoUrl.trim()
+    if (!url) return
+    setVideoUrl(url)
+    setManualVideoUrl("")
   }
 
   async function handleSave() {
@@ -159,7 +184,7 @@ export function PropertyContentEditor({
         )}
         <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
           {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-          {uploadingPhoto ? "Subiendo..." : "Anadir foto (JPG, PNG, WEBP, hasta 8 MB)"}
+          {uploadingPhoto ? "Comprimiendo y subiendo..." : "Anadir foto (JPG, PNG, WEBP; se comprime automaticamente)"}
           <input
             ref={photoInputRef}
             type="file"
@@ -169,6 +194,28 @@ export function PropertyContentEditor({
             disabled={uploadingPhoto}
           />
         </label>
+        <div className="flex items-center gap-2">
+          <input
+            type="url"
+            value={manualPhotoUrl}
+            onChange={(e) => setManualPhotoUrl(e.target.value)}
+            placeholder="O pega aqui el enlace de una foto ya subida"
+            disabled={uploadingPhoto}
+            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary disabled:opacity-50"
+          />
+          <button
+            type="button"
+            onClick={addPhotoByUrl}
+            disabled={!manualPhotoUrl.trim() || uploadingPhoto}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+          >
+            {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {uploadingPhoto ? "Comprimiendo..." : "Anadir"}
+          </button>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          La foto se descarga y se comprime igual que las subidas por boton antes de guardarse.
+        </p>
       </div>
 
       {/* Video */}
@@ -200,6 +247,25 @@ export function PropertyContentEditor({
               disabled={uploadingVideo}
             />
           </label>
+        )}
+        {!videoUrl && (
+          <div className="flex items-center gap-2">
+            <input
+              type="url"
+              value={manualVideoUrl}
+              onChange={(e) => setManualVideoUrl(e.target.value)}
+              placeholder="O pega aqui el enlace de un video ya subido"
+              className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={addVideoByUrl}
+              disabled={!manualVideoUrl.trim()}
+              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+            >
+              Anadir
+            </button>
+          </div>
         )}
         <p className="text-xs text-muted-foreground">
           Recomendado: 60-90 segundos y comprimido (menos de 40 MB) para que cargue al instante.

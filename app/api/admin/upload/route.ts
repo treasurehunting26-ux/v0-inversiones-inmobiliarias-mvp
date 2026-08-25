@@ -3,8 +3,11 @@ import { type NextRequest, NextResponse } from "next/server"
 
 // Limites pensados para fichas de propiedad: fotos ligeras, video breve
 // (60-90s comprimido) para mantener el coste de almacenamiento y
-// transferencia bajo control.
-const MAX_PHOTO_BYTES = 8 * 1024 * 1024 // 8 MB
+// transferencia bajo control. Las fotos se comprimen en el navegador
+// antes de llegar aqui (ver lib/compress-image.ts), asi que en la
+// practica casi siempre pesan 1-3 MB; este limite es un colchon de
+// seguridad para el caso en que la compresion no reduzca lo suficiente.
+const MAX_PHOTO_BYTES = 15 * 1024 * 1024 // 15 MB
 const MAX_VIDEO_BYTES = 150 * 1024 * 1024 // 150 MB
 
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"]

@@ -144,6 +144,17 @@ export async function updateContent(
  * navegador sube el archivo directo al almacenamiento. Esto evita el
  * limite de ~4.5 MB que tienen las funciones serverless de Vercel para el
  * cuerpo de la peticion, que antes causaba error 413 en fotos y videos.
+ *
+ * Las fotos se redimensionan y recomprimen en el propio navegador antes
+ * de subirse: las camaras de movil modernas producen archivos de 8-20 MB,
+ * que superaban el limite pensado para fichas de propiedad. Tras la
+ * compresion casi siempre pesan 1-3 MB sin perdida visible de calidad.
+ *
+ * Si algo falla de forma "silenciosa" (red inestable, bloqueo del
+ * navegador, etc.) la libreria reintenta internamente hasta 10 veces con
+ * espera creciente, lo que puede parecer que la subida se queda colgada
+ * varios minutos. Por eso forzamos un limite de tiempo razonable segun el
+ * tipo de archivo y abortamos con un mensaje claro si se supera.
  */
 export async function uploadMedia(
   token: string,
@@ -152,16 +163,64 @@ export async function uploadMedia(
 ): Promise<string> {
   const { upload } = await import("@vercel/blob/client")
   const folder = kind === "photo" ? "propiedades/fotos" : "propiedades/videos"
+  const timeoutMs = kind === "photo" ? 30_000 : 120_000
+
+  const uploadFile =
+    kind === "photo" ? await (await import("./compress-image")).compressImage(file) : file
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
-    const blob = await upload(`${folder}/${file.name}`, file, {
+    const blob = await upload(`${folder}/${uploadFile.name}`, uploadFile, {
       access: "public",
       handleUploadUrl: "/api/admin/upload",
       headers: { "X-Admin-Token": token },
       clientPayload: JSON.stringify({ kind }),
+      abortSignal: controller.signal,
     })
     return blob.url
   } catch (err) {
+    if (controller.signal.aborted) {
+      throw new Error(
+        "La subida esta tardando demasiado. Comprueba tu conexion e intentalo de nuevo, o pega el enlace directamente si ya subiste el archivo.",
+      )
+    }
+    if (err instanceof Error && /too large|maximumSizeInBytes|8388608/.test(err.message)) {
+      throw new Error(
+        kind === "photo"
+          ? "La foto sigue siendo demasiado grande incluso tras comprimirla. Prueba con otra foto o reduce su resolucion antes de subirla."
+          : "El video es demasiado grande (maximo 150 MB). Comprimelo antes de subirlo.",
+      )
+    }
     throw new Error(err instanceof Error ? err.message : "No se pudo subir el archivo")
+  } finally {
+    clearTimeout(timeoutId)
   }
+}
+
+/**
+ * Anade una foto pegando una URL externa (por ejemplo, una ya subida a
+ * Blob a mano fuera del panel). Descarga la imagen, la comprime igual
+ * que las subidas por boton y la vuelve a subir como una foto ligera y
+ * propia de la propiedad, en vez de guardar el enlace externo tal cual.
+ */
+export async function uploadPhotoFromUrl(token: string, url: string): Promise<string> {
+  let res: Response
+  try {
+    res = await fetch(url)
+  } catch {
+    throw new Error("No se pudo descargar la imagen de ese enlace. Revisa que la URL sea correcta y publica.")
+  }
+  if (!res.ok) {
+    throw new Error(`No se pudo descargar la imagen (error ${res.status}). Revisa que la URL sea correcta.`)
+  }
+  const contentType = res.headers.get("content-type") || "image/jpeg"
+  if (!contentType.startsWith("image/")) {
+    throw new Error("Ese enlace no parece ser una imagen.")
+  }
+  const blobData = await res.blob()
+  const name = url.split("/").pop()?.split("?")[0] || "foto.jpg"
+  const file = new File([blobData], name, { type: contentType })
+  return uploadMedia(token, file, "photo")
 }
