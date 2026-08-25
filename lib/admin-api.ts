@@ -144,6 +144,12 @@ export async function updateContent(
  * navegador sube el archivo directo al almacenamiento. Esto evita el
  * limite de ~4.5 MB que tienen las funciones serverless de Vercel para el
  * cuerpo de la peticion, que antes causaba error 413 en fotos y videos.
+ *
+ * Si algo falla de forma "silenciosa" (red inestable, bloqueo del
+ * navegador, etc.) la libreria reintenta internamente hasta 10 veces con
+ * espera creciente, lo que puede parecer que la subida se queda colgada
+ * varios minutos. Por eso forzamos un limite de tiempo razonable segun el
+ * tipo de archivo y abortamos con un mensaje claro si se supera.
  */
 export async function uploadMedia(
   token: string,
@@ -152,6 +158,10 @@ export async function uploadMedia(
 ): Promise<string> {
   const { upload } = await import("@vercel/blob/client")
   const folder = kind === "photo" ? "propiedades/fotos" : "propiedades/videos"
+  const timeoutMs = kind === "photo" ? 30_000 : 120_000
+
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs)
 
   try {
     const blob = await upload(`${folder}/${file.name}`, file, {
@@ -159,9 +169,17 @@ export async function uploadMedia(
       handleUploadUrl: "/api/admin/upload",
       headers: { "X-Admin-Token": token },
       clientPayload: JSON.stringify({ kind }),
+      abortSignal: controller.signal,
     })
     return blob.url
   } catch (err) {
+    if (controller.signal.aborted) {
+      throw new Error(
+        "La subida esta tardando demasiado. Comprueba tu conexion e intentalo de nuevo, o pega el enlace directamente si ya subiste el archivo.",
+      )
+    }
     throw new Error(err instanceof Error ? err.message : "No se pudo subir el archivo")
+  } finally {
+    clearTimeout(timeoutId)
   }
 }

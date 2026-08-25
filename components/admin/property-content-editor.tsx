@@ -25,6 +25,8 @@ export function PropertyContentEditor({
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
+  const [manualPhotoUrl, setManualPhotoUrl] = useState("")
+  const [manualVideoUrl, setManualVideoUrl] = useState("")
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
@@ -68,6 +70,20 @@ export function PropertyContentEditor({
 
   function removePhoto(url: string) {
     setPhotos((prev) => prev.filter((p) => p !== url))
+  }
+
+  function addPhotoByUrl() {
+    const url = manualPhotoUrl.trim()
+    if (!url) return
+    setPhotos((prev) => (prev.includes(url) ? prev : [...prev, url]))
+    setManualPhotoUrl("")
+  }
+
+  function addVideoByUrl() {
+    const url = manualVideoUrl.trim()
+    if (!url) return
+    setVideoUrl(url)
+    setManualVideoUrl("")
   }
 
   async function handleSave() {
@@ -169,6 +185,23 @@ export function PropertyContentEditor({
             disabled={uploadingPhoto}
           />
         </label>
+        <div className="flex items-center gap-2">
+          <input
+            type="url"
+            value={manualPhotoUrl}
+            onChange={(e) => setManualPhotoUrl(e.target.value)}
+            placeholder="O pega aqui el enlace de una foto ya subida"
+            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary"
+          />
+          <button
+            type="button"
+            onClick={addPhotoByUrl}
+            disabled={!manualPhotoUrl.trim()}
+            className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+          >
+            Anadir
+          </button>
+        </div>
       </div>
 
       {/* Video */}
@@ -200,6 +233,25 @@ export function PropertyContentEditor({
               disabled={uploadingVideo}
             />
           </label>
+        )}
+        {!videoUrl && (
+          <div className="flex items-center gap-2">
+            <input
+              type="url"
+              value={manualVideoUrl}
+              onChange={(e) => setManualVideoUrl(e.target.value)}
+              placeholder="O pega aqui el enlace de un video ya subido"
+              className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary"
+            />
+            <button
+              type="button"
+              onClick={addVideoByUrl}
+              disabled={!manualVideoUrl.trim()}
+              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+            >
+              Anadir
+            </button>
+          </div>
         )}
         <p className="text-xs text-muted-foreground">
           Recomendado: 60-90 segundos y comprimido (menos de 40 MB) para que cargue al instante.
