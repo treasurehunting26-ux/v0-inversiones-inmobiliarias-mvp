@@ -175,7 +175,7 @@ export function PropertyContentEditor({
         )}
         <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
           {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-          {uploadingPhoto ? "Subiendo..." : "Anadir foto (JPG, PNG, WEBP, hasta 8 MB)"}
+          {uploadingPhoto ? "Comprimiendo y subiendo..." : "Anadir foto (JPG, PNG, WEBP; se comprime automaticamente)"}
           <input
             ref={photoInputRef}
             type="file"
