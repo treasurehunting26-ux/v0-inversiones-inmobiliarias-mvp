@@ -1,15 +1,46 @@
 import Link from "next/link"
 import type { Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
+import { Reveal } from "@/components/dossier/reveal"
 
 interface DossierViewProps {
   property: Property
 }
 
+function PhotoSlot({
+  src,
+  alt,
+  tag,
+  name,
+  spec,
+  size = "xl",
+}: {
+  src?: string | null
+  alt: string
+  tag: string
+  name: string
+  spec?: string
+  size?: "xl" | "gallery"
+}) {
+  return (
+    <div className={`dossier-slot ${size === "xl" ? "xl" : ""} ${src ? "has-media" : ""}`}>
+      {src ? (
+        <img src={src || "/placeholder.svg"} alt={alt} className="dossier-slot-media" loading="lazy" />
+      ) : (
+        <div className="dossier-slot-inner">
+          <span className="dossier-slot-tag dossier-mono">{tag}</span>
+          <div className="dossier-slot-name dossier-serif">{name}</div>
+          {spec && <span className="dossier-slot-spec dossier-mono">{spec}</span>}
+        </div>
+      )}
+    </div>
+  )
+}
+
 /**
  * Pagina de dossier: enlace privado para compartir una propiedad concreta
- * (WhatsApp, email) sin la navegacion completa de la web. Solo lleva un
- * wordmark discreto de la marca y el contenido de la ficha.
+ * (WhatsApp, email) sin la navegacion completa de la web. Documento
+ * autocontenido, con su propio lenguaje editorial (papel, tinta, laton).
  */
 export function DossierView({ property }: DossierViewProps) {
   const facts = [
@@ -20,111 +51,144 @@ export function DossierView({ property }: DossierViewProps) {
     { label: "Horizonte", value: property.horizon },
   ]
 
+  const photos = property.photos ?? []
+  // El video, si existe, ocupa el hero. Si no hay video, la primera foto
+  // hace de fondo del hero y no se repite despues en la galeria.
+  const heroIsVideo = Boolean(property.video_url)
+  const galleryPhotos = heroIsVideo ? photos : photos.slice(1)
+  const heroPhoto = heroIsVideo ? null : photos[0]
+  const [featuredPhoto, ...restPhotos] = galleryPhotos
+
+  const hasRiskNotes = Boolean(property.risk_notes && property.risk_notes.trim().length > 0)
+
   return (
-    <article className="min-h-screen bg-background">
-      {/* Wordmark discreto, sin navegacion */}
-      <div className="border-b border-border px-6 py-5">
-        <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <Link
-            href="/"
-            className="font-serif text-sm font-medium tracking-[0.2em] text-foreground uppercase"
-          >
-            Aterra
-          </Link>
-          <span className="text-xs uppercase tracking-widest text-muted-foreground">
-            Dossier privado de inversión
+    <article className="dossier">
+      <div className="dossier-wrapper">
+        <div className="dossier-stamp-bar">
+          <span className="dossier-kicker dossier-mono">Colección Privada</span>
+          <span className="dossier-ref-code dossier-mono">
+            DOSSIER · {property.asset_type?.toUpperCase() || "OPORTUNIDAD"}
           </span>
         </div>
-      </div>
 
-      <header className="relative overflow-hidden bg-[var(--color-noir)] px-6 py-16">
-        <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-noir)] via-[var(--color-noir)] to-[#2a2622]" />
-        <div className="relative mx-auto max-w-4xl">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--color-noir-foreground)] backdrop-blur">
-              {property.asset_type}
-            </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
-              Validada por nuestro equipo
-            </span>
-          </div>
-          <h1 className="mt-5 max-w-3xl font-serif text-4xl font-light leading-[1.08] text-balance text-[var(--color-noir-foreground)] md:text-5xl">
-            {property.title}
-          </h1>
-          <p className="mt-3 text-lg uppercase tracking-wider text-[var(--color-noir-foreground)]/60">
-            {property.location}
-          </p>
-        </div>
-      </header>
-
-      <div className="mx-auto max-w-4xl px-6 pb-24">
-        <div className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
-          {facts.map((fact) => (
-            <div key={fact.label} className="flex flex-col gap-1.5 bg-background p-6">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">{fact.label}</span>
-              <span className="font-serif text-lg font-light text-foreground">{fact.value}</span>
-            </div>
-          ))}
-        </div>
-
-        {property.video_url && (
-          <div className="mt-16">
+        <header className="dossier-hero">
+          {heroIsVideo ? (
             <video
-              src={property.video_url}
-              controls
-              preload="none"
-              poster={property.photos?.[0]}
-              className="w-full rounded-none border border-border bg-[var(--color-noir)]"
+              src={property.video_url ?? undefined}
+              className="dossier-slot-media"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              poster={photos[0] || undefined}
             />
+          ) : heroPhoto ? (
+            <img src={heroPhoto || "/placeholder.svg"} alt={property.title} className="dossier-slot-media" />
+          ) : null}
+          <div className="dossier-hero-overlay" />
+          <div className="dossier-hero-inner">
+            <span className="dossier-hero-eyebrow dossier-mono">{property.asset_type}</span>
+            <h1 className="dossier-serif">{property.title}</h1>
+            <p className="dossier-hero-loc">{property.location}</p>
           </div>
-        )}
+        </header>
 
-        {property.photos && property.photos.length > 0 && (
-          <div className="mt-16 grid grid-cols-2 gap-2 md:grid-cols-3">
-            {property.photos.map((url, i) => (
-              <img
-                key={url}
-                src={url || "/placeholder.svg"}
-                alt={`${property.title} — foto ${i + 1}`}
-                className="aspect-[4/3] w-full border border-border object-cover"
-              />
+        <div className="dossier-main-body">
+          <Reveal className="dossier-ledger">
+            <div className="dossier-ledger-title dossier-mono">Ficha de la Inversión</div>
+            {facts.map((fact) => (
+              <div key={fact.label} className="dossier-ledger-row">
+                <span className="dossier-ledger-label">{fact.label}</span>
+                <span className="dossier-ledger-value dossier-serif">{fact.value}</span>
+              </div>
             ))}
-          </div>
-        )}
+          </Reveal>
 
-        {property.description_html && (
-          <div
-            className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground"
-            dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(property.description_html) }}
-          />
-        )}
+          <Reveal className="dossier-editorial-head">
+            <span className="dossier-kicker dossier-mono">Presentación</span>
+            <h2 className="dossier-serif">
+              Una oportunidad estudiada <em>en detalle</em>
+            </h2>
+          </Reveal>
 
-        <div className="mt-16 flex flex-col items-start gap-6 border border-border bg-[var(--color-noir)] p-10 md:flex-row md:items-center md:justify-between">
-          <div className="flex flex-col gap-2 md:max-w-md">
-            <h3 className="font-serif text-3xl font-light text-[var(--color-noir-foreground)]">
-              ¿Te interesa esta oportunidad?
-            </h3>
-            <p className="text-sm leading-relaxed text-[var(--color-noir-foreground)]/70">
-              Este dossier es un documento privado preparado para ti. Habla con tu asesor para conocer el
-              siguiente paso.
-            </p>
-          </div>
-          <Link
-            href={`/asistente?propiedad=${property.id}`}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-none border border-[var(--color-gold)] bg-[var(--color-gold)] px-8 py-4 text-xs font-medium uppercase tracking-widest text-[var(--color-noir)] transition-all hover:bg-transparent hover:text-[var(--color-gold)]"
-          >
-            Hablar con un asesor
-            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path
-                d="M3 8H13M13 8L9 4M13 8L9 12"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+          {property.description_html ? (
+            <Reveal>
+              <div
+                className="dossier-content"
+                dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(property.description_html) }}
               />
-            </svg>
-          </Link>
+            </Reveal>
+          ) : null}
+
+          {featuredPhoto ? (
+            <Reveal>
+              <PhotoSlot
+                src={featuredPhoto}
+                alt={`${property.title} — imagen destacada`}
+                tag="Insertar foto"
+                name="Imagen destacada"
+              />
+            </Reveal>
+          ) : null}
+
+          {hasRiskNotes ? (
+            <Reveal className="dossier-panel-dark">
+              <span className="dossier-kicker dossier-mono">Debida Diligencia</span>
+              <h3 className="dossier-serif">Riesgos y consideraciones</h3>
+              <p>{property.risk_notes}</p>
+            </Reveal>
+          ) : null}
+
+          {restPhotos.length > 0 ? (
+            <>
+              <Reveal className="dossier-gallery-head dossier-editorial-head">
+                <span className="dossier-kicker dossier-mono">Recorrido Visual</span>
+                <h2 className="dossier-serif">
+                  Postales de <em>la propiedad</em>
+                </h2>
+              </Reveal>
+              <Reveal>
+                <div className="dossier-masonry">
+                  {restPhotos.map((url, i) => (
+                    <div key={url} className={i === 0 && restPhotos.length > 2 ? "large" : ""}>
+                      <PhotoSlot
+                        src={url}
+                        alt={`${property.title} — foto ${i + 2}`}
+                        tag="Insertar foto"
+                        name={`Foto ${i + 2}`}
+                        size="gallery"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </Reveal>
+            </>
+          ) : null}
+
+          <Reveal className="dossier-footer-seal">
+            <div className="dossier-seal-ring">
+              <span className="dossier-serif">A</span>
+            </div>
+            <div className="dossier-footer-title dossier-serif">Dossier confidencial</div>
+            <div className="dossier-footer-sub dossier-mono">Presentación privada de inversión</div>
+            <p className="dossier-footer-note">
+              Este documento ha sido preparado exclusivamente para ti. Información y disponibilidad sujetas a
+              verificación directa con nuestro equipo. No constituye oferta pública ni asesoramiento financiero.
+            </p>
+            <Link href={`/asistente?propiedad=${property.id}`} className="dossier-cta dossier-mono">
+              Hablar con un asesor
+              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path
+                  d="M3 8H13M13 8L9 4M13 8L9 12"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+              </svg>
+            </Link>
+          </Reveal>
         </div>
       </div>
     </article>
