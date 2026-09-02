@@ -1,3 +1,4 @@
+import Image from "next/image"
 import Link from "next/link"
 
 export function Footer() {
@@ -6,9 +7,13 @@ export function Footer() {
       <div className="mx-auto max-w-7xl px-6 py-16 lg:px-10">
         <div className="flex flex-col gap-12 border-t border-noir-foreground/10 pt-12 md:flex-row md:justify-between">
           <div className="flex max-w-sm flex-col gap-4">
-            <span className="font-serif text-2xl font-medium uppercase tracking-[0.2em] text-noir-foreground">
-              Aterra
-            </span>
+            <Image
+              src="/brand/logo-bg-consulting.png"
+              alt="B&G Consulting"
+              width={1053}
+              height={496}
+              className="h-14 w-auto self-start"
+            />
             <p className="text-sm font-light leading-relaxed text-noir-foreground/50">
               Inversiones inmobiliarias de excepción en Europa, Latinoamérica y Dubái. Cada oportunidad,
               analizada con criterio profesional.
@@ -45,7 +50,7 @@ export function Footer() {
 
         <div className="mt-12 border-t border-noir-foreground/10 pt-8">
           <p className="text-xs font-light leading-relaxed text-noir-foreground/40">
-            © {new Date().getFullYear()} Aterra. Toda inversión conlleva riesgos. La información disponible en esta
+            © {new Date().getFullYear()} B&amp;G Consulting. Toda inversión conlleva riesgos. La información disponible en esta
             plataforma no constituye asesoramiento financiero ni una oferta de inversión.
           </p>
         </div>

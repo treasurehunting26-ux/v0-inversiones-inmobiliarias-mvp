@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -20,11 +21,15 @@ export function NavBar() {
       }`}
     >
       <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-        <Link
-          href="/"
-          className="font-serif text-xl font-medium tracking-[0.2em] text-noir-foreground uppercase"
-        >
-          Aterra
+        <Link href="/" className="flex items-center" aria-label="B&G Consulting — Inicio">
+          <Image
+            src="/brand/logo-bg-consulting.png"
+            alt="B&G Consulting"
+            width={1053}
+            height={496}
+            priority
+            className="h-11 w-auto lg:h-12"
+          />
         </Link>
 
         <nav className="hidden items-center gap-10 lg:flex">
