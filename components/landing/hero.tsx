@@ -15,7 +15,7 @@ export function Hero() {
       </div>
 
       {/* Content - left aligned editorial */}
-      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 lg:px-10">
+      <div className="relative z-10 mx-auto w-full max-w-7xl px-6 pt-28 lg:px-10 lg:pt-32">
         <div className="max-w-2xl">
           <span className="mb-6 inline-block text-xs font-light uppercase tracking-[0.35em] text-gold-soft">
             Europa · Latinoamérica · Dubái

@@ -8,11 +8,11 @@ export function Footer() {
         <div className="flex flex-col gap-12 border-t border-noir-foreground/10 pt-12 md:flex-row md:justify-between">
           <div className="flex max-w-sm flex-col gap-4">
             <Image
-              src="/brand/logo-bg-consulting.png"
+              src="/brand/logo-bg-consulting-v2.png"
               alt="B&G Consulting"
-              width={1053}
-              height={496}
-              className="h-14 w-auto self-start"
+              width={577}
+              height={614}
+              className="h-24 w-auto self-start"
             />
             <p className="text-sm font-light leading-relaxed text-noir-foreground/50">
               Inversiones inmobiliarias de excepción en Europa, Latinoamérica y Dubái. Cada oportunidad,

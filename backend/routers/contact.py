@@ -21,6 +21,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
 from database import get_db
+from emailer import send_lead_notification
 from models.investor import Investor, QualificationStatus
 from models.lead_escalation import LeadEscalation, EscalationStatus
 from schemas.contact import ContactCreate, ContactCreated
@@ -78,5 +79,16 @@ def create_contact(
     db.add(escalation)
     db.commit()
     db.refresh(escalation)
+
+    # Aviso por correo (best-effort, no bloquea ni falla la respuesta).
+    # Este mismo endpoint recibe tanto el formulario de contacto como los
+    # escalados iniciados desde el asistente de IA (ver AssistantChat.tsx).
+    source = "Asistente de IA" if data.context.startswith("Escalado desde el asistente") else "Formulario de contacto"
+    send_lead_notification(
+        name=data.name,
+        email=data.email,
+        context=data.context,
+        source=source,
+    )
 
     return ContactCreated(id=escalation.id, status="received")

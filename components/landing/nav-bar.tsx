@@ -20,15 +20,15 @@ export function NavBar() {
         scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:h-28 lg:px-10">
         <Link href="/" className="flex items-center" aria-label="B&G Consulting — Inicio">
           <Image
-            src="/brand/logo-bg-consulting.png"
+            src="/brand/logo-bg-consulting-v2.png"
             alt="B&G Consulting"
-            width={1053}
-            height={496}
+            width={577}
+            height={614}
             priority
-            className="h-11 w-auto lg:h-12"
+            className="h-20 w-auto lg:h-24"
           />
         </Link>
 
