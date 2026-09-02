@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: DossierPageProps): Promise<Me
   const { slug } = await params
   const property = await getDossier(slug).catch(() => null)
   return {
-    title: property ? `${property.title} — Dossier Aterra` : "Dossier no disponible",
+    title: property ? `${property.title} — Dossier B&G Consulting` : "Dossier no disponible",
     // Los dossiers son enlaces privados: no deben indexarse ni aparecer en buscadores.
     robots: { index: false, follow: false },
   }

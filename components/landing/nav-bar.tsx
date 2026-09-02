@@ -1,5 +1,6 @@
 "use client"
 
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -19,12 +20,16 @@ export function NavBar() {
         scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-transparent"
       }`}
     >
-      <div className="mx-auto flex h-20 max-w-7xl items-center justify-between px-6 lg:px-10">
-        <Link
-          href="/"
-          className="font-serif text-xl font-medium tracking-[0.2em] text-noir-foreground uppercase"
-        >
-          Aterra
+      <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:h-28 lg:px-10">
+        <Link href="/" className="flex items-center" aria-label="B&G Consulting — Inicio">
+          <Image
+            src="/brand/logo-bg-consulting-v2.png"
+            alt="B&G Consulting"
+            width={577}
+            height={614}
+            priority
+            className="h-20 w-auto lg:h-24"
+          />
         </Link>
 
         <nav className="hidden items-center gap-10 lg:flex">

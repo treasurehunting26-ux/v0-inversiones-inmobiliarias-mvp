@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
+import { submitContact } from "@/lib/contact-api"
 
 interface Message {
   role: "user" | "assistant"
@@ -30,6 +31,18 @@ async function sendMessage(message: string, conversationId: string | null) {
   return res.json()
 }
 
+/**
+ * Construye una transcripcion legible de la conversacion para enviarla
+ * como contexto al endpoint /contact cuando el asistente detecta
+ * intencion real de hablar con un humano.
+ */
+function buildTranscript(messages: Message[]): string {
+  return messages
+    .map((m) => `${m.role === "user" ? "Visitante" : "Asistente"}: ${m.content}`)
+    .join("\n")
+    .slice(-1800) // limite del campo `context` en el backend (2000 caracteres)
+}
+
 export function AssistantChat() {
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -43,9 +56,19 @@ export function AssistantChat() {
   const [conversationId, setConversationId] = useState<string | null>(null)
   const bottomRef = useRef<HTMLDivElement>(null)
 
+  // Escalado a humano: cuando el asistente detecta intencion real de
+  // hablar con un asesor, pedimos nombre y correo antes de notificar
+  // al equipo (ver backend/routers/contact.py + backend/emailer.py).
+  const [escalationState, setEscalationState] = useState<"idle" | "collecting" | "submitting" | "submitted">(
+    "idle",
+  )
+  const [escalationName, setEscalationName] = useState("")
+  const [escalationEmail, setEscalationEmail] = useState("")
+  const [escalationError, setEscalationError] = useState<string | null>(null)
+
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" })
-  }, [messages])
+  }, [messages, escalationState])
 
   async function handleSend() {
     const text = input.trim()
@@ -62,6 +85,9 @@ export function AssistantChat() {
         ...prev,
         { role: "assistant", content: data.response ?? data.message ?? "Sin respuesta." },
       ])
+      if (data.escalate_to_human && escalationState === "idle") {
+        setEscalationState("collecting")
+      }
     } catch (err) {
       const detail = err instanceof Error ? err.message : ""
       setMessages((prev) => [
@@ -76,6 +102,40 @@ export function AssistantChat() {
       ])
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function handleEscalationSubmit(e: React.FormEvent) {
+    e.preventDefault()
+    const name = escalationName.trim()
+    const email = escalationEmail.trim()
+    if (!name || !email) {
+      setEscalationError("Por favor completa tu nombre y correo.")
+      return
+    }
+
+    setEscalationError(null)
+    setEscalationState("submitting")
+
+    try {
+      await submitContact({
+        name,
+        email,
+        context: `Escalado desde el asistente de IA. Conversación:\n${buildTranscript(messages)}`,
+      })
+      setEscalationState("submitted")
+      setMessages((prev) => [
+        ...prev,
+        {
+          role: "assistant",
+          content: `Gracias, ${name}. Un asesor de B&G Consulting se pondrá en contacto contigo a ${email} a la brevedad.`,
+        },
+      ])
+    } catch (err) {
+      setEscalationState("collecting")
+      setEscalationError(
+        err instanceof Error ? err.message : "No se pudo enviar tu solicitud. Inténtalo de nuevo.",
+      )
     }
   }
 
@@ -119,6 +179,44 @@ export function AssistantChat() {
             </div>
           </div>
         )}
+        {escalationState === "collecting" || escalationState === "submitting" ? (
+          <div className="flex justify-start">
+            <form
+              onSubmit={handleEscalationSubmit}
+              className="max-w-[85%] space-y-3 rounded-2xl rounded-bl-sm border border-border bg-card px-5 py-4"
+            >
+              <p className="text-sm leading-relaxed text-foreground">
+                Para que un asesor de B&amp;G Consulting te contacte, compárteme tu nombre y correo.
+              </p>
+              <div className="flex flex-col gap-2 sm:flex-row">
+                <input
+                  type="text"
+                  value={escalationName}
+                  onChange={(e) => setEscalationName(e.target.value)}
+                  placeholder="Nombre completo"
+                  disabled={escalationState === "submitting"}
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
+                />
+                <input
+                  type="email"
+                  value={escalationEmail}
+                  onChange={(e) => setEscalationEmail(e.target.value)}
+                  placeholder="Correo electrónico"
+                  disabled={escalationState === "submitting"}
+                  className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:opacity-50"
+                />
+              </div>
+              {escalationError && <p className="text-xs text-destructive">{escalationError}</p>}
+              <button
+                type="submit"
+                disabled={escalationState === "submitting"}
+                className="w-full rounded-lg bg-[var(--color-noir)] px-4 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90 disabled:opacity-50"
+              >
+                {escalationState === "submitting" ? "Enviando..." : "Solicitar contacto"}
+              </button>
+            </form>
+          </div>
+        ) : null}
         <div ref={bottomRef} />
       </div>
 

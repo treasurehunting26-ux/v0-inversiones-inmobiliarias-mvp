@@ -4,9 +4,9 @@ import { Footer } from "@/components/landing/footer"
 import { ContactForm } from "@/components/contacto/contact-form"
 
 export const metadata: Metadata = {
-  title: "Contacto | Aterra",
+  title: "Contacto",
   description:
-    "Contacta directamente con un asesor de inversión de Aterra. Canal directo para inversores que buscan acompañamiento personalizado.",
+    "Contacta directamente con un asesor de inversión de B&G Consulting. Canal directo para inversores que buscan acompañamiento personalizado.",
   alternates: { canonical: "/contacto" },
 }
 
