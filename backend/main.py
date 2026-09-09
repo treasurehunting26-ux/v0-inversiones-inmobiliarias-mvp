@@ -46,19 +46,25 @@ def on_startup() -> None:
         logger.error("[startup] Fallo al crear tablas: %s: %s", exc.__class__.__name__, exc)
 
 
-# CORS: permite frontend local + Vercel preview/produccion
+# CORS: permite frontend local + dominio de produccion + Vercel preview.
+# El dominio de produccion siempre esta permitido, aunque ALLOWED_ORIGINS
+# no se haya configurado en Railway (evita que el sitio quede roto por un
+# olvido de configuracion).
 allowed_origins_env = os.getenv("ALLOWED_ORIGINS", "")
 default_origins = [
     "http://localhost:3000",
+    "https://bgestateconsulting.com",
+    "https://www.bgestateconsulting.com",
 ]
-allowed_origins = [
-    o.strip() for o in allowed_origins_env.split(",") if o.strip()
-] or default_origins
+extra_origins = [o.strip() for o in allowed_origins_env.split(",") if o.strip()]
+allowed_origins = list(dict.fromkeys(default_origins + extra_origins))
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=allowed_origins,
-    allow_origin_regex=r"https://.*\.vercel\.app",
+    # Cubre tambien previews de Vercel (*.vercel.app) y cualquier subdominio
+    # del dominio de produccion (ej. www.).
+    allow_origin_regex=r"https://(.*\.vercel\.app|(.*\.)?bgestateconsulting\.com)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
