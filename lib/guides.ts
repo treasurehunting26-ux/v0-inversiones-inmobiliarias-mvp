@@ -13,6 +13,7 @@ export type Guide = {
   slug: string
   category: "Guía de zona" | "Comparativa de mercado" | "Análisis" | "Preguntas frecuentes"
   region: "Europa" | "Latinoamérica" | "Dubái" | "Internacional"
+  image: string
   title: string
   metaTitle: string
   metaDescription: string
@@ -29,6 +30,7 @@ export const guides: Guide[] = [
     slug: "invertir-inmuebles-marbella-costa-del-sol",
     category: "Guía de zona",
     region: "Europa",
+    image: "/guias/marbella-costa-del-sol.png",
     title: "Cómo invertir en inmuebles en Marbella y la Costa del Sol",
     metaTitle: "Invertir en inmuebles en Marbella: guía para inversores 2026",
     metaDescription:
@@ -89,6 +91,7 @@ export const guides: Guide[] = [
     slug: "invertir-inmuebles-dubai-guia-inversor",
     category: "Guía de zona",
     region: "Dubái",
+    image: "/guias/dubai-inversion.png",
     title: "Invertir en inmuebles en Dubái: guía para inversores internacionales",
     metaTitle: "Invertir en inmuebles en Dubái: guía 2026 para inversores",
     metaDescription:
@@ -144,6 +147,7 @@ export const guides: Guide[] = [
     slug: "comparativa-mercados-europa-latam-dubai",
     category: "Comparativa de mercado",
     region: "Internacional",
+    image: "/guias/comparativa-mercados.png",
     title: "Europa, Latinoamérica y Dubái: cómo comparar mercados inmobiliarios",
     metaTitle: "Comparativa de mercados inmobiliarios: Europa, LatAm y Dubái",
     metaDescription:
@@ -202,6 +206,7 @@ export const guides: Guide[] = [
     slug: "preguntas-frecuentes-inversion-inmobiliaria",
     category: "Preguntas frecuentes",
     region: "Internacional",
+    image: "/guias/preguntas-frecuentes.png",
     title: "Preguntas frecuentes sobre inversión inmobiliaria internacional",
     metaTitle: "Inversión inmobiliaria internacional: preguntas frecuentes",
     metaDescription:

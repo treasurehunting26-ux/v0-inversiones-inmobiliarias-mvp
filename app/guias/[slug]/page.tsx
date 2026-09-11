@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
+import Image from "next/image"
 import Link from "next/link"
 import { NavBar } from "@/components/landing/nav-bar"
 import { Footer } from "@/components/landing/footer"
@@ -95,6 +96,20 @@ export default async function GuidePage({
           </p>
         </div>
       </header>
+
+      {/* Imagen destacada */}
+      <div className="relative mx-auto -mt-10 aspect-[16/9] max-w-4xl overflow-hidden rounded-sm px-6 sm:-mt-14">
+        <div className="relative h-full w-full overflow-hidden rounded-sm">
+          <Image
+            src={guide.image || "/placeholder.svg"}
+            alt={guide.title}
+            fill
+            sizes="(min-width: 1024px) 800px, 100vw"
+            className="object-cover"
+            priority
+          />
+        </div>
+      </div>
 
       {/* Contenido */}
       <article className="px-6 py-16">
