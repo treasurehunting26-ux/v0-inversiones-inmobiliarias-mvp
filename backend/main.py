@@ -22,6 +22,7 @@ from routers import (
     ai_assistant,
     admin_properties,
     contact,
+    prospecting,
 )
 
 app = FastAPI(
@@ -77,6 +78,7 @@ app.include_router(lead_escalations.router)
 app.include_router(ai_assistant.router)
 app.include_router(admin_properties.router)
 app.include_router(contact.router)
+app.include_router(prospecting.router)
 
 
 @app.exception_handler(Exception)

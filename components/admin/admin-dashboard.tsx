@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useState, type ReactNode } from "react"
 import { LogOut, Plus, RefreshCw, X } from "lucide-react"
 import {
   AdminProperty,
@@ -9,13 +9,17 @@ import {
 } from "@/lib/admin-api"
 import { PropertyForm } from "./property-form"
 import { PropertyList } from "./property-list"
+import { ProspectingPanel } from "./prospecting-panel"
 
 interface AdminDashboardProps {
   token: string
   onLogout: () => void
 }
 
+type Tab = "properties" | "prospecting"
+
 export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
+  const [tab, setTab] = useState<Tab>("properties")
   const [properties, setProperties] = useState<AdminProperty[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -68,14 +72,13 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
 
   return (
     <div className="mx-auto max-w-6xl px-6 py-10">
-      <header className="mb-10 flex items-start justify-between gap-6">
+      <header className="mb-6 flex items-start justify-between gap-6">
         <div>
           <h1 className="font-serif text-3xl font-semibold text-foreground">
-            Propiedades
+            Panel de administracion
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Gestion manual del catalogo. Solo las propiedades publicadas son
-            visibles para los inversionistas.
+            Gestion manual del catalogo y revision del Agente Captador.
           </p>
         </div>
         <button
@@ -88,85 +91,123 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
         </button>
       </header>
 
-      <div className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <p className="text-sm font-medium text-foreground">
-            Contenido enriquecido (fotos, video, dossier)
-          </p>
-          <p className="text-xs text-muted-foreground">
-            Prepara la base de datos y acorta los enlaces de dossier. Es seguro repetirlo.
-          </p>
-        </div>
-        <div className="flex flex-col items-start gap-2 sm:items-end">
-          <button
-            onClick={handleMigrate}
-            disabled={migrating}
-            className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
-          >
-            <RefreshCw className={`h-4 w-4 ${migrating ? "animate-spin" : ""}`} />
-            {migrating ? "Actualizando..." : "Actualizar base de datos"}
-          </button>
-          {migrateResult && (
-            <p className="text-xs text-muted-foreground text-right">{migrateResult}</p>
-          )}
-        </div>
+      <div className="mb-8 flex gap-2 border-b border-border">
+        <TabButton active={tab === "properties"} onClick={() => setTab("properties")}>
+          Propiedades
+        </TabButton>
+        <TabButton active={tab === "prospecting"} onClick={() => setTab("prospecting")}>
+          Captación
+        </TabButton>
       </div>
 
-      <section className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
-        <StatCard label="Total" value={counts.total} />
-        <StatCard label="Publicadas" value={counts.published} />
-        <StatCard label="Borradores" value={counts.drafts} />
-        <StatCard label="Archivadas" value={counts.archived} />
-      </section>
+      {tab === "properties" ? (
+        <>
+          <div className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-sm font-medium text-foreground">
+                Contenido enriquecido (fotos, video, dossier)
+              </p>
+              <p className="text-xs text-muted-foreground">
+                Prepara la base de datos y acorta los enlaces de dossier. Es seguro repetirlo.
+              </p>
+            </div>
+            <div className="flex flex-col items-start gap-2 sm:items-end">
+              <button
+                onClick={handleMigrate}
+                disabled={migrating}
+                className="inline-flex items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+              >
+                <RefreshCw className={`h-4 w-4 ${migrating ? "animate-spin" : ""}`} />
+                {migrating ? "Actualizando..." : "Actualizar base de datos"}
+              </button>
+              {migrateResult && (
+                <p className="text-xs text-muted-foreground text-right">{migrateResult}</p>
+              )}
+            </div>
+          </div>
 
-      <div className="mb-6 flex items-center justify-between">
-        <h2 className="font-serif text-xl font-semibold text-foreground">
-          Catalogo
-        </h2>
-        <button
-          onClick={() => setShowForm((v) => !v)}
-          className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
-        >
-          {showForm ? (
-            <>
-              <X className="h-4 w-4" /> Cerrar
-            </>
+          <section className="mb-8 grid grid-cols-2 gap-3 md:grid-cols-4">
+            <StatCard label="Total" value={counts.total} />
+            <StatCard label="Publicadas" value={counts.published} />
+            <StatCard label="Borradores" value={counts.drafts} />
+            <StatCard label="Archivadas" value={counts.archived} />
+          </section>
+
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="font-serif text-xl font-semibold text-foreground">
+              Catalogo
+            </h2>
+            <button
+              onClick={() => setShowForm((v) => !v)}
+              className="inline-flex items-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90"
+            >
+              {showForm ? (
+                <>
+                  <X className="h-4 w-4" /> Cerrar
+                </>
+              ) : (
+                <>
+                  <Plus className="h-4 w-4" /> Nueva propiedad
+                </>
+              )}
+            </button>
+          </div>
+
+          {showForm && (
+            <div className="mb-8 rounded-lg border border-border bg-card p-6">
+              <PropertyForm
+                token={token}
+                onCreated={() => {
+                  setShowForm(false)
+                  refresh()
+                }}
+              />
+            </div>
+          )}
+
+          {error && (
+            <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
+              {error}
+            </div>
+          )}
+
+          {loading ? (
+            <p className="text-sm text-muted-foreground">Cargando...</p>
           ) : (
-            <>
-              <Plus className="h-4 w-4" /> Nueva propiedad
-            </>
+            <PropertyList
+              token={token}
+              properties={properties}
+              onChanged={refresh}
+            />
           )}
-        </button>
-      </div>
-
-      {showForm && (
-        <div className="mb-8 rounded-lg border border-border bg-card p-6">
-          <PropertyForm
-            token={token}
-            onCreated={() => {
-              setShowForm(false)
-              refresh()
-            }}
-          />
-        </div>
-      )}
-
-      {error && (
-        <div className="mb-4 rounded-lg border border-destructive/30 bg-destructive/5 p-4 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
-      {loading ? (
-        <p className="text-sm text-muted-foreground">Cargando...</p>
+        </>
       ) : (
-        <PropertyList
-          token={token}
-          properties={properties}
-          onChanged={refresh}
-        />
+        <ProspectingPanel token={token} onUnauthorized={onLogout} />
       )}
     </div>
+  )
+}
+
+function TabButton({
+  active,
+  onClick,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  children: ReactNode
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`-mb-px border-b-2 px-1 py-2 text-sm font-medium transition-colors ${
+        active
+          ? "border-primary text-foreground"
+          : "border-transparent text-muted-foreground hover:text-foreground"
+      }`}
+    >
+      {children}
+    </button>
   )
 }
 
