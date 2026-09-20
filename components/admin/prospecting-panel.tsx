@@ -1,12 +1,15 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { CheckCircle2, PlayCircle, ShieldAlert, Trash2 } from "lucide-react"
+import { CheckCircle2, ClipboardCheck, PlayCircle, ShieldAlert, Trash2 } from "lucide-react"
 import {
+  type ProspectingFollowUp,
   type ProspectingRunLog,
   type ProspectingSignal,
   approveSignal,
+  completeFollowUp,
   discardSignal,
+  listFollowUps,
   listRuns,
   listSignals,
   runProspectingCycle,
@@ -20,6 +23,7 @@ interface ProspectingPanelProps {
 export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProps) {
   const [signals, setSignals] = useState<ProspectingSignal[]>([])
   const [runs, setRuns] = useState<ProspectingRunLog[]>([])
+  const [followups, setFollowUps] = useState<ProspectingFollowUp[]>([])
   const [loading, setLoading] = useState(true)
   const [running, setRunning] = useState(false)
   const [actioningId, setActioningId] = useState<string | null>(null)
@@ -29,9 +33,14 @@ export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProp
   const refresh = useCallback(async () => {
     setError(null)
     try {
-      const [signalItems, runItems] = await Promise.all([listSignals(token), listRuns(token)])
+      const [signalItems, runItems, followUpItems] = await Promise.all([
+        listSignals(token),
+        listRuns(token),
+        listFollowUps(token),
+      ])
       setSignals(signalItems)
       setRuns(runItems)
+      setFollowUps(followUpItems)
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Error"
       if (msg === "UNAUTHORIZED") onUnauthorized()
@@ -85,8 +94,22 @@ export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProp
     }
   }
 
+  async function handleCompleteFollowUp(id: string) {
+    setActioningId(id)
+    try {
+      await completeFollowUp(token, id)
+      refresh()
+    } catch {
+      setError("No se pudo marcar el seguimiento como completado. Intenta de nuevo.")
+    } finally {
+      setActioningId(null)
+    }
+  }
+
   const pending = signals.filter((s) => s.status === "pending_review")
   const reviewed = signals.filter((s) => s.status !== "pending_review")
+  const pendingFollowUps = followups.filter((f) => f.status === "pending")
+  const doneFollowUps = followups.filter((f) => f.status !== "pending")
 
   return (
     <div className="flex flex-col gap-8">
@@ -152,6 +175,53 @@ export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProp
               />
             ))}
           </div>
+        )}
+      </section>
+
+      <section>
+        <h2 className="mb-4 font-serif text-xl font-semibold text-foreground">
+          Seguimiento pendiente ({pendingFollowUps.length})
+        </h2>
+        <p className="mb-4 -mt-2 text-xs text-muted-foreground text-pretty">
+          Investors cualificados por el Agente Captador que aún esperan seguimiento manual. Marcar como
+          contactado no envía ninguna comunicación: solo registra que ya lo gestionaste por tu cuenta.
+        </p>
+        {loading ? (
+          <p className="text-sm text-muted-foreground">Cargando...</p>
+        ) : pendingFollowUps.length === 0 ? (
+          <p className="text-sm text-muted-foreground">No hay seguimientos pendientes.</p>
+        ) : (
+          <div className="flex flex-col gap-3">
+            {pendingFollowUps.map((followup) => (
+              <div
+                key={followup.id}
+                className="flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between"
+              >
+                <div>
+                  <p className="text-xs uppercase tracking-wide text-muted-foreground">
+                    Investor {followup.investor_id.slice(0, 8)}
+                  </p>
+                  <p className="text-sm text-foreground text-pretty">{followup.reason}</p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {new Date(followup.created_at).toLocaleString("es-ES")}
+                  </p>
+                </div>
+                <button
+                  onClick={() => handleCompleteFollowUp(followup.id)}
+                  disabled={actioningId === followup.id}
+                  className="inline-flex shrink-0 items-center gap-2 rounded-lg border border-border px-3 py-2 text-sm font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+                >
+                  <ClipboardCheck className="h-4 w-4" />
+                  Marcar como contactado
+                </button>
+              </div>
+            ))}
+          </div>
+        )}
+        {doneFollowUps.length > 0 && (
+          <p className="mt-3 text-xs text-muted-foreground">
+            {doneFollowUps.length} seguimiento(s) ya completado(s).
+          </p>
         )}
       </section>
 

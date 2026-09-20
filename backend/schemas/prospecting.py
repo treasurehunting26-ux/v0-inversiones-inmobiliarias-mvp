@@ -60,3 +60,31 @@ class ProspectingRunLogRead(BaseModel):
 
 class ProspectingRunLogListResponse(BaseModel):
     runs: list[ProspectingRunLogRead]
+
+
+FollowUpStatusLiteral = Literal["pending", "done"]
+
+
+class ProspectingFollowUpRead(BaseModel):
+    """
+    Tarea interna de seguimiento humano, generada al aprobar una señal.
+    No representa contacto real: solo indica que un Investor cualificado
+    por el Agente Captador está a la espera de que un humano le dé
+    seguimiento.
+    """
+    id: str
+    investor_id: str
+    signal_id: str
+    reason: str
+    status: FollowUpStatusLiteral
+    created_at: datetime
+    completed_at: Optional[datetime] = None
+    completed_by: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class ProspectingFollowUpListResponse(BaseModel):
+    followups: list[ProspectingFollowUpRead]
+    count: int

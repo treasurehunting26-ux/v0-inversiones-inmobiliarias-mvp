@@ -35,6 +35,7 @@ from database import get_db
 from models.investor import Investor, QualificationStatus
 from models.prospecting_signal import ProspectingSignal, SignalStatus
 from models.prospecting_run_log import ProspectingRunLog
+from models.prospecting_followup import ProspectingFollowUp, FollowUpStatus
 from routers.admin_properties import verify_admin_token
 from schemas.prospecting import (
     ProspectingSignalListResponse,
@@ -42,6 +43,8 @@ from schemas.prospecting import (
     ProspectingRunResult,
     ProspectingRunLogListResponse,
     ProspectingRunLogRead,
+    ProspectingFollowUpListResponse,
+    ProspectingFollowUpRead,
 )
 from services.rss_feeds import fetch_all_configured_feeds, get_configured_sources
 from services.scoring import score_signal
@@ -155,6 +158,13 @@ def list_signals(
     ÚNICO punto del sistema donde una señal detectada por el Agente
     Captador se convierte en un Investor real. Requiere acción humana
     explícita autenticada con ADMIN_TOKEN.
+
+    Además, genera automáticamente una ProspectingFollowUp: una tarea
+    interna de seguimiento humano (NO un contacto real, NO un
+    LeadEscalation) para que el Investor recién cualificado no quede
+    almacenado sin visibilidad para el operador. Ver
+    models/prospecting_followup.py para la justificación de por qué no
+    se reutiliza LeadEscalation.
     """,
 )
 def approve_signal(
@@ -180,6 +190,19 @@ def approve_signal(
     signal.investor_id = investor.id
     signal.reviewed_by = "admin"
     signal.reviewed_at = datetime.utcnow()
+
+    followup = ProspectingFollowUp(
+        id=str(uuid.uuid4()),
+        investor_id=investor.id,
+        signal_id=signal.id,
+        reason=(
+            f"Investor cualificado por el Agente Captador (fuente: {signal.source}, "
+            f"score: {signal.score}). Pendiente de seguimiento humano."
+        ),
+        status=FollowUpStatus.PENDING.value,
+        created_at=datetime.utcnow(),
+    )
+    db.add(followup)
 
     db.commit()
     db.refresh(signal)
@@ -236,3 +259,63 @@ def list_runs(
     return ProspectingRunLogListResponse(
         runs=[ProspectingRunLogRead.model_validate(r) for r in runs]
     )
+
+
+@router.get(
+    "/followups",
+    response_model=ProspectingFollowUpListResponse,
+    summary="Listar tareas de seguimiento generadas por el Agente Captador",
+    description="""
+    Lista las tareas internas de seguimiento humano creadas al aprobar
+    señales. NO representa contacto real con nadie: es solo visibilidad
+    para el operador sobre qué Investors cualificados por el Agente
+    Captador aún esperan seguimiento manual.
+    """,
+)
+def list_followups(
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> ProspectingFollowUpListResponse:
+    followups = (
+        db.query(ProspectingFollowUp)
+        .order_by(ProspectingFollowUp.created_at.desc())
+        .all()
+    )
+    return ProspectingFollowUpListResponse(
+        followups=[ProspectingFollowUpRead.model_validate(f) for f in followups],
+        count=len(followups),
+    )
+
+
+@router.post(
+    "/followups/{followup_id}/complete",
+    response_model=ProspectingFollowUpRead,
+    summary="Marcar una tarea de seguimiento como completada",
+    description="""
+    Requiere acción humana explícita autenticada con ADMIN_TOKEN. No
+    ejecuta ningún side effect externo: solo registra que el operador
+    ya gestionó el seguimiento de este Investor por su cuenta.
+    """,
+)
+def complete_followup(
+    followup_id: str,
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> ProspectingFollowUpRead:
+    followup = (
+        db.query(ProspectingFollowUp)
+        .filter(ProspectingFollowUp.id == followup_id)
+        .first()
+    )
+    if not followup:
+        raise HTTPException(status_code=404, detail="Tarea de seguimiento no encontrada")
+    if followup.status != FollowUpStatus.PENDING.value:
+        raise HTTPException(status_code=409, detail="Esta tarea ya fue completada")
+
+    followup.status = FollowUpStatus.DONE.value
+    followup.completed_at = datetime.utcnow()
+    followup.completed_by = "admin"
+
+    db.commit()
+    db.refresh(followup)
+    return ProspectingFollowUpRead.model_validate(followup)

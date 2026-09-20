@@ -4,6 +4,7 @@ from models.investor import Investor
 from models.lead_escalation import LeadEscalation
 from models.prospecting_signal import ProspectingSignal
 from models.prospecting_run_log import ProspectingRunLog
+from models.prospecting_followup import ProspectingFollowUp
 
 __all__ = [
     "Property",
@@ -13,4 +14,5 @@ __all__ = [
     "LeadEscalation",
     "ProspectingSignal",
     "ProspectingRunLog",
+    "ProspectingFollowUp",
 ]

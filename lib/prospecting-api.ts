@@ -22,6 +22,17 @@ export type ProspectingSignal = {
   created_at: string
 }
 
+export type ProspectingFollowUp = {
+  id: string
+  investor_id: string
+  signal_id: string
+  reason: string
+  status: "pending" | "done"
+  created_at: string
+  completed_at: string | null
+  completed_by: string | null
+}
+
 export type ProspectingRunLog = {
   id: string
   started_at: string
@@ -88,6 +99,28 @@ export async function approveSignal(token: string, id: string): Promise<Prospect
 
 export async function discardSignal(token: string, id: string): Promise<ProspectingSignal> {
   const res = await fetch(`${API_URL}/prospecting/signals/${id}/discard`, {
+    method: "POST",
+    headers: authHeaders(token),
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
+export async function listFollowUps(token: string): Promise<ProspectingFollowUp[]> {
+  const res = await fetch(`${API_URL}/prospecting/followups`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  })
+  if (!res.ok) {
+    if (res.status === 401) throw new Error("UNAUTHORIZED")
+    throw new Error(`Error ${res.status}`)
+  }
+  const data = await res.json()
+  return data.followups as ProspectingFollowUp[]
+}
+
+export async function completeFollowUp(token: string, id: string): Promise<ProspectingFollowUp> {
+  const res = await fetch(`${API_URL}/prospecting/followups/${id}/complete`, {
     method: "POST",
     headers: authHeaders(token),
   })
