@@ -11,13 +11,20 @@ SignalStatusLiteral = Literal["pending_review", "approved", "discarded"]
 
 
 class ProspectingSignalRead(BaseModel):
-    """Lectura de una señal detectada por el Agente Captador."""
+    """Lectura de una señal detectada por el Agente Captador.
+
+    MERCADO DEL INVERSOR (investor_market/investor_country/investor_city)
+    y MERCADO DEL ACTIVO PREFERIDO (preferred_property_market) son campos
+    independientes: nunca representan lo mismo. El primero indica dónde
+    está el inversor; el segundo, qué mercado inmobiliario le interesa.
+    """
     id: str
     source: str
     source_url: Optional[str] = None
     title: str
     snippet: str
     score: int
+    confidence: Optional[int] = None
     justification: Optional[str] = None
     criteria_matched: Optional[str] = None
     status: SignalStatusLiteral
@@ -25,6 +32,17 @@ class ProspectingSignalRead(BaseModel):
     reviewed_by: Optional[str] = None
     reviewed_at: Optional[datetime] = None
     created_at: datetime
+
+    # Mercado del INVERSOR: dónde está, no dónde quiere invertir.
+    investor_market: Optional[str] = None
+    investor_country: Optional[str] = None
+    investor_city: Optional[str] = None
+    language: Optional[str] = None
+    estimated_investment_capacity: Optional[str] = None
+
+    # Mercado del ACTIVO preferido: dónde quiere invertir.
+    preferred_property_market: Optional[str] = None
+    preferred_asset_type: Optional[str] = None
 
     class Config:
         from_attributes = True

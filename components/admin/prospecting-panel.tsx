@@ -321,6 +321,46 @@ function SignalCard({
 
       <p className="mt-3 text-sm text-muted-foreground text-pretty">{signal.snippet}</p>
 
+      {(signal.investor_market || signal.preferred_property_market) && (
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          <div className="rounded-md border border-border bg-muted/40 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+              Mercado del inversor
+            </p>
+            <p className="mt-1 text-sm text-foreground">
+              {formatInvestorMarket(signal.investor_market)}
+              {signal.investor_city || signal.investor_country ? (
+                <span className="text-muted-foreground">
+                  {" "}
+                  ({[signal.investor_city, signal.investor_country].filter(Boolean).join(", ")})
+                </span>
+              ) : null}
+            </p>
+            {signal.language && <p className="mt-1 text-xs text-muted-foreground">Idioma: {signal.language}</p>}
+            {signal.estimated_investment_capacity && (
+              <p className="mt-1 text-xs text-muted-foreground">
+                Capacidad estimada: {signal.estimated_investment_capacity}
+              </p>
+            )}
+          </div>
+          <div className="rounded-md border border-primary/30 bg-primary/5 p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+              Mercado del activo de interés
+            </p>
+            <p className="mt-1 text-sm text-foreground">
+              {signal.preferred_property_market || "No especificado en la señal"}
+            </p>
+            {signal.preferred_asset_type && (
+              <p className="mt-1 text-xs text-muted-foreground">Tipo de activo: {signal.preferred_asset_type}</p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {typeof signal.confidence === "number" && (
+        <p className="mt-2 text-xs text-muted-foreground">Confianza del perfil extraído: {signal.confidence}%</p>
+      )}
+
       {signal.justification && (
         <p className="mt-3 text-sm text-foreground text-pretty">
           <span className="font-medium">{"Justificación IA: "}</span>
@@ -363,6 +403,20 @@ function SignalCard({
       </div>
     </div>
   )
+}
+
+const INVESTOR_MARKET_LABELS: Record<string, string> = {
+  dubai_uae: "Dubai / UAE",
+  caracas_venezuela: "Caracas / Venezuela",
+  india: "India",
+  europe: "Europa",
+  latam: "Latinoamérica",
+  international_other: "Internacional / otros",
+}
+
+function formatInvestorMarket(market: string | null): string {
+  if (!market) return "No especificado en la señal"
+  return INVESTOR_MARKET_LABELS[market] ?? market
 }
 
 function StatusBadge({ status }: { status: string }) {

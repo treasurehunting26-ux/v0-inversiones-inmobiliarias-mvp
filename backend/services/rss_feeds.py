@@ -17,8 +17,19 @@ Usa solo la librería estándar (urllib + xml.etree) para evitar depender
 de paquetes de scraping no auditados. Cada item de un feed es texto
 público ya indexado por el propio feed: no hay login ni acceso a
 páginas privadas.
+
+CLASIFICACIÓN DE FUENTES (arquitectura internacional):
+No se crea ningún scraping nuevo. Cada fuente configurada en
+PROSPECTING_RSS_SOURCES (nombre=url) puede, opcionalmente, clasificarse
+por país, ciudad, región, idioma, mercado, tipo de fuente, prioridad,
+estado legal y si está activa, vía la variable de entorno opcional
+PROSPECTING_SOURCES_METADATA (JSON). Si una fuente no tiene metadata
+explícita, se le asignan valores por defecto seguros (activa, tipo
+"rss", estado legal "approved", mercado "unknown") y el ciclo sigue
+funcionando exactamente igual que antes.
 """
 
+import json
 import logging
 import os
 import urllib.request
@@ -42,6 +53,26 @@ class FeedItem:
     snippet: str
 
 
+@dataclass
+class SourceConfig:
+    """
+    Clasificación de una fuente RSS configurada. No representa una
+    fuente nueva ni scraping nuevo: es metadata descriptiva sobre una
+    fuente ya configurada en PROSPECTING_RSS_SOURCES.
+    """
+    name: str
+    url: str
+    country: str | None = None
+    city: str | None = None
+    region: str | None = None
+    language: str | None = None
+    market: str = "unknown"
+    source_type: str = "rss"  # ej. "google_alert" | "forum_rss"
+    priority: int = 0
+    legal_status: str = "approved"
+    active: bool = True
+
+
 def get_configured_sources() -> dict[str, str]:
     """
     Lee las fuentes RSS configuradas por el operador vía la variable de
@@ -62,6 +93,53 @@ def get_configured_sources() -> dict[str, str]:
         if name and url:
             sources[name] = url
     return sources
+
+
+def _get_sources_metadata() -> dict[str, dict]:
+    """
+    Lee la clasificación opcional de fuentes desde la variable de
+    entorno PROSPECTING_SOURCES_METADATA (JSON, clave = nombre de la
+    fuente en PROSPECTING_RSS_SOURCES). Falla de forma segura: si el
+    JSON es inválido o falta, retorna un dict vacío.
+    """
+    raw = os.getenv("PROSPECTING_SOURCES_METADATA", "")
+    if not raw.strip():
+        return {}
+    try:
+        parsed = json.loads(raw)
+        return parsed if isinstance(parsed, dict) else {}
+    except (json.JSONDecodeError, TypeError) as exc:
+        logger.warning("[prospecting] PROSPECTING_SOURCES_METADATA inválido: %s", exc)
+        return {}
+
+
+def get_source_configs() -> list[SourceConfig]:
+    """
+    Combina PROSPECTING_RSS_SOURCES con la clasificación opcional de
+    PROSPECTING_SOURCES_METADATA. Cualquier fuente sin metadata explícita
+    recibe valores por defecto seguros (activa, mercado "unknown").
+    """
+    sources = get_configured_sources()
+    metadata = _get_sources_metadata()
+    configs: list[SourceConfig] = []
+    for name, url in sources.items():
+        meta = metadata.get(name, {}) if isinstance(metadata.get(name), dict) else {}
+        configs.append(
+            SourceConfig(
+                name=name,
+                url=url,
+                country=meta.get("country"),
+                city=meta.get("city"),
+                region=meta.get("region"),
+                language=meta.get("language"),
+                market=meta.get("market", "unknown"),
+                source_type=meta.get("source_type", "rss"),
+                priority=int(meta.get("priority", 0) or 0),
+                legal_status=meta.get("legal_status", "approved"),
+                active=bool(meta.get("active", True)),
+            )
+        )
+    return configs
 
 
 def fetch_feed_items(source_name: str, feed_url: str, *, max_items: int = 15) -> list[FeedItem]:
@@ -114,8 +192,15 @@ def fetch_feed_items(source_name: str, feed_url: str, *, max_items: int = 15) ->
 
 
 def fetch_all_configured_feeds(*, max_items_per_source: int = 15) -> list[FeedItem]:
-    """Recorre todas las fuentes configuradas y devuelve los items combinados."""
+    """
+    Recorre todas las fuentes configuradas y devuelve los items
+    combinados. Omite las fuentes explícitamente marcadas como inactivas
+    en PROSPECTING_SOURCES_METADATA (por defecto, todas están activas).
+    """
     all_items: list[FeedItem] = []
-    for name, url in get_configured_sources().items():
-        all_items.extend(fetch_feed_items(name, url, max_items=max_items_per_source))
+    for config in get_source_configs():
+        if not config.active:
+            logger.info("[prospecting] Fuente '%s' inactiva; se omite.", config.name)
+            continue
+        all_items.extend(fetch_feed_items(config.name, config.url, max_items=max_items_per_source))
     return all_items
