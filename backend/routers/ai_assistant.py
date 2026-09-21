@@ -33,6 +33,7 @@ import logging
 
 from database import get_db
 from models.conversation import Conversation, Message
+from models.investor import Investor
 from models.property import Property
 from rate_limit import enforce_ai_rate_limit
 from schemas.ai_assistant import AssistantRequest, AssistantResponse
@@ -56,6 +57,15 @@ ALCANCE:
 - Calcular ROI solo con datos proporcionados
 - Cualificar perfiles de inversores
 - Escalar a humano cuando exista intención real
+
+MERCADOS (plataforma internacional):
+- La plataforma opera en múltiples mercados de activos (Marbella/Costa del Sol,
+  Madrid, otras zonas de España, Dubai/UAE y otros mercados internacionales).
+- NUNCA asumas que un inversor busca invertir en el lugar donde reside o fue
+  detectado. Un inversor en Dubai puede buscar Marbella, Madrid u otro mercado.
+- Si se te proporciona el perfil de un Investor aprobado, úsalo solo para
+  filtrar y presentar oportunidades compatibles con su mercado de interés,
+  capacidad, preferencias y horizonte — nunca para decidir por él.
 
 PROHIBICIONES:
 - No inventar propiedades
@@ -130,6 +140,43 @@ def build_context_prompt(properties: list[dict]) -> str:
         context += f"  Notas de riesgo: {p['risk_notes']}\n\n"
     
     return context
+
+
+def get_investor_profile_context(investor: Optional[Investor]) -> str:
+    """
+    Construye un bloque de contexto de solo lectura con el perfil de un
+    Investor ya aprobado, cuando exista. No expone datos internos ni de
+    otros inversores.
+
+    MERCADO DEL INVERSOR (dónde está) y MERCADO DEL ACTIVO PREFERIDO
+    (dónde quiere invertir) se presentan como conceptos explícitamente
+    distintos, para que el asistente nunca asuma que coinciden. Esto es
+    solo contexto para filtrar y presentar oportunidades: el asistente
+    sigue sin tomar la decisión de inversión.
+    """
+    if investor is None:
+        return ""
+
+    lines = ["PERFIL DEL INVERSOR (solo para filtrar y presentar oportunidades compatibles):"]
+    if investor.investor_market or investor.investor_country or investor.investor_city:
+        location = ", ".join(
+            filter(None, [investor.investor_city, investor.investor_country, investor.investor_market])
+        )
+        lines.append(f"- Mercado del inversor (dónde está): {location}")
+    if investor.preferred_property_market:
+        lines.append(f"- Mercado del activo de interés (dónde quiere invertir): {investor.preferred_property_market}")
+    if investor.preferred_asset_type:
+        lines.append(f"- Tipo de activo preferido: {investor.preferred_asset_type}")
+    if investor.estimated_investment_capacity or investor.budget_range:
+        lines.append(
+            f"- Capacidad estimada: {investor.estimated_investment_capacity or investor.budget_range}"
+        )
+    if investor.horizon:
+        lines.append(f"- Horizonte de inversión: {investor.horizon}")
+
+    if len(lines) == 1:
+        return ""
+    return "\n".join(lines)
 
 
 async def call_ai_model(
@@ -274,7 +321,19 @@ async def interact_with_assistant(
     # 2. Leer propiedades publicadas (solo lectura, filtro en SQL)
     properties = get_published_properties(db)
     context = build_context_prompt(properties)
-    
+
+    # 2b. Si hay un Investor aprobado asociado, añade su perfil como
+    # contexto de solo lectura (mercado del inversor vs. mercado del
+    # activo preferido, nunca se igualan entre sí).
+    investor = (
+        db.query(Investor).filter(Investor.id == request.investor_id).first()
+        if request.investor_id
+        else None
+    )
+    investor_context = get_investor_profile_context(investor)
+    if investor_context:
+        context = f"{context}\n\n{investor_context}"
+
     # 3. Obtener historial de conversación
     history = get_conversation_history(db, conversation_id)
     

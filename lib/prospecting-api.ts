@@ -13,6 +13,7 @@ export type ProspectingSignal = {
   title: string
   snippet: string
   score: number
+  confidence: number | null
   justification: string | null
   criteria_matched: string | null
   status: "pending_review" | "approved" | "discarded"
@@ -20,6 +21,16 @@ export type ProspectingSignal = {
   reviewed_by: string | null
   reviewed_at: string | null
   created_at: string
+  // Mercado del INVERSOR: dónde está, no dónde quiere invertir.
+  investor_market: string | null
+  investor_country: string | null
+  investor_city: string | null
+  language: string | null
+  estimated_investment_capacity: string | null
+  // Mercado del ACTIVO preferido: dónde quiere invertir. Independiente
+  // del mercado del inversor — nunca deben confundirse.
+  preferred_property_market: string | null
+  preferred_asset_type: string | null
 }
 
 export type ProspectingFollowUp = {

@@ -29,10 +29,12 @@ import uuid
 from datetime import datetime
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 
 from database import get_db
 from models.investor import Investor, QualificationStatus
+from models.property import Property
 from models.prospecting_signal import ProspectingSignal, SignalStatus
 from models.prospecting_run_log import ProspectingRunLog
 from models.prospecting_followup import ProspectingFollowUp, FollowUpStatus
@@ -55,6 +57,81 @@ router = APIRouter(
     prefix="/prospecting",
     tags=["prospecting"],
 )
+
+
+def _get_available_property_markets(db: Session) -> list[str]:
+    """
+    Mercados de activos actualmente publicados en la plataforma (ej.
+    "Marbella", "Madrid", "Dubai"), usados solo como contexto de
+    compatibilidad para el scoring. Property.location es el mercado del
+    activo real; nunca se confunde con el mercado del inversor.
+    """
+    rows = (
+        db.query(Property.location)
+        .filter(Property.status == "published")
+        .distinct()
+        .all()
+    )
+    return [r[0] for r in rows if r[0]]
+
+
+@router.post(
+    "/migrate-market-fields",
+    summary="Migración: añade los campos de mercado del inversor/activo",
+    description="""
+    Migración puntual (FASE2 — corrección de arquitectura internacional):
+    añade a investors y prospecting_signals las columnas necesarias para
+    distinguir el mercado del inversor del mercado del activo preferido.
+
+    Idempotente: "ADD COLUMN IF NOT EXISTS" no falla si ya existe. Pensada
+    para ejecutarse una sola vez desde el admin tras desplegar este cambio.
+    """,
+)
+def admin_migrate_market_fields(
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> dict:
+    statements = [
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS investor_market VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS investor_country VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS investor_city VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS language VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS estimated_investment_capacity VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS preferred_property_market VARCHAR",
+        "ALTER TABLE investors ADD COLUMN IF NOT EXISTS preferred_asset_type VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS confidence INTEGER",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS investor_market VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS investor_country VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS investor_city VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS language VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS estimated_investment_capacity VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS preferred_property_market VARCHAR",
+        "ALTER TABLE prospecting_signals ADD COLUMN IF NOT EXISTS preferred_asset_type VARCHAR",
+    ]
+    for stmt in statements:
+        db.execute(text(stmt))
+    db.commit()
+
+    return {
+        "status": "ok",
+        "columns_ensured": [
+            "investors.investor_market",
+            "investors.investor_country",
+            "investors.investor_city",
+            "investors.language",
+            "investors.estimated_investment_capacity",
+            "investors.preferred_property_market",
+            "investors.preferred_asset_type",
+            "prospecting_signals.confidence",
+            "prospecting_signals.investor_market",
+            "prospecting_signals.investor_country",
+            "prospecting_signals.investor_city",
+            "prospecting_signals.language",
+            "prospecting_signals.estimated_investment_capacity",
+            "prospecting_signals.preferred_property_market",
+            "prospecting_signals.preferred_asset_type",
+        ],
+    }
 
 
 @router.post(
@@ -90,22 +167,37 @@ def run_prospecting_cycle(
 
     try:
         items = fetch_all_configured_feeds()
+        available_markets = _get_available_property_markets(db)
         qualified = 0
 
         for item in items:
-            score, justification, criteria_csv = score_signal(item.title, item.snippet)
-            if score >= MIN_QUALIFYING_SCORE:
+            result = score_signal(
+                item.title,
+                item.snippet,
+                available_property_markets=available_markets,
+            )
+            if result.score >= MIN_QUALIFYING_SCORE:
                 signal = ProspectingSignal(
                     id=str(uuid.uuid4()),
                     source=item.source,
                     source_url=item.link or None,
                     title=item.title,
                     snippet=item.snippet,
-                    score=score,
-                    justification=justification,
-                    criteria_matched=criteria_csv,
+                    score=result.score,
+                    confidence=result.confidence,
+                    justification=result.justification,
+                    criteria_matched=result.criteria_matched,
                     status=SignalStatus.PENDING_REVIEW.value,
                     created_at=datetime.utcnow(),
+                    # Mercado del INVERSOR (dónde está) — independiente del
+                    # mercado del activo que le interesa (preferred_property_market).
+                    investor_market=result.investor_market,
+                    investor_country=result.investor_country,
+                    investor_city=result.investor_city,
+                    language=result.language,
+                    estimated_investment_capacity=result.estimated_investment_capacity,
+                    preferred_property_market=result.preferred_property_market,
+                    preferred_asset_type=result.preferred_asset_type,
                 )
                 db.add(signal)
                 qualified += 1
@@ -183,6 +275,16 @@ def approve_signal(
         qualification_status=QualificationStatus.QUALIFIED.value,
         source=f"prospecting:{signal.source}",
         created_at=datetime.utcnow(),
+        # Copia el perfil extraído por la IA, manteniendo mercado del
+        # inversor y mercado del activo preferido como campos
+        # independientes (nunca se igualan entre sí).
+        investor_market=signal.investor_market,
+        investor_country=signal.investor_country,
+        investor_city=signal.investor_city,
+        language=signal.language,
+        estimated_investment_capacity=signal.estimated_investment_capacity,
+        preferred_property_market=signal.preferred_property_market,
+        preferred_asset_type=signal.preferred_asset_type,
     )
     db.add(investor)
 
