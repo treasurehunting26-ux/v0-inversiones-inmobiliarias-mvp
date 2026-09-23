@@ -14,6 +14,7 @@ import {
   listSignals,
   runProspectingCycle,
 } from "@/lib/prospecting-api"
+import { ProspectingSourcesPanel } from "./prospecting-sources-panel"
 
 interface ProspectingPanelProps {
   token: string
@@ -152,6 +153,8 @@ export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProp
           {error}
         </div>
       )}
+
+      <ProspectingSourcesPanel token={token} onUnauthorized={onUnauthorized} />
 
       <section>
         <h2 className="mb-4 font-serif text-xl font-semibold text-foreground">

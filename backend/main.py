@@ -23,6 +23,7 @@ from routers import (
     admin_properties,
     contact,
     prospecting,
+    prospecting_sources,
 )
 
 app = FastAPI(
@@ -79,6 +80,7 @@ app.include_router(ai_assistant.router)
 app.include_router(admin_properties.router)
 app.include_router(contact.router)
 app.include_router(prospecting.router)
+app.include_router(prospecting_sources.router)
 
 
 @app.exception_handler(Exception)

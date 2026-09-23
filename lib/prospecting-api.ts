@@ -55,6 +55,28 @@ export type ProspectingRunLog = {
   error_detail: string | null
 }
 
+export type ProspectingSource = {
+  id: string
+  name: string
+  url: string
+  source_type: "rss" | "atom" | "official_api" | "public_feed" | "other_approved"
+  country: string | null
+  city: string | null
+  region: string | null
+  language: string | null
+  // Mercado del INVERSOR que suele aportar la fuente (audiencia/tráfico).
+  investor_market: string | null
+  // Mercado del ACTIVO que cubre la fuente. Independiente del anterior —
+  // nunca se asume que ambos coinciden.
+  property_market: string | null
+  priority: number
+  legal_status: string
+  active: boolean
+  last_checked_at: string | null
+  created_at: string
+  updated_at: string
+}
+
 function authHeaders(token: string): HeadersInit {
   return {
     "Content-Type": "application/json",
@@ -132,6 +154,37 @@ export async function listFollowUps(token: string): Promise<ProspectingFollowUp[
 
 export async function completeFollowUp(token: string, id: string): Promise<ProspectingFollowUp> {
   const res = await fetch(`${API_URL}/prospecting/followups/${id}/complete`, {
+    method: "POST",
+    headers: authHeaders(token),
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
+export async function listSources(token: string): Promise<ProspectingSource[]> {
+  const res = await fetch(`${API_URL}/prospecting/sources`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  })
+  if (!res.ok) {
+    if (res.status === 401) throw new Error("UNAUTHORIZED")
+    throw new Error(`Error ${res.status}`)
+  }
+  const data = await res.json()
+  return data.sources as ProspectingSource[]
+}
+
+export async function activateSource(token: string, id: string): Promise<ProspectingSource> {
+  const res = await fetch(`${API_URL}/prospecting/sources/${id}/activate`, {
+    method: "POST",
+    headers: authHeaders(token),
+  })
+  if (!res.ok) throw new Error(`Error ${res.status}`)
+  return res.json()
+}
+
+export async function deactivateSource(token: string, id: string): Promise<ProspectingSource> {
+  const res = await fetch(`${API_URL}/prospecting/sources/${id}/deactivate`, {
     method: "POST",
     headers: authHeaders(token),
   })
