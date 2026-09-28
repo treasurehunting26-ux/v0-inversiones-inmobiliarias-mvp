@@ -16,8 +16,25 @@ interface DossierViewProps {
  * HTML desde el panel admin, asi que no hay galerias ni video separados
  * aqui: todo vive dentro de `description_html`, en el orden en que se
  * escribio.
+ *
+ * Si la propiedad tiene un dossier prediseñado fuera del panel
+ * (`dossier_html_url`, una pagina HTML completa y autocontenida subida
+ * a Blob), este enlace muestra esa pagina tal cual dentro de un iframe a
+ * pantalla completa, en vez de construir la pagina con la plantilla de
+ * abajo.
  */
 export function DossierView({ property }: DossierViewProps) {
+  if (property.dossier_html_url) {
+    return (
+      <iframe
+        src={property.dossier_html_url}
+        title={`Dossier de ${property.title}`}
+        className="block h-screen w-full border-0"
+        sandbox="allow-same-origin"
+      />
+    )
+  }
+
   const facts = [
     { label: "Tipo de activo", value: property.asset_type },
     { label: "Ubicación", value: property.location },

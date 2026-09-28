@@ -105,6 +105,7 @@ def admin_migrate_content_fields(
         "ALTER TABLE properties ADD COLUMN IF NOT EXISTS dossier_slug VARCHAR",
         "CREATE UNIQUE INDEX IF NOT EXISTS ix_properties_dossier_slug "
         "ON properties (dossier_slug)",
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS dossier_html_url VARCHAR",
     ]
     for stmt in statements:
         db.execute(text(stmt))
@@ -229,6 +230,8 @@ def admin_update_content(
         prop.photos = data.photos
     if data.video_url is not None:
         prop.video_url = data.video_url
+    if data.dossier_html_url is not None:
+        prop.dossier_html_url = data.dossier_html_url
     prop.updated_at = datetime.utcnow()
 
     db.commit()

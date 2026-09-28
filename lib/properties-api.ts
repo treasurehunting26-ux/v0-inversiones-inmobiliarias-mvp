@@ -17,6 +17,7 @@ export type Property = {
   photos?: string[] | null
   video_url?: string | null
   dossier_slug?: string | null
+  dossier_html_url?: string | null
 }
 
 export type PropertyListResponse = {

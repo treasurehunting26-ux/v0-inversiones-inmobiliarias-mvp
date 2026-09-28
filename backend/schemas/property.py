@@ -36,6 +36,7 @@ class PropertyDetailRead(PropertyRead):
     photos: Optional[list[str]] = None
     video_url: Optional[str] = None
     dossier_slug: Optional[str] = None
+    dossier_html_url: Optional[str] = None
 
 
 class PropertyListResponse(BaseModel):

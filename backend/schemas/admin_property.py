@@ -40,6 +40,7 @@ class PropertyContentUpdate(BaseModel):
     description_html: Optional[str] = None
     photos: Optional[list[str]] = None
     video_url: Optional[str] = None
+    dossier_html_url: Optional[str] = None
 
 
 class PropertyAdminRead(BaseModel):

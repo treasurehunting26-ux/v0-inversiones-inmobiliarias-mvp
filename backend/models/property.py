@@ -37,3 +37,9 @@ class Property(Base):
     photos = Column(JSON, nullable=True, default=list)  # lista de URLs (Vercel Blob)
     video_url = Column(String, nullable=True)  # URL de video (Vercel Blob)
     dossier_slug = Column(String, nullable=True, unique=True, index=True)
+
+    # Dossier prediseñado fuera del panel (documento HTML completo y
+    # autocontenido, subido a Vercel Blob). Cuando esta presente, se sirve
+    # tal cual en /dossier/{slug} en lugar de construir la pagina con
+    # description_html: sustituye por completo al dossier generado aqui.
+    dossier_html_url = Column(String, nullable=True)

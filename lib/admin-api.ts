@@ -22,12 +22,14 @@ export type AdminProperty = {
   photos: string[] | null
   video_url: string | null
   dossier_slug: string | null
+  dossier_html_url: string | null
 }
 
 export type PropertyContentPayload = {
   description_html?: string
   photos?: string[]
   video_url?: string
+  dossier_html_url?: string
 }
 
 export type PropertyCreatePayload = {
@@ -221,4 +223,33 @@ export async function uploadPhotoFromUrl(token: string, url: string): Promise<st
   const name = url.split("/").pop()?.split("?")[0] || "foto.jpg"
   const file = new File([blobData], name, { type: contentType })
   return uploadMedia(token, file, "photo")
+}
+
+/**
+ * Sube un dossier ya diseñado fuera del panel (un archivo .html completo
+ * y autocontenido, con sus fotos incrustadas) a Vercel Blob. Cuando la
+ * propiedad tiene un dossier_html_url, el enlace de dossier lo sirve tal
+ * cual en vez de construir la pagina con el editor de contenido.
+ */
+export async function uploadDossierHtml(token: string, file: File): Promise<string> {
+  const { upload } = await import("@vercel/blob/client")
+  const controller = new AbortController()
+  const timeoutId = setTimeout(() => controller.abort(), 60_000)
+  try {
+    const blob = await upload(`propiedades/dossiers/${file.name}`, file, {
+      access: "public",
+      handleUploadUrl: "/api/admin/upload",
+      headers: { "X-Admin-Token": token },
+      clientPayload: JSON.stringify({ kind: "document" }),
+      abortSignal: controller.signal,
+    })
+    return blob.url
+  } catch (err) {
+    if (controller.signal.aborted) {
+      throw new Error("La subida esta tardando demasiado. Comprueba tu conexion e intentalo de nuevo.")
+    }
+    throw new Error(err instanceof Error ? err.message : "No se pudo subir el dossier")
+  } finally {
+    clearTimeout(timeoutId)
+  }
 }

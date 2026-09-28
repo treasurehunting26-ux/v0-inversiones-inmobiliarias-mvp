@@ -1,8 +1,14 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Check, Copy, ImageIcon, Loader2, VideoIcon, X } from "lucide-react"
-import { type AdminProperty, updateContent, uploadMedia, uploadPhotoFromUrl } from "@/lib/admin-api"
+import { Check, Copy, FileCode, ImageIcon, Loader2, VideoIcon, X } from "lucide-react"
+import {
+  type AdminProperty,
+  updateContent,
+  uploadDossierHtml,
+  uploadMedia,
+  uploadPhotoFromUrl,
+} from "@/lib/admin-api"
 
 interface PropertyContentEditorProps {
   token: string
@@ -28,8 +34,10 @@ export function PropertyContentEditor({
   onClose,
 }: PropertyContentEditorProps) {
   const [descriptionHtml, setDescriptionHtml] = useState(property.description_html || "")
+  const [dossierHtmlUrl, setDossierHtmlUrl] = useState(property.dossier_html_url || "")
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
+  const [uploadingDossierFile, setUploadingDossierFile] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
@@ -37,6 +45,7 @@ export function PropertyContentEditor({
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
+  const dossierFileInputRef = useRef<HTMLInputElement>(null)
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const dossierUrl =
@@ -115,12 +124,29 @@ export function PropertyContentEditor({
     }
   }
 
+  async function handleDossierFileSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setError(null)
+    setUploadingDossierFile(true)
+    try {
+      const url = await uploadDossierHtml(token, file)
+      setDossierHtmlUrl(url)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo subir el dossier")
+    } finally {
+      setUploadingDossierFile(false)
+      if (dossierFileInputRef.current) dossierFileInputRef.current.value = ""
+    }
+  }
+
   async function handleSave() {
     setSaving(true)
     setError(null)
     try {
       await updateContent(token, property.id, {
         description_html: descriptionHtml,
+        dossier_html_url: dossierHtmlUrl,
       })
       onSaved()
     } catch (err) {
@@ -180,6 +206,54 @@ export function PropertyContentEditor({
         </div>
       )}
 
+      {/* Dossier prediseñado fuera del panel: sustituye por completo al editor de abajo */}
+      <div className="flex flex-col gap-1.5 rounded-lg border border-border bg-card p-4">
+        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Dossier ya diseñado (archivo .html completo)
+        </span>
+        <p className="text-xs text-muted-foreground">
+          Si ya tienes el dossier armado como una pagina HTML completa (con sus fotos y estilos), subelo o
+          pega aqui su enlace. Cuando este campo tiene un valor, el enlace de dossier de arriba muestra
+          esa pagina tal cual, en vez del contenido del editor de mas abajo.
+        </p>
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
+            {uploadingDossierFile ? (
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+            ) : (
+              <FileCode className="h-3.5 w-3.5" />
+            )}
+            {uploadingDossierFile ? "Subiendo..." : "Subir archivo .html"}
+            <input
+              ref={dossierFileInputRef}
+              type="file"
+              accept="text/html,.html"
+              className="hidden"
+              onChange={handleDossierFileSelect}
+              disabled={uploadingDossierFile}
+            />
+          </label>
+          {dossierHtmlUrl && (
+            <button
+              type="button"
+              onClick={() => setDossierHtmlUrl("")}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted"
+            >
+              <X className="h-3.5 w-3.5" />
+              Quitar dossier prediseñado
+            </button>
+          )}
+        </div>
+        <input
+          type="url"
+          value={dossierHtmlUrl}
+          onChange={(e) => setDossierHtmlUrl(e.target.value)}
+          placeholder="O pega aqui el enlace del dossier ya subido (https://...)"
+          disabled={uploadingDossierFile}
+          className="w-full rounded-lg border border-border bg-background px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary disabled:opacity-50"
+        />
+      </div>
+
       {/* Dossier: un solo contenido con todo incluido */}
       <div className="flex flex-col gap-1.5">
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
@@ -188,6 +262,7 @@ export function PropertyContentEditor({
         <p className="text-xs text-muted-foreground">
           Este es el unico contenido de la ficha y del dossier: pega aqui el documento ya armado (texto, fotos
           y video) o usa los botones de abajo para insertar imagenes y video en el punto donde este el cursor.
+          Solo se usa si no hay un dossier ya diseñado arriba.
         </p>
 
         <div className="flex flex-wrap items-center gap-2">
