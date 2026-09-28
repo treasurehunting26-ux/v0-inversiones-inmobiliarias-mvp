@@ -15,6 +15,13 @@ DATABASE_URL = os.getenv("DATABASE_URL", "postgresql://localhost/inversiones_db"
 if DATABASE_URL.startswith("postgres://"):
     DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
+# Algunas variables DATABASE_URL incluyen un driver explicito, por ejemplo
+# "postgresql+psycopg://" (psycopg 3) o "postgresql+psycopg2://". Solo tenemos
+# instalado psycopg2-binary (ver requirements.txt), asi que forzamos siempre
+# ese driver para evitar un ModuleNotFoundError si la URL trae otro distinto.
+if DATABASE_URL.startswith("postgresql+"):
+    DATABASE_URL = "postgresql://" + DATABASE_URL.split("://", 1)[1]
+
 # pool_pre_ping: descarta conexiones muertas antes de usarlas (Railway cierra
 # conexiones inactivas, lo que provoca errores intermitentes "connection closed").
 # pool_recycle: recicla conexiones cada 5 min para no acumular conexiones zombi.
