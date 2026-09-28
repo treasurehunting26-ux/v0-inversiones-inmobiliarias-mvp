@@ -143,6 +143,25 @@ def admin_migrate_content_fields(
     }
 
 
+@router.post("/migrate-drop-roi-estimated")
+def admin_migrate_drop_roi_estimated(
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> dict:
+    """
+    Migracion puntual: elimina la columna roi_estimated de la tabla properties.
+
+    Se retira porque estimar un ROI en una ficha de propiedad es una promesa
+    de rentabilidad poco etica y no verificable; ahora el analisis de riesgo
+    vive solo en risk_notes, redactado por un humano.
+
+    Idempotente: "DROP COLUMN IF EXISTS" no falla si ya no existe.
+    """
+    db.execute(text("ALTER TABLE properties DROP COLUMN IF EXISTS roi_estimated"))
+    db.commit()
+    return {"status": "ok"}
+
+
 @router.get("", response_model=PropertyAdminListResponse)
 def admin_list_properties(
     db: Session = Depends(get_db),
@@ -174,7 +193,6 @@ def admin_create_property(
         location=data.location,
         asset_type=data.asset_type,
         investment_range=data.investment_range,
-        roi_estimated=data.roi_estimated,
         horizon=data.horizon,
         risk_notes=data.risk_notes,
         status="draft",

@@ -19,7 +19,6 @@ class PropertyRead(BaseModel):
     location: str
     asset_type: str
     investment_range: str
-    roi_estimated: Optional[str] = None
     horizon: str
     risk_notes: str
 

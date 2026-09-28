@@ -11,7 +11,6 @@ export type AdminProperty = {
   location: string
   asset_type: string
   investment_range: string
-  roi_estimated: string | null
   horizon: string
   risk_notes: string
   status: "draft" | "published" | "archived"
@@ -38,7 +37,6 @@ export type PropertyCreatePayload = {
   investment_range: string
   horizon: string
   risk_notes: string
-  roi_estimated?: string
 }
 
 function authHeaders(token: string): HeadersInit {

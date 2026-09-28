@@ -37,16 +37,10 @@ export function PropertyCard({ property }: { property: Property }) {
           <p className="text-sm uppercase tracking-wider text-muted-foreground">{property.location}</p>
         </div>
 
-        <div className="mt-auto grid grid-cols-3 gap-4 border-t border-border pt-5">
+        <div className="mt-auto grid grid-cols-2 gap-4 border-t border-border pt-5">
           <div className="flex flex-col gap-1">
             <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Inversión</span>
             <span className="text-sm font-semibold text-foreground">{property.investment_range}</span>
-          </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">ROI est.</span>
-            <span className="text-sm font-semibold text-[var(--gold-deep,#a8893f)]">
-              {property.roi_estimated ?? "Consultar"}
-            </span>
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Horizonte</span>

@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Check, Copy, Loader2, Trash2, Upload, X } from "lucide-react"
+import { Check, Copy, ImageIcon, Loader2, VideoIcon, X } from "lucide-react"
 import { type AdminProperty, updateContent, uploadMedia, uploadPhotoFromUrl } from "@/lib/admin-api"
 
 interface PropertyContentEditorProps {
@@ -11,6 +11,16 @@ interface PropertyContentEditorProps {
   onClose: () => void
 }
 
+/**
+ * Editor de contenido: la propiedad se alimenta como UN solo dossier
+ * (documento HTML) en vez de gestionar fotos, video y texto por separado.
+ * Los botones de "Insertar foto/video" siguen usando el mismo pipeline de
+ * subida y compresion de antes, pero en vez de guardar la foto en una
+ * lista aparte, insertan la etiqueta <img>/<video> directamente en el
+ * dossier, en el punto donde este el cursor. Asi el contenido final es
+ * autocontenido: se puede pegar un documento ya armado (con sus fotos y
+ * video incluidos) o construirlo aqui mismo con estos botones.
+ */
 export function PropertyContentEditor({
   token,
   property,
@@ -18,23 +28,38 @@ export function PropertyContentEditor({
   onClose,
 }: PropertyContentEditorProps) {
   const [descriptionHtml, setDescriptionHtml] = useState(property.description_html || "")
-  const [photos, setPhotos] = useState<string[]>(property.photos || [])
-  const [videoUrl, setVideoUrl] = useState<string | null>(property.video_url || null)
   const [uploadingPhoto, setUploadingPhoto] = useState(false)
   const [uploadingVideo, setUploadingVideo] = useState(false)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [copied, setCopied] = useState(false)
-  const [manualPhotoUrl, setManualPhotoUrl] = useState("")
-  const [manualVideoUrl, setManualVideoUrl] = useState("")
+  const [manualMediaUrl, setManualMediaUrl] = useState("")
 
   const photoInputRef = useRef<HTMLInputElement>(null)
   const videoInputRef = useRef<HTMLInputElement>(null)
+  const textareaRef = useRef<HTMLTextAreaElement>(null)
 
   const dossierUrl =
     property.dossier_slug && typeof window !== "undefined"
       ? `${window.location.origin}/dossier/${property.dossier_slug}`
       : null
+
+  function insertAtCursor(snippet: string) {
+    const textarea = textareaRef.current
+    if (!textarea) {
+      setDescriptionHtml((prev) => `${prev}\n${snippet}\n`)
+      return
+    }
+    const start = textarea.selectionStart ?? textarea.value.length
+    const end = textarea.selectionEnd ?? textarea.value.length
+    const next = `${textarea.value.slice(0, start)}\n${snippet}\n${textarea.value.slice(end)}`
+    setDescriptionHtml(next)
+    requestAnimationFrame(() => {
+      const cursor = start + snippet.length + 2
+      textarea.focus()
+      textarea.setSelectionRange(cursor, cursor)
+    })
+  }
 
   async function handlePhotoSelect(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
@@ -43,7 +68,7 @@ export function PropertyContentEditor({
     setUploadingPhoto(true)
     try {
       const url = await uploadMedia(token, file, "photo")
-      setPhotos((prev) => [...prev, url])
+      insertAtCursor(`<img src="${url}" alt="${property.title}" />`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo subir la foto")
     } finally {
@@ -59,7 +84,7 @@ export function PropertyContentEditor({
     setUploadingVideo(true)
     try {
       const url = await uploadMedia(token, file, "video")
-      setVideoUrl(url)
+      insertAtCursor(`<video src="${url}" controls></video>`)
     } catch (err) {
       setError(err instanceof Error ? err.message : "No se pudo subir el video")
     } finally {
@@ -68,31 +93,26 @@ export function PropertyContentEditor({
     }
   }
 
-  function removePhoto(url: string) {
-    setPhotos((prev) => prev.filter((p) => p !== url))
-  }
-
-  async function addPhotoByUrl() {
-    const url = manualPhotoUrl.trim()
+  async function addMediaByUrl() {
+    const url = manualMediaUrl.trim()
     if (!url) return
     setError(null)
+    const isVideo = /\.(mp4|webm|mov)(\?|$)/i.test(url)
+    if (isVideo) {
+      insertAtCursor(`<video src="${url}" controls></video>`)
+      setManualMediaUrl("")
+      return
+    }
     setUploadingPhoto(true)
     try {
       const compressedUrl = await uploadPhotoFromUrl(token, url)
-      setPhotos((prev) => (prev.includes(compressedUrl) ? prev : [...prev, compressedUrl]))
-      setManualPhotoUrl("")
+      insertAtCursor(`<img src="${compressedUrl}" alt="${property.title}" />`)
+      setManualMediaUrl("")
     } catch (err) {
-      setError(err instanceof Error ? err.message : "No se pudo anadir la foto desde ese enlace")
+      setError(err instanceof Error ? err.message : "No se pudo anadir el contenido desde ese enlace")
     } finally {
       setUploadingPhoto(false)
     }
-  }
-
-  function addVideoByUrl() {
-    const url = manualVideoUrl.trim()
-    if (!url) return
-    setVideoUrl(url)
-    setManualVideoUrl("")
   }
 
   async function handleSave() {
@@ -101,8 +121,6 @@ export function PropertyContentEditor({
     try {
       await updateContent(token, property.id, {
         description_html: descriptionHtml,
-        photos,
-        video_url: videoUrl || "",
       })
       onSaved()
     } catch (err) {
@@ -123,7 +141,7 @@ export function PropertyContentEditor({
     <div className="mt-4 flex flex-col gap-6 rounded-lg border border-border bg-background p-5">
       <div className="flex items-center justify-between">
         <h4 className="font-serif text-base font-semibold text-foreground">
-          Contenido y dossier de &quot;{property.title}&quot;
+          Dossier de &quot;{property.title}&quot;
         </h4>
         <button
           type="button"
@@ -162,82 +180,32 @@ export function PropertyContentEditor({
         </div>
       )}
 
-      {/* Fotos */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Fotos</span>
-        {photos.length > 0 && (
-          <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
-            {photos.map((url) => (
-              <div key={url} className="group relative aspect-square overflow-hidden rounded-lg border border-border">
-                <img src={url || "/placeholder.svg"} alt="" className="h-full w-full object-cover" />
-                <button
-                  type="button"
-                  onClick={() => removePhoto(url)}
-                  className="absolute right-1 top-1 rounded-full bg-background/90 p-1 text-foreground opacity-0 transition-opacity group-hover:opacity-100"
-                  aria-label="Quitar foto"
-                >
-                  <Trash2 className="h-3 w-3" />
-                </button>
-              </div>
-            ))}
-          </div>
-        )}
-        <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
-          {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-          {uploadingPhoto ? "Comprimiendo y subiendo..." : "Anadir foto (JPG, PNG, WEBP; se comprime automaticamente)"}
-          <input
-            ref={photoInputRef}
-            type="file"
-            accept="image/jpeg,image/png,image/webp,image/avif"
-            className="hidden"
-            onChange={handlePhotoSelect}
-            disabled={uploadingPhoto}
-          />
-        </label>
-        <div className="flex items-center gap-2">
-          <input
-            type="url"
-            value={manualPhotoUrl}
-            onChange={(e) => setManualPhotoUrl(e.target.value)}
-            placeholder="O pega aqui el enlace de una foto ya subida"
-            disabled={uploadingPhoto}
-            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary disabled:opacity-50"
-          />
-          <button
-            type="button"
-            onClick={addPhotoByUrl}
-            disabled={!manualPhotoUrl.trim() || uploadingPhoto}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
-          >
-            {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
-            {uploadingPhoto ? "Comprimiendo..." : "Anadir"}
-          </button>
-        </div>
+      {/* Dossier: un solo contenido con todo incluido */}
+      <div className="flex flex-col gap-1.5">
+        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Dossier (HTML con fotos y video incluidos)
+        </span>
         <p className="text-xs text-muted-foreground">
-          La foto se descarga y se comprime igual que las subidas por boton antes de guardarse.
+          Este es el unico contenido de la ficha y del dossier: pega aqui el documento ya armado (texto, fotos
+          y video) o usa los botones de abajo para insertar imagenes y video en el punto donde este el cursor.
         </p>
-      </div>
 
-      {/* Video */}
-      <div className="flex flex-col gap-2">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Video</span>
-        {videoUrl && (
-          <div className="flex items-center gap-3">
-            <video src={videoUrl} controls className="h-32 w-56 rounded-lg border border-border bg-card object-cover" />
-            <button
-              type="button"
-              onClick={() => setVideoUrl(null)}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-destructive/30 px-3 py-1.5 text-xs font-medium text-destructive transition-colors hover:bg-destructive/5"
-            >
-              <Trash2 className="h-3.5 w-3.5" />
-              Quitar video
-            </button>
-          </div>
-        )}
-        {!videoUrl && (
-          <label className="inline-flex w-fit cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
-            {uploadingVideo ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Upload className="h-3.5 w-3.5" />}
-            {uploadingVideo ? "Subiendo..." : "Subir video (MP4, breve y comprimido, hasta 150 MB)"}
+        <div className="flex flex-wrap items-center gap-2">
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
+            {uploadingPhoto ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <ImageIcon className="h-3.5 w-3.5" />}
+            {uploadingPhoto ? "Comprimiendo y subiendo..." : "Insertar foto"}
+            <input
+              ref={photoInputRef}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/avif"
+              className="hidden"
+              onChange={handlePhotoSelect}
+              disabled={uploadingPhoto}
+            />
+          </label>
+          <label className="inline-flex cursor-pointer items-center gap-2 rounded-lg border border-dashed border-border px-3 py-2 text-xs font-medium text-muted-foreground transition-colors hover:bg-muted">
+            {uploadingVideo ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <VideoIcon className="h-3.5 w-3.5" />}
+            {uploadingVideo ? "Subiendo..." : "Insertar video"}
             <input
               ref={videoInputRef}
               type="file"
@@ -247,47 +215,39 @@ export function PropertyContentEditor({
               disabled={uploadingVideo}
             />
           </label>
-        )}
-        {!videoUrl && (
-          <div className="flex items-center gap-2">
-            <input
-              type="url"
-              value={manualVideoUrl}
-              onChange={(e) => setManualVideoUrl(e.target.value)}
-              placeholder="O pega aqui el enlace de un video ya subido"
-              className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary"
-            />
-            <button
-              type="button"
-              onClick={addVideoByUrl}
-              disabled={!manualVideoUrl.trim()}
-              className="rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
-            >
-              Anadir
-            </button>
-          </div>
-        )}
-        <p className="text-xs text-muted-foreground">
-          Recomendado: 60-90 segundos y comprimido (menos de 40 MB) para que cargue al instante.
-        </p>
-      </div>
+        </div>
 
-      {/* Descripcion HTML */}
-      <div className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
-          Contenido detallado (HTML)
-        </span>
+        <div className="flex items-center gap-2">
+          <input
+            type="url"
+            value={manualMediaUrl}
+            onChange={(e) => setManualMediaUrl(e.target.value)}
+            placeholder="O pega aqui el enlace de una foto o video ya subido"
+            disabled={uploadingPhoto}
+            className="flex-1 rounded-lg border border-border bg-card px-3 py-2 text-xs text-foreground outline-none transition-colors focus:border-primary disabled:opacity-50"
+          />
+          <button
+            type="button"
+            onClick={addMediaByUrl}
+            disabled={!manualMediaUrl.trim() || uploadingPhoto}
+            className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-2 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
+          >
+            {uploadingPhoto && <Loader2 className="h-3.5 w-3.5 animate-spin" />}
+            {uploadingPhoto ? "Comprimiendo..." : "Insertar"}
+          </button>
+        </div>
+
         <textarea
-          rows={8}
+          ref={textareaRef}
+          rows={14}
           value={descriptionHtml}
           onChange={(e) => setDescriptionHtml(e.target.value)}
           placeholder="<p>Descripcion de la propiedad...</p>"
           className="w-full rounded-lg border border-border bg-card px-3 py-2 font-mono text-xs text-foreground outline-none transition-colors focus:border-primary"
         />
         <p className="text-xs text-muted-foreground">
-          Se admite HTML basico (parrafos, titulos, listas, negrita, enlaces). Las fotos y el video no van
-          aqui: se colocan automaticamente con los uploads de arriba. Por seguridad, cualquier etiqueta no
-          permitida (scripts, iframes) se elimina al mostrarse.
+          Se admite HTML basico (parrafos, titulos, listas, negrita, enlaces, imagenes y video). Por
+          seguridad, cualquier etiqueta no permitida (scripts, iframes) se elimina al mostrarse.
         </p>
       </div>
 
@@ -311,7 +271,7 @@ export function PropertyContentEditor({
           disabled={saving}
           className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
         >
-          {saving ? "Guardando..." : "Guardar contenido"}
+          {saving ? "Guardando..." : "Guardar dossier"}
         </button>
       </div>
     </div>

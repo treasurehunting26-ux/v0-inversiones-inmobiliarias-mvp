@@ -84,13 +84,9 @@ export function PropertyList({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {p.location} {"\u00B7"} {p.asset_type}
                 </p>
-                <dl className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-3">
+                <dl className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                   <Info label="Inversion" value={p.investment_range} />
                   <Info label="Horizonte" value={p.horizon} />
-                  <Info
-                    label="ROI estimado"
-                    value={p.roi_estimated || "No indicado"}
-                  />
                 </dl>
                 {p.risk_notes && (
                   <p className="mt-3 text-sm text-muted-foreground">

@@ -94,7 +94,6 @@ def get_published_properties(db: Session) -> list[dict]:
             "location": p.location,
             "asset_type": p.asset_type,
             "investment_range": p.investment_range,
-            "roi_estimated": p.roi_estimated,
             "horizon": p.horizon,
             "risk_notes": p.risk_notes,
         }
@@ -134,8 +133,6 @@ def build_context_prompt(properties: list[dict]) -> str:
         context += f"  Ubicación: {p['location']}\n"
         context += f"  Tipo: {p['asset_type']}\n"
         context += f"  Rango de inversión: {p['investment_range']}\n"
-        if p['roi_estimated']:
-            context += f"  ROI estimado: {p['roi_estimated']}\n"
         context += f"  Horizonte: {p['horizon']}\n"
         context += f"  Notas de riesgo: {p['risk_notes']}\n\n"
     

@@ -15,7 +15,6 @@ const initial: PropertyCreatePayload = {
   investment_range: "",
   horizon: "",
   risk_notes: "",
-  roi_estimated: "",
 }
 
 export function PropertyForm({ token, onCreated }: PropertyFormProps) {
@@ -35,9 +34,7 @@ export function PropertyForm({ token, onCreated }: PropertyFormProps) {
     setError(null)
     setSubmitting(true)
     try {
-      const payload = { ...data }
-      if (!payload.roi_estimated) delete (payload as { roi_estimated?: string }).roi_estimated
-      await createProperty(token, payload)
+      await createProperty(token, data)
       setData(initial)
       onCreated()
     } catch {
@@ -99,16 +96,6 @@ export function PropertyForm({ token, onCreated }: PropertyFormProps) {
             placeholder="500.000 - 800.000 EUR"
             value={data.investment_range}
             onChange={(e) => update("investment_range", e.target.value)}
-            className={inputClass}
-          />
-        </Field>
-
-        <Field label="ROI estimado">
-          <input
-            type="text"
-            placeholder="6-8% anual"
-            value={data.roi_estimated || ""}
-            onChange={(e) => update("roi_estimated", e.target.value)}
             className={inputClass}
           />
         </Field>

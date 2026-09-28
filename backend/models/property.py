@@ -24,7 +24,6 @@ class Property(Base):
     location = Column(String, nullable=False)
     asset_type = Column(String, nullable=False)
     investment_range = Column(String, nullable=False)
-    roi_estimated = Column(String, nullable=True)
     horizon = Column(String, nullable=False)
     risk_notes = Column(Text, nullable=False)
     status = Column(String, nullable=False, default="draft")  # draft | published | archived

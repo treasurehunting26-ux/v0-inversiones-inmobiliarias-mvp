@@ -22,7 +22,6 @@ class PropertyCreate(BaseModel):
     investment_range: str = Field(..., min_length=1)
     horizon: str = Field(..., min_length=1)
     risk_notes: str = Field(..., min_length=1)
-    roi_estimated: Optional[str] = None
 
 
 class PropertyStatusUpdate(BaseModel):
@@ -52,7 +51,6 @@ class PropertyAdminRead(BaseModel):
     location: str
     asset_type: str
     investment_range: str
-    roi_estimated: Optional[str] = None
     horizon: str
     risk_notes: str
     status: str

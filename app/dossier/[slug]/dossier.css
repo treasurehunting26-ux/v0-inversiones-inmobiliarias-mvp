@@ -345,6 +345,25 @@
   border-left: 2px solid var(--dp-brass);
   margin: 26px 0 30px;
 }
+.dossier-content img,
+.dossier-content video {
+  width: 100%;
+  display: block;
+  object-fit: cover;
+  border-radius: 2px;
+  margin: 34px 0;
+}
+.dossier-content figure {
+  margin: 34px 0;
+}
+.dossier-content figcaption {
+  margin-top: 9px;
+  font-size: 0.62rem;
+  letter-spacing: 0.05em;
+  color: var(--dp-body-muted);
+  text-transform: uppercase;
+  text-align: center;
+}
 
 /* ---------- panel oscuro (riesgos / due diligence) ---------- */
 .dossier-panel-dark {
