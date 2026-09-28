@@ -9,9 +9,13 @@ import { type NextRequest, NextResponse } from "next/server"
 // seguridad para el caso en que la compresion no reduzca lo suficiente.
 const MAX_PHOTO_BYTES = 15 * 1024 * 1024 // 15 MB
 const MAX_VIDEO_BYTES = 150 * 1024 * 1024 // 150 MB
+// Un dossier prediseñado (HTML con fotos incrustadas en base64) puede pesar
+// varios MB por foto: se permite un limite generoso.
+const MAX_DOCUMENT_BYTES = 60 * 1024 * 1024 // 60 MB
 
 const ALLOWED_PHOTO_TYPES = ["image/jpeg", "image/png", "image/webp", "image/avif"]
 const ALLOWED_VIDEO_TYPES = ["video/mp4", "video/webm", "video/quicktime"]
+const ALLOWED_DOCUMENT_TYPES = ["text/html"]
 
 /**
  * Genera un token de subida de corta duracion para que el navegador suba
@@ -48,13 +52,18 @@ export async function POST(request: NextRequest) {
           kind = null
         }
 
-        if (kind !== "photo" && kind !== "video") {
+        if (kind !== "photo" && kind !== "video" && kind !== "document") {
           throw new Error("Tipo de archivo no reconocido")
         }
 
+        const allowedContentTypes =
+          kind === "photo" ? ALLOWED_PHOTO_TYPES : kind === "video" ? ALLOWED_VIDEO_TYPES : ALLOWED_DOCUMENT_TYPES
+        const maximumSizeInBytes =
+          kind === "photo" ? MAX_PHOTO_BYTES : kind === "video" ? MAX_VIDEO_BYTES : MAX_DOCUMENT_BYTES
+
         return {
-          allowedContentTypes: kind === "photo" ? ALLOWED_PHOTO_TYPES : ALLOWED_VIDEO_TYPES,
-          maximumSizeInBytes: kind === "photo" ? MAX_PHOTO_BYTES : MAX_VIDEO_BYTES,
+          allowedContentTypes,
+          maximumSizeInBytes,
           addRandomSuffix: true,
         }
       },

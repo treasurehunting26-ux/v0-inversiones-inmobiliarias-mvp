@@ -106,12 +106,22 @@ export function PropertyDetail() {
           ))}
         </div>
 
-        {/* Dossier: contenido, fotos y video vienen todos incluidos en este bloque */}
-        {data.description_html && (
-          <div
-            className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_img]:my-8 [&_img]:w-full [&_img]:border [&_img]:border-border [&_img]:object-cover [&_video]:my-8 [&_video]:w-full [&_video]:border [&_video]:border-border"
-            dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(data.description_html) }}
+        {/* Dossier prediseñado fuera del panel: se muestra tal cual, a pantalla completa */}
+        {data.dossier_html_url ? (
+          <iframe
+            src={data.dossier_html_url}
+            title={`Dossier de ${data.title}`}
+            className="mt-16 block h-[85vh] w-full border border-border"
+            sandbox="allow-same-origin"
           />
+        ) : (
+          /* Dossier: contenido, fotos y video vienen todos incluidos en este bloque */
+          data.description_html && (
+            <div
+              className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_img]:my-8 [&_img]:w-full [&_img]:border [&_img]:border-border [&_img]:object-cover [&_video]:my-8 [&_video]:w-full [&_video]:border [&_video]:border-border"
+              dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(data.description_html) }}
+            />
+          )
         )}
 
         {/* CTA */}
