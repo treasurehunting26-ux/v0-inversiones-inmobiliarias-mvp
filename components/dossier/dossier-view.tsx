@@ -7,57 +7,23 @@ interface DossierViewProps {
   property: Property
 }
 
-function PhotoSlot({
-  src,
-  alt,
-  tag,
-  name,
-  spec,
-  size = "xl",
-}: {
-  src?: string | null
-  alt: string
-  tag: string
-  name: string
-  spec?: string
-  size?: "xl" | "gallery"
-}) {
-  return (
-    <div className={`dossier-slot ${size === "xl" ? "xl" : ""} ${src ? "has-media" : ""}`}>
-      {src ? (
-        <img src={src || "/placeholder.svg"} alt={alt} className="dossier-slot-media" loading="lazy" />
-      ) : (
-        <div className="dossier-slot-inner">
-          <span className="dossier-slot-tag dossier-mono">{tag}</span>
-          <div className="dossier-slot-name dossier-serif">{name}</div>
-          {spec && <span className="dossier-slot-spec dossier-mono">{spec}</span>}
-        </div>
-      )}
-    </div>
-  )
-}
-
 /**
  * Pagina de dossier: enlace privado para compartir una propiedad concreta
  * (WhatsApp, email) sin la navegacion completa de la web. Documento
  * autocontenido, con su propio lenguaje editorial (papel, tinta, laton).
+ *
+ * El contenido (texto, fotos y video) se alimenta como un unico dossier
+ * HTML desde el panel admin, asi que no hay galerias ni video separados
+ * aqui: todo vive dentro de `description_html`, en el orden en que se
+ * escribio.
  */
 export function DossierView({ property }: DossierViewProps) {
   const facts = [
     { label: "Tipo de activo", value: property.asset_type },
     { label: "Ubicación", value: property.location },
     { label: "Rango de inversión", value: property.investment_range },
-    { label: "ROI estimado", value: property.roi_estimated ?? "Consultar con asesor" },
     { label: "Horizonte", value: property.horizon },
   ]
-
-  const photos = property.photos ?? []
-  // El video, si existe, ocupa el hero. Si no hay video, la primera foto
-  // hace de fondo del hero y no se repite despues en la galeria.
-  const heroIsVideo = Boolean(property.video_url)
-  const galleryPhotos = heroIsVideo ? photos : photos.slice(1)
-  const heroPhoto = heroIsVideo ? null : photos[0]
-  const [featuredPhoto, ...restPhotos] = galleryPhotos
 
   const hasRiskNotes = Boolean(property.risk_notes && property.risk_notes.trim().length > 0)
 
@@ -72,20 +38,6 @@ export function DossierView({ property }: DossierViewProps) {
         </div>
 
         <header className="dossier-hero">
-          {heroIsVideo ? (
-            <video
-              src={property.video_url ?? undefined}
-              className="dossier-slot-media"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="metadata"
-              poster={photos[0] || undefined}
-            />
-          ) : heroPhoto ? (
-            <img src={heroPhoto || "/placeholder.svg"} alt={property.title} className="dossier-slot-media" />
-          ) : null}
           <div className="dossier-hero-overlay" />
           <div className="dossier-hero-inner">
             <span className="dossier-hero-eyebrow dossier-mono">{property.asset_type}</span>
@@ -121,49 +73,12 @@ export function DossierView({ property }: DossierViewProps) {
             </Reveal>
           ) : null}
 
-          {featuredPhoto ? (
-            <Reveal>
-              <PhotoSlot
-                src={featuredPhoto}
-                alt={`${property.title} — imagen destacada`}
-                tag="Insertar foto"
-                name="Imagen destacada"
-              />
-            </Reveal>
-          ) : null}
-
           {hasRiskNotes ? (
             <Reveal className="dossier-panel-dark">
               <span className="dossier-kicker dossier-mono">Debida Diligencia</span>
               <h3 className="dossier-serif">Riesgos y consideraciones</h3>
               <p>{property.risk_notes}</p>
             </Reveal>
-          ) : null}
-
-          {restPhotos.length > 0 ? (
-            <>
-              <Reveal className="dossier-gallery-head dossier-editorial-head">
-                <span className="dossier-kicker dossier-mono">Recorrido Visual</span>
-                <h2 className="dossier-serif">
-                  Postales de <em>la propiedad</em>
-                </h2>
-              </Reveal>
-              <Reveal>
-                <div className="dossier-masonry">
-                  {restPhotos.map((url, i) => (
-                    <div key={url} className={i === 0 && restPhotos.length > 2 ? "large" : ""}>
-                      <PhotoSlot
-                        src={url}
-                        alt={`${property.title} — foto ${i + 2}`}
-                        tag="Insertar foto"
-                        name={`Foto ${i + 2}`}
-                        size="gallery"
-                      />
-                    </div>
-                  ))}
-                </div>
-              </Reveal>
-            </>
           ) : null}
 
           <Reveal className="dossier-footer-seal">

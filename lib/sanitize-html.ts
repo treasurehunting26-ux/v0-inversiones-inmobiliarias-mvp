@@ -5,9 +5,13 @@ import DOMPurify from "isomorphic-dompurify"
  * Se aplica siempre en el momento de mostrar el contenido (no al guardar),
  * para no perder datos si en el futuro se amplian las etiquetas permitidas.
  *
- * Permite solo etiquetas de formato de texto habituales en una ficha
- * descriptiva (titulos, parrafos, listas, negrita, enlaces). Bloquea
- * scripts, iframes, estilos inline y manejadores de eventos.
+ * Permite etiquetas de formato de texto habituales en una ficha descriptiva
+ * (titulos, parrafos, listas, negrita, enlaces) y tambien imagenes/video,
+ * porque el dossier de una propiedad se alimenta como un unico documento
+ * HTML que ya incluye sus fotos y su video embebidos. Si se pega un
+ * documento completo (con <!DOCTYPE>, <html>, <head>, <body>), DOMPurify
+ * descarta esas etiquetas envolventes y conserva solo el contenido util.
+ * Bloquea scripts, iframes, estilos inline y manejadores de eventos.
  */
 export function sanitizePropertyHtml(html: string): string {
   return DOMPurify.sanitize(html, {
@@ -28,7 +32,28 @@ export function sanitizePropertyHtml(html: string): string {
       "a",
       "blockquote",
       "span",
+      "div",
+      "img",
+      "video",
+      "source",
+      "figure",
+      "figcaption",
     ],
-    ALLOWED_ATTR: ["href", "target", "rel"],
+    ALLOWED_ATTR: [
+      "href",
+      "target",
+      "rel",
+      "src",
+      "alt",
+      "controls",
+      "poster",
+      "loop",
+      "muted",
+      "autoplay",
+      "playsinline",
+      "preload",
+      "width",
+      "height",
+    ],
   })
 }

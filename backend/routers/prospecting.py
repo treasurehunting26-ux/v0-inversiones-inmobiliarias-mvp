@@ -48,8 +48,9 @@ from schemas.prospecting import (
     ProspectingFollowUpListResponse,
     ProspectingFollowUpRead,
 )
-from services.rss_feeds import fetch_all_configured_feeds, get_configured_sources
+from services.rss_feeds import fetch_items_for_configs
 from services.scoring import score_signal
+from services.source_registry import list_active_sources, to_source_config
 
 MIN_QUALIFYING_SCORE = 60
 
@@ -140,12 +141,14 @@ def admin_migrate_market_fields(
     summary="Ejecutar un ciclo de captación (Agente Captador)",
     description="""
     Disparado por el Cron Job de Vercel (nunca directamente por un
-    visitante). Lee las fuentes RSS configuradas, puntúa cada item con
+    visitante). Lee las fuentes ACTIVAS del Source Registry (tabla
+    prospecting_sources, gestionable desde /admin), puntúa cada item con
     IA según los 5 criterios de FASE2_AGENTE_CAPTADOR.md, y guarda como
     señal "pending_review" solo los que alcanzan score >= 60.
 
-    No contacta a nadie. No crea Investor. Solo genera señales para
-    revisión humana.
+    Las fuentes inactivas o desactivadas desde /admin nunca se
+    consultan. No contacta a nadie. No crea Investor. Solo genera
+    señales para revisión humana.
     """,
 )
 def run_prospecting_cycle(
@@ -153,11 +156,15 @@ def run_prospecting_cycle(
     _: None = Depends(verify_admin_token),
 ) -> ProspectingRunResult:
     run_id = str(uuid.uuid4())
-    sources = get_configured_sources()
+    active_sources = list_active_sources(db)
     run_log = ProspectingRunLog(
         id=run_id,
         started_at=datetime.utcnow(),
-        sources_checked=", ".join(sources.keys()) if sources else "(ninguna configurada)",
+        sources_checked=(
+            ", ".join(s.name for s in active_sources)
+            if active_sources
+            else "(ninguna fuente activa en el registry)"
+        ),
         signals_found=0,
         signals_qualified=0,
         status="success",
@@ -166,7 +173,11 @@ def run_prospecting_cycle(
     db.commit()
 
     try:
-        items = fetch_all_configured_feeds()
+        configs = [to_source_config(s) for s in active_sources]
+        items = fetch_items_for_configs(configs)
+        checked_at = datetime.utcnow()
+        for source in active_sources:
+            source.last_checked_at = checked_at
         available_markets = _get_available_property_markets(db)
         qualified = 0
 
@@ -209,7 +220,7 @@ def run_prospecting_cycle(
 
         return ProspectingRunResult(
             run_id=run_id,
-            sources_checked=list(sources.keys()),
+            sources_checked=[s.name for s in active_sources],
             signals_found=len(items),
             signals_qualified=qualified,
             status="success",

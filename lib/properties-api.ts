@@ -11,7 +11,6 @@ export type Property = {
   location: string
   asset_type: string
   investment_range: string
-  roi_estimated: string | null
   horizon: string
   risk_notes: string
   description_html?: string | null

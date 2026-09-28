@@ -29,7 +29,6 @@ SEED_PROPERTIES = [
         "location": "Costa del Sol, España",
         "asset_type": "Residencial de lujo",
         "investment_range": "2.500.000 € - 3.200.000 €",
-        "roi_estimated": "6,5% anual",
         "horizon": "5-7 años",
         "risk_notes": (
             "Mercado consolidado con demanda internacional estable. "
@@ -42,7 +41,6 @@ SEED_PROPERTIES = [
         "location": "Madrid, España",
         "asset_type": "Rehabilitación integral",
         "investment_range": "4.000.000 € - 5.500.000 €",
-        "roi_estimated": "8,2% anual",
         "horizon": "3-5 años",
         "risk_notes": (
             "Activo prime en zona de escasez estructural de oferta. "
@@ -55,7 +53,6 @@ SEED_PROPERTIES = [
         "location": "Lisboa, Portugal",
         "asset_type": "Renta residencial",
         "investment_range": "1.200.000 € - 1.800.000 €",
-        "roi_estimated": "7,0% anual",
         "horizon": "4-6 años",
         "risk_notes": (
             "Fuerte demanda de alquiler urbano y turístico. "
@@ -68,7 +65,6 @@ SEED_PROPERTIES = [
         "location": "Tulum, México",
         "asset_type": "Desarrollo hotelero",
         "investment_range": "900.000 USD - 1.500.000 USD",
-        "roi_estimated": "12,0% anual",
         "horizon": "5-8 años",
         "risk_notes": (
             "Alto potencial de revalorización en destino emergente de lujo. "
@@ -81,7 +77,6 @@ SEED_PROPERTIES = [
         "location": "Ciudad de México, México",
         "asset_type": "Comercial / oficinas",
         "investment_range": "3.000.000 USD - 4.200.000 USD",
-        "roi_estimated": "9,5% anual",
         "horizon": "6-9 años",
         "risk_notes": (
             "Contratos de arrendamiento corporativo a largo plazo que aportan "
@@ -94,7 +89,6 @@ SEED_PROPERTIES = [
         "location": "Punta del Este, Uruguay",
         "asset_type": "Residencial de lujo",
         "investment_range": "1.100.000 USD - 1.600.000 USD",
-        "roi_estimated": "6,8% anual",
         "horizon": "5-7 años",
         "risk_notes": (
             "Jurisdicción con alta seguridad jurídica y demanda regional consolidada. "
@@ -107,7 +101,6 @@ SEED_PROPERTIES = [
         "location": "Palm Jumeirah, Dubái",
         "asset_type": "Residencial de lujo",
         "investment_range": "3.500.000 USD - 4.800.000 USD",
-        "roi_estimated": "11,0% anual",
         "horizon": "4-6 años",
         "risk_notes": (
             "Mercado sin impuesto sobre la renta y con fuerte entrada de capital "
@@ -120,7 +113,6 @@ SEED_PROPERTIES = [
         "location": "Dubai Marina, Dubái",
         "asset_type": "Renta corta gestionada",
         "investment_range": "800.000 USD - 1.300.000 USD",
-        "roi_estimated": "10,5% anual",
         "horizon": "3-5 años",
         "risk_notes": (
             "Ocupación alta sostenida por el turismo de negocios y ocio. "
@@ -162,7 +154,6 @@ def main() -> int:
                     location=item["location"],
                     asset_type=item["asset_type"],
                     investment_range=item["investment_range"],
-                    roi_estimated=item["roi_estimated"],
                     horizon=item["horizon"],
                     risk_notes=item["risk_notes"],
                     status=target_status,

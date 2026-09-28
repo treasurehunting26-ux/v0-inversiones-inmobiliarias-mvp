@@ -191,16 +191,33 @@ def fetch_feed_items(source_name: str, feed_url: str, *, max_items: int = 15) ->
     return items
 
 
-def fetch_all_configured_feeds(*, max_items_per_source: int = 15) -> list[FeedItem]:
+def fetch_items_for_configs(
+    configs: list[SourceConfig], *, max_items_per_source: int = 15
+) -> list[FeedItem]:
     """
-    Recorre todas las fuentes configuradas y devuelve los items
-    combinados. Omite las fuentes explícitamente marcadas como inactivas
-    en PROSPECTING_SOURCES_METADATA (por defecto, todas están activas).
+    Recorre una lista explícita de SourceConfig (ya filtrada por quien
+    llama) y devuelve los items combinados de cada fuente activa. Omite
+    cualquier fuente marcada como inactiva, sin importar de dónde venga
+    la configuración (env vars o Source Registry en base de datos).
     """
     all_items: list[FeedItem] = []
-    for config in get_source_configs():
+    for config in configs:
         if not config.active:
             logger.info("[prospecting] Fuente '%s' inactiva; se omite.", config.name)
             continue
         all_items.extend(fetch_feed_items(config.name, config.url, max_items=max_items_per_source))
     return all_items
+
+
+def fetch_all_configured_feeds(*, max_items_per_source: int = 15) -> list[FeedItem]:
+    """
+    Compatibilidad con el ciclo legado: lee las fuentes configuradas por
+    variables de entorno (PROSPECTING_RSS_SOURCES /
+    PROSPECTING_SOURCES_METADATA) y devuelve sus items combinados.
+
+    El ciclo real del Agente Captador (routers/prospecting.py) ya no usa
+    esta función: consulta el Source Registry en base de datos vía
+    services.source_registry.get_active_source_configs(). Se mantiene
+    aquí por compatibilidad y para la migración inicial de fuentes.
+    """
+    return fetch_items_for_configs(get_source_configs(), max_items_per_source=max_items_per_source)

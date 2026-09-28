@@ -54,7 +54,6 @@ export function PropertyDetail() {
     { label: "Tipo de activo", value: data.asset_type },
     { label: "Ubicación", value: data.location },
     { label: "Rango de inversión", value: data.investment_range },
-    { label: "ROI estimado", value: data.roi_estimated ?? "Consultar con asesor" },
     { label: "Horizonte", value: data.horizon },
   ]
 
@@ -107,37 +106,10 @@ export function PropertyDetail() {
           ))}
         </div>
 
-        {/* Video */}
-        {data.video_url && (
-          <div className="mt-16">
-            <video
-              src={data.video_url}
-              controls
-              preload="none"
-              poster={data.photos?.[0]}
-              className="w-full rounded-none border border-border bg-[var(--color-noir)]"
-            />
-          </div>
-        )}
-
-        {/* Galeria de fotos */}
-        {data.photos && data.photos.length > 0 && (
-          <div className="mt-16 grid grid-cols-2 gap-2 md:grid-cols-3">
-            {data.photos.map((url, i) => (
-              <img
-                key={url}
-                src={url || "/placeholder.svg"}
-                alt={`${data.title} — foto ${i + 1}`}
-                className="aspect-[4/3] w-full border border-border object-cover"
-              />
-            ))}
-          </div>
-        )}
-
-        {/* Contenido detallado */}
+        {/* Dossier: contenido, fotos y video vienen todos incluidos en este bloque */}
         {data.description_html && (
           <div
-            className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground"
+            className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_img]:my-8 [&_img]:w-full [&_img]:border [&_img]:border-border [&_img]:object-cover [&_video]:my-8 [&_video]:w-full [&_video]:border [&_video]:border-border"
             dangerouslySetInnerHTML={{ __html: sanitizePropertyHtml(data.description_html) }}
           />
         )}
