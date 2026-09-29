@@ -50,6 +50,20 @@ export function PropertyDetail() {
     )
   }
 
+  // Si hay un dossier prediseñado (pagina HTML completa subida por el admin),
+  // esa pagina ES la ficha: se muestra a pantalla completa, sin el
+  // encabezado/CTA genericos de abajo, para respetar su propio diseño.
+  if (data.dossier_html_url) {
+    return (
+      <iframe
+        src={data.dossier_html_url}
+        title={`Dossier de ${data.title}`}
+        className="block h-screen w-full border-0"
+        sandbox="allow-same-origin"
+      />
+    )
+  }
+
   const facts = [
     { label: "Tipo de activo", value: data.asset_type },
     { label: "Ubicación", value: data.location },

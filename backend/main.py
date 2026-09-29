@@ -66,7 +66,7 @@ app.add_middleware(
     allow_origins=allowed_origins,
     # Cubre tambien previews de Vercel (*.vercel.app) y cualquier subdominio
     # del dominio de produccion (ej. www.).
-    allow_origin_regex=r"https://(.*\.vercel\.app|(.*\.)?bgestateconsulting\.com)",
+    allow_origin_regex=r"https://(.*\.vercel\.app|(.*\.)?bgestateconsulting\.com|.*\.vusercontent\.net|.*\.v0\.(app|dev))",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
