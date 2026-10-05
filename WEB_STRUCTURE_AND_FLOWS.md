@@ -122,6 +122,13 @@ Debe:
 ### CTA por propiedad
 > **"Consultar esta oportunidad con el asistente"**
 
+### Ficha de cada propiedad = su dossier (Octubre 2026)
+
+- Cada propiedad se publica subiendo **un único dossier HTML** desde `/admin` → Propiedades → «Nueva propiedad». Ese dossier **es** la ficha en la web, tal cual fue diseñado (con sus estilos y animaciones), a pantalla completa con una barra mínima de marca y acceso a Brigitte.
+- Las fotos y vídeos incrustados en el dossier se suben automáticamente a Vercel Blob; el HTML se guarda en la base de datos (Blob no permite mostrar páginas HTML).
+- Los datos de la ficha (título, ubicación, tipo, inversión, horizonte, riesgos) se proponen leyendo el dossier y **los revisa y guarda un humano** antes de publicar. Los usan el catálogo, el SEO y Brigitte.
+- El dossier se ejecuta aislado (sandbox sin acceso al origen de la web).
+
 ### Prohibiciones
 - Mostrar propiedades no validadas
 - Ofrecer compra directa

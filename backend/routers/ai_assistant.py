@@ -48,6 +48,7 @@ from models.lead_escalation import EscalationStatus, LeadEscalation
 from models.property import Property
 from rate_limit import enforce_ai_rate_limit
 from services.ai_usage import budget_exhausted, record_usage
+from services.dossier import html_to_text
 from schemas.ai_assistant import (
     AssistantRequest,
     AssistantResponse,
@@ -66,6 +67,9 @@ MODEL = "openai/gpt-4o-mini"
 MAX_HISTORY = 12  # AI_RUNTIME_AND_COST_GUARDRAILS: contexto acotado
 MAX_TOKENS = 450
 FIELD_MAX = 120
+# Contexto del dossier (AI_RUNTIME_AND_COST_GUARDRAILS: contexto acotado)
+DOSSIER_EXCERPT_CHARS = 400
+DOSSIER_FOCUS_CHARS = 4000
 
 LANGUAGE_NAMES = {
     "es": "Spanish",
@@ -179,6 +183,8 @@ def get_published_properties(db: Session) -> list[dict]:
             "investment_range": p.investment_range,
             "horizon": p.horizon,
             "risk_notes": p.risk_notes,
+            # Extracto del dossier: lo que el equipo ha publicado sobre el activo.
+            "dossier_excerpt": html_to_text(p.description_html, limit=DOSSIER_EXCERPT_CHARS),
         }
         for p in properties
     ]
@@ -205,8 +211,10 @@ def build_context_prompt(properties: list[dict]) -> str:
         lines.append(
             f"- {p['title']} | Location: {p['location']} | Type: {p['asset_type']} | "
             f"Investment range: {p['investment_range']} | Horizon: {p['horizon']} | "
-            f"Risk notes: {p['risk_notes']}"
+            f"Risk notes: {p['risk_notes'] or '-'}"
         )
+        if p.get("dossier_excerpt"):
+            lines.append(f"  Dossier excerpt: {p['dossier_excerpt']}")
     return "\n".join(lines)
 
 
@@ -221,10 +229,17 @@ def get_property_focus(db: Session, property_id: Optional[str]) -> str:
     )
     if not prop:
         return ""
-    return (
+    context = (
         "VISITOR CONTEXT:\nThe visitor opened the chat from the page of this opportunity: "
         f"{prop.title} ({prop.location}). Assume their questions refer to it unless they say otherwise."
     )
+    dossier_text = html_to_text(prop.description_html, limit=DOSSIER_FOCUS_CHARS)
+    if dossier_text:
+        context += (
+            "\n\nDOSSIER OF THIS OPPORTUNITY (published by the team; you may use these facts, "
+            "and only these, to answer about it):\n" + dossier_text
+        )
+    return context
 
 
 def get_investor_profile_context(investor: Optional[Investor]) -> str:

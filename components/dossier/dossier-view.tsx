@@ -2,6 +2,8 @@ import Link from "next/link"
 import type { Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
 import { Reveal } from "@/components/dossier/reveal"
+import { DossierFrame } from "@/components/dossier/dossier-frame"
+import { isFullHtmlDocument } from "@/lib/dossier-import"
 
 interface DossierViewProps {
   property: Property
@@ -17,20 +19,18 @@ interface DossierViewProps {
  * aqui: todo vive dentro de `description_html`, en el orden en que se
  * escribio.
  *
- * Si la propiedad tiene un dossier prediseñado fuera del panel
- * (`dossier_html_url`, una pagina HTML completa y autocontenida subida
- * a Blob), este enlace muestra esa pagina tal cual dentro de un iframe a
- * pantalla completa, en vez de construir la pagina con la plantilla de
- * abajo.
+ * Si la propiedad tiene su dossier completo (documento HTML importado
+ * desde el panel), este enlace muestra esa pagina tal cual, a pantalla
+ * completa, en vez de construir la pagina con la plantilla de abajo.
  */
 export function DossierView({ property }: DossierViewProps) {
-  if (property.dossier_html_url) {
+  // El dossier completo (documento HTML) es la pagina tal cual.
+  if (property.description_html && isFullHtmlDocument(property.description_html)) {
     return (
-      <iframe
-        src={property.dossier_html_url}
+      <DossierFrame
+        html={property.description_html}
         title={`Dossier de ${property.title}`}
-        className="block h-screen w-full border-0"
-        sandbox="allow-same-origin"
+        className="h-dvh"
       />
     )
   }

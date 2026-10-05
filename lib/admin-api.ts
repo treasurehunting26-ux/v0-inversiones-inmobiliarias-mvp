@@ -18,11 +18,25 @@ export type AdminProperty = {
   approved_by: string | null
   created_at: string
   updated_at: string
-  description_html: string | null
   photos: string[] | null
   video_url: string | null
   dossier_slug: string | null
+  /** Dossier subido con el sistema anterior a Vercel Blob (no se puede mostrar como pagina). */
   dossier_html_url: string | null
+  has_dossier: boolean
+  dossier_kb: number
+}
+
+/** Propiedad con el HTML del dossier (GET /admin/properties/{id}). */
+export type AdminPropertyDetail = AdminProperty & { description_html: string | null }
+
+export type PropertyFields = {
+  title: string
+  location: string
+  asset_type: string
+  investment_range: string
+  horizon: string
+  risk_notes: string
 }
 
 export type PropertyContentPayload = {
@@ -32,13 +46,9 @@ export type PropertyContentPayload = {
   dossier_html_url?: string
 }
 
-export type PropertyCreatePayload = {
-  title: string
-  location: string
-  asset_type: string
-  investment_range: string
-  horizon: string
-  risk_notes: string
+export type PropertyCreatePayload = PropertyFields & {
+  description_html?: string
+  photos?: string[]
 }
 
 function authHeaders(token: string): HeadersInit {
@@ -225,33 +235,48 @@ export async function uploadPhotoFromUrl(token: string, url: string): Promise<st
   return uploadMedia(token, file, "photo")
 }
 
-/**
- * Sube un dossier ya diseñado fuera del panel (un archivo .html completo
- * y autocontenido, con sus fotos incrustadas) a Vercel Blob. Cuando la
- * propiedad tiene un dossier_html_url, el enlace de dossier lo sirve tal
- * cual en vez de construir la pagina con el editor de contenido.
- */
-export async function uploadDossierHtml(token: string, file: File): Promise<string> {
-  const { upload } = await import("@vercel/blob/client")
-  const controller = new AbortController()
-  const timeoutId = setTimeout(() => controller.abort(), 60_000)
+
+async function adminRequest<T>(token: string, path: string, init?: RequestInit): Promise<T> {
+  let res: Response
   try {
-    const blob = await upload(`propiedades/dossiers/${file.name}`, file, {
-      access: "public",
-      handleUploadUrl: "/api/admin/upload",
-      headers: { "X-Admin-Token": token },
-      clientPayload: JSON.stringify({ kind: "document" }),
-      abortSignal: controller.signal,
-    })
-    return blob.url
-  } catch (err) {
-    if (controller.signal.aborted) {
-      throw new Error("La subida esta tardando demasiado. Comprueba tu conexion e intentalo de nuevo.")
-    }
-    throw new Error(err instanceof Error ? err.message : "No se pudo subir el dossier")
-  } finally {
-    clearTimeout(timeoutId)
+    res = await fetch(`${API_URL}${path}`, { ...init, headers: authHeaders(token), cache: "no-store" })
+  } catch {
+    throw new Error("No se pudo contactar con el servidor. Revisa tu conexion e intentalo de nuevo.")
   }
+  if (!res.ok) {
+    if (res.status === 401) throw new Error("UNAUTHORIZED")
+    const data = await res.json().catch(() => ({}))
+    throw new Error(typeof data.detail === "string" ? data.detail : `Error ${res.status}`)
+  }
+  return res.json() as Promise<T>
+}
+
+export function getProperty(token: string, id: string): Promise<AdminPropertyDetail> {
+  return adminRequest(token, `/admin/properties/${id}`)
+}
+
+export function updateFields(token: string, id: string, fields: Partial<PropertyFields>): Promise<AdminProperty> {
+  return adminRequest(token, `/admin/properties/${id}`, { method: "PATCH", body: JSON.stringify(fields) })
+}
+
+/** Propuesta de datos leyendo el texto del dossier (null = no aparece). La revisa un humano. */
+export function extractFields(
+  token: string,
+  text: string,
+  titleHint?: string | null,
+): Promise<{ [K in keyof PropertyFields]: string | null }> {
+  return adminRequest(token, "/admin/properties/extract-fields", {
+    method: "POST",
+    body: JSON.stringify({ text, title_hint: titleHint ?? null }),
+  })
+}
+
+/** HTML de un dossier subido antes a Vercel Blob, para reimportarlo al nuevo formato. */
+export async function fetchLegacyDossier(token: string, id: string): Promise<string> {
+  const data = await adminRequest<{ html: string }>(token, `/admin/properties/${id}/fetch-dossier-url`, {
+    method: "POST",
+  })
+  return data.html
 }
 
 export type AiUsageReport = {

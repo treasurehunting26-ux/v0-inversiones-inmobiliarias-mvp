@@ -8,8 +8,9 @@ import { propertyFetcher, type Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
 import { useI18n } from "@/lib/i18n/client"
 import { localizedPath } from "@/lib/i18n/config"
-import { format } from "@/lib/i18n/format"
 import { useBrigitte } from "@/components/brigitte/brigitte-provider"
+import { DossierListing } from "@/components/dossier/dossier-listing"
+import { isFullHtmlDocument } from "@/lib/dossier-import"
 
 export function PropertyDetail() {
   const { locale, dict } = useI18n()
@@ -65,38 +66,13 @@ export function PropertyDetail() {
     )
   }
 
-  // El dossier puede llegar como un documento HTML completo (con su propio
-  // <html>/<head>/<style>), ya sea subido como archivo (dossier_html_url) o
-  // pegado directamente en el editor de contenido (description_html). En
-  // ambos casos esa pagina ES la ficha: se muestra a pantalla completa, con
-  // su propio diseño, sin el encabezado/CTA genericos de abajo.
-  const isFullHtmlDocument = (html: string) => /<html[\s>]|<!doctype html/i.test(html)
-  const fullDossierHtml = data.dossier_html_url
-    ? null
-    : data.description_html && isFullHtmlDocument(data.description_html)
-      ? data.description_html
-      : null
-
-  if (data.dossier_html_url) {
-    return (
-      <iframe
-        src={data.dossier_html_url}
-        title={format(t.dossierOf, { title: data.title })}
-        className="block h-screen w-full border-0"
-        sandbox="allow-same-origin"
-      />
-    )
-  }
-
-  if (fullDossierHtml) {
-    return (
-      <iframe
-        srcDoc={fullDossierHtml}
-        title={format(t.dossierOf, { title: data.title })}
-        className="block h-screen w-full border-0"
-        sandbox="allow-same-origin"
-      />
-    )
+  // El dossier (documento HTML completo) ES la ficha: se muestra tal cual,
+  // a pantalla completa. Los dossiers subidos con el sistema anterior a
+  // Vercel Blob (dossier_html_url) no se pueden mostrar como pagina (Blob
+  // lo impide con sus cabeceras): hasta reimportarlos desde el panel se
+  // muestra la ficha basica de abajo.
+  if (data.description_html && isFullHtmlDocument(data.description_html)) {
+    return <DossierListing id={data.id} title={data.title} html={data.description_html} />
   }
 
   const facts = [
@@ -104,7 +80,7 @@ export function PropertyDetail() {
     { label: t.facts.location, value: data.location },
     { label: t.facts.investmentRange, value: data.investment_range },
     { label: t.facts.horizon, value: data.horizon },
-  ]
+  ].filter((fact) => fact.value)
 
   return (
     <article>
@@ -155,16 +131,8 @@ export function PropertyDetail() {
           ))}
         </div>
 
-        {/* Dossier prediseñado fuera del panel: se muestra tal cual, a pantalla completa */}
-        {data.dossier_html_url ? (
-          <iframe
-            src={data.dossier_html_url}
-            title={format(t.dossierOf, { title: data.title })}
-            className="mt-16 block h-[85vh] w-full border border-border"
-            sandbox="allow-same-origin"
-          />
-        ) : (
-          /* Dossier: contenido, fotos y video vienen todos incluidos en este bloque */
+        {/* Contenido HTML parcial (fichas antiguas creadas con el editor de texto) */}
+        {(
           data.description_html && (
             <div
               className="prose prose-neutral mt-16 max-w-none text-foreground [&_a]:text-[var(--color-gold)] [&_h2]:font-serif [&_h2]:text-2xl [&_h2]:font-light [&_h3]:font-serif [&_h3]:text-xl [&_h3]:font-light [&_p]:leading-relaxed [&_p]:text-muted-foreground [&_img]:my-8 [&_img]:w-full [&_img]:border [&_img]:border-border [&_img]:object-cover [&_video]:my-8 [&_video]:w-full [&_video]:border [&_video]:border-border"

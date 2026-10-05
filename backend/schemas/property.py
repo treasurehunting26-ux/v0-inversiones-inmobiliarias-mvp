@@ -21,6 +21,8 @@ class PropertyRead(BaseModel):
     investment_range: str
     horizon: str
     risk_notes: str
+    # Portada para la tarjeta del catalogo (primera foto del dossier).
+    photos: Optional[list[str]] = None
 
     class Config:
         from_attributes = True
@@ -33,7 +35,6 @@ class PropertyDetailRead(PropertyRead):
     El HTML se sanea en el frontend antes de renderizar.
     """
     description_html: Optional[str] = None
-    photos: Optional[list[str]] = None
     video_url: Optional[str] = None
     dossier_slug: Optional[str] = None
     dossier_html_url: Optional[str] = None

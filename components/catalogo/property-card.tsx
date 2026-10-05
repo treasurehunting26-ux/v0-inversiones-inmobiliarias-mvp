@@ -6,6 +6,15 @@ import type { Property } from "@/lib/properties-api"
 import { useI18n } from "@/lib/i18n/client"
 import { localizedPath } from "@/lib/i18n/config"
 
+/** Dominios configurados en next.config.mjs (images.remotePatterns). */
+function isOptimizable(url: string): boolean {
+  try {
+    return new URL(url).hostname.endsWith(".public.blob.vercel-storage.com")
+  } catch {
+    return false
+  }
+}
+
 export function PropertyCard({ property }: { property: Property }) {
   const { locale, dict } = useI18n()
   const t = dict.opportunities
@@ -18,14 +27,23 @@ export function PropertyCard({ property }: { property: Property }) {
     >
       {/* Cabecera visual */}
       <div className="relative aspect-[4/3] overflow-hidden bg-[var(--color-noir)]">
-        {coverPhoto ? (
+        {coverPhoto && isOptimizable(coverPhoto) ? (
           <Image
-            src={coverPhoto || "/placeholder.svg"}
+            src={coverPhoto}
             alt={property.title}
             fill
             crossOrigin="anonymous"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : coverPhoto ? (
+          // Portada en otro dominio (ej. og:image del dossier): next/image solo
+          // admite los dominios configurados y fallaria todo el catalogo.
+          <img
+            src={coverPhoto}
+            alt={property.title}
+            loading="lazy"
+            className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <>
@@ -60,15 +78,17 @@ export function PropertyCard({ property }: { property: Property }) {
           <p className="text-sm uppercase tracking-wider text-muted-foreground">{property.location}</p>
         </div>
 
-        <div className="mt-auto grid grid-cols-2 gap-4 border-t border-border pt-5">
+        <div className={`mt-auto grid gap-4 border-t border-border pt-5 ${property.horizon ? "grid-cols-2" : "grid-cols-1"}`}>
           <div className="flex flex-col gap-1">
             <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.investment}</span>
             <span className="text-sm font-semibold text-foreground">{property.investment_range}</span>
           </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.horizon}</span>
-            <span className="text-sm font-semibold text-foreground">{property.horizon}</span>
-          </div>
+          {property.horizon && (
+            <div className="flex flex-col gap-1">
+              <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.horizon}</span>
+              <span className="text-sm font-semibold text-foreground">{property.horizon}</span>
+            </div>
+          )}
         </div>
 
         <span className="inline-flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-foreground">
