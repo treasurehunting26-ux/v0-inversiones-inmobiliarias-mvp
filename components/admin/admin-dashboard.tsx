@@ -10,16 +10,17 @@ import {
 import { PropertyForm } from "./property-form"
 import { PropertyList } from "./property-list"
 import { ProspectingPanel } from "./prospecting-panel"
+import { LeadsPanel } from "./leads-panel"
 
 interface AdminDashboardProps {
   token: string
   onLogout: () => void
 }
 
-type Tab = "properties" | "prospecting"
+type Tab = "leads" | "properties" | "prospecting"
 
 export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
-  const [tab, setTab] = useState<Tab>("properties")
+  const [tab, setTab] = useState<Tab>("leads")
   const [properties, setProperties] = useState<AdminProperty[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
@@ -78,7 +79,7 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
             Panel de administracion
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            Gestion manual del catalogo y revision del Agente Captador.
+            Leads de inversores, gestion manual del catalogo y revision del Agente Captador.
           </p>
         </div>
         <button
@@ -92,6 +93,9 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
       </header>
 
       <div className="mb-8 flex gap-2 border-b border-border">
+        <TabButton active={tab === "leads"} onClick={() => setTab("leads")}>
+          Leads
+        </TabButton>
         <TabButton active={tab === "properties"} onClick={() => setTab("properties")}>
           Propiedades
         </TabButton>
@@ -100,7 +104,9 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
         </TabButton>
       </div>
 
-      {tab === "properties" ? (
+      {tab === "leads" ? (
+        <LeadsPanel token={token} onUnauthorized={onLogout} />
+      ) : tab === "properties" ? (
         <>
           <div className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
