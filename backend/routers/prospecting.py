@@ -25,8 +25,10 @@ REGLAS INVIOLABLES (igual que el documento original):
   supresión GDPR).
 """
 
+import logging
+import os
 import uuid
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import text
@@ -38,6 +40,7 @@ from models.property import Property
 from models.prospecting_signal import ProspectingSignal, SignalStatus
 from models.prospecting_run_log import ProspectingRunLog
 from models.prospecting_followup import ProspectingFollowUp, FollowUpStatus
+from models.prospecting_seen_item import ProspectingSeenItem
 from routers.admin_properties import verify_admin_token
 from schemas.prospecting import (
     ProspectingSignalListResponse,
@@ -48,11 +51,21 @@ from schemas.prospecting import (
     ProspectingFollowUpListResponse,
     ProspectingFollowUpRead,
 )
+from services.dedup import item_fingerprint, normalized_link
 from services.rss_feeds import fetch_items_for_configs
 from services.scoring import score_signal
 from services.source_registry import list_active_sources, to_source_config
 
 MIN_QUALIFYING_SCORE = 60
+
+# AI_RUNTIME_AND_COST_GUARDRAILS.md: tope de items NUEVOS puntuados por
+# ejecucion (coste y tiempo acotados). Lo que no entra se puntua en la
+# siguiente ejecucion, porque no se marca como visto.
+MAX_NEW_ITEMS_PER_RUN = int(os.getenv("PROSPECTING_MAX_NEW_ITEMS_PER_RUN", "30"))
+# Cuanto tiempo se recuerda que un item ya fue analizado.
+SEEN_RETENTION_DAYS = int(os.getenv("PROSPECTING_SEEN_RETENTION_DAYS", "180"))
+
+logger = logging.getLogger("uvicorn.error")
 
 router = APIRouter(
     prefix="/prospecting",
@@ -179,19 +192,55 @@ def run_prospecting_cycle(
         for source in active_sources:
             source.last_checked_at = checked_at
         available_markets = _get_available_property_markets(db)
-        qualified = 0
 
+        # Las huellas caducadas se olvidan (GDPR: minimo tiempo necesario).
+        db.query(ProspectingSeenItem).filter(
+            ProspectingSeenItem.first_seen_at < checked_at - timedelta(days=SEEN_RETENTION_DAYS)
+        ).delete(synchronize_session=False)
+        db.commit()
+
+        # 1. Deduplicar: dentro de esta lectura y contra lo ya analizado.
+        unique: dict[str, object] = {}
         for item in items:
+            unique.setdefault(item_fingerprint(item), item)
+        seen = {
+            fp
+            for (fp,) in db.query(ProspectingSeenItem.fingerprint)
+            .filter(ProspectingSeenItem.fingerprint.in_(list(unique)))
+            .all()
+        } if unique else set()
+        # Compatibilidad: señales creadas antes de existir el registro de huellas.
+        existing_links = {
+            link for (link,) in db.query(ProspectingSignal.source_url)
+            .filter(ProspectingSignal.source_url.isnot(None)).all()
+        }
+        pending = [
+            (fp, item)
+            for fp, item in unique.items()
+            if fp not in seen and (not item.link or item.link not in existing_links)
+        ]
+        skipped_seen = len(unique) - len(pending)
+        to_score = pending[:MAX_NEW_ITEMS_PER_RUN]
+        deferred = len(pending) - len(to_score)
+
+        # 2. Puntuar solo lo nuevo. Se confirma item a item: si la
+        # ejecucion se corta, lo ya analizado no se vuelve a pagar.
+        qualified = 0
+        for fp, item in to_score:
             result = score_signal(
                 item.title,
                 item.snippet,
                 available_property_markets=available_markets,
             )
+            if not result.scored:
+                # Fallo tecnico del modelo: no se marca como visto, se reintenta.
+                continue
+            db.add(ProspectingSeenItem(fingerprint=fp, first_seen_at=checked_at, score=result.score))
             if result.score >= MIN_QUALIFYING_SCORE:
                 signal = ProspectingSignal(
                     id=str(uuid.uuid4()),
                     source=item.source,
-                    source_url=item.link or None,
+                    source_url=normalized_link(item) or item.link or None,
                     title=item.title,
                     snippet=item.snippet,
                     score=result.score,
@@ -212,6 +261,12 @@ def run_prospecting_cycle(
                 )
                 db.add(signal)
                 qualified += 1
+            db.commit()
+
+        logger.info(
+            "[prospecting] run %s: %d items, %d ya vistos, %d puntuados, %d aplazados, %d cualificados",
+            run_id, len(items), skipped_seen, len(to_score), deferred, qualified,
+        )
 
         run_log.finished_at = datetime.utcnow()
         run_log.signals_found = len(items)
@@ -224,6 +279,9 @@ def run_prospecting_cycle(
             signals_found=len(items),
             signals_qualified=qualified,
             status="success",
+            skipped_already_seen=skipped_seen,
+            scored=len(to_score),
+            deferred=deferred,
         )
     except Exception as exc:  # noqa: BLE001
         run_log.finished_at = datetime.utcnow()

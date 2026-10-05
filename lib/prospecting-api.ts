@@ -112,7 +112,13 @@ export async function listRuns(token: string): Promise<ProspectingRunLog[]> {
 
 export async function runProspectingCycle(
   token: string,
-): Promise<{ signals_found: number; signals_qualified: number }> {
+): Promise<{
+  signals_found: number
+  signals_qualified: number
+  skipped_already_seen?: number
+  scored?: number
+  deferred?: number
+}> {
   const res = await fetch(`${API_URL}/prospecting/run`, {
     method: "POST",
     headers: authHeaders(token),

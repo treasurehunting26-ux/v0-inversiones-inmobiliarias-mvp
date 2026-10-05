@@ -60,6 +60,11 @@ class ProspectingRunResult(BaseModel):
     signals_found: int
     signals_qualified: int
     status: str
+    # Deduplicacion (ver services/dedup.py): items ya analizados en
+    # ejecuciones anteriores, puntuados ahora y aplazados por el tope.
+    skipped_already_seen: int = 0
+    scored: int = 0
+    deferred: int = 0
 
 
 class ProspectingRunLogRead(BaseModel):

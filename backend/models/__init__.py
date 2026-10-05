@@ -6,6 +6,7 @@ from models.prospecting_signal import ProspectingSignal
 from models.prospecting_run_log import ProspectingRunLog
 from models.prospecting_followup import ProspectingFollowUp
 from models.prospecting_source import ProspectingSource
+from models.prospecting_seen_item import ProspectingSeenItem
 
 __all__ = [
     "Property",
@@ -17,4 +18,5 @@ __all__ = [
     "ProspectingRunLog",
     "ProspectingFollowUp",
     "ProspectingSource",
+    "ProspectingSeenItem",
 ]

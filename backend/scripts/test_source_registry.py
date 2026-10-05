@@ -213,7 +213,9 @@ def fake_fetch_feed_items(source_name, feed_url, *, max_items=15):
         rss_feeds.FeedItem(
             source=source_name,
             title=f"Señal de prueba desde {source_name}",
-            link="https://example.com/item",
+            # Enlace distinto por fuente: la misma URL en dos feeds es la
+            # misma noticia y ahora se deduplica (services/dedup.py).
+            link=f"https://example.com/item-{source_name}",
             snippet="Inversor busca oportunidad de alto valor, disponible ahora.",
         )
     ]
@@ -232,6 +234,7 @@ def fake_score_signal(title, snippet, *, available_property_markets=None):
         estimated_investment_capacity="alta",
         preferred_property_market="Marbella",
         preferred_asset_type="residencial",
+        scored=True,
     )
 
 

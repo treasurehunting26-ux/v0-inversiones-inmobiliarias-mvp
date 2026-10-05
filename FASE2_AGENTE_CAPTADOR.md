@@ -281,6 +281,13 @@ requiere confirmación humana en todos los casos.
 [Asistente del MVP] → Toma el relevo del proceso
 ```
 
+### Control de duplicados y coste (Octubre 2026)
+
+- Antes de puntuar, cada item se identifica por una huella (hash SHA-256 de su enlace normalizado; Google Alerts y parámetros `utm_` no cambian la huella). Lo ya analizado en ejecuciones anteriores no se vuelve a puntuar ni genera señales duplicadas.
+- Si el modelo falla, el item no se da por visto y se reintenta en la siguiente ejecución.
+- Tope de items nuevos por ejecución (`PROSPECTING_MAX_NEW_ITEMS_PER_RUN`, 30 por defecto); el resto se aplaza.
+- GDPR: la tabla `prospecting_seen_items` solo guarda el hash, nunca texto ni URL, y las huellas caducan (`PROSPECTING_SEEN_RETENTION_DAYS`, 180 días por defecto).
+
 ---
 
 ## CUMPLIMIENTO GDPR
