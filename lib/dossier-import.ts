@@ -106,14 +106,23 @@ function findMissingFiles(doc: Document, html: string): string[] {
 /**
  * Portada para la tarjeta del catalogo:
  * 1. og:image si el dossier la declara (control total desde el diseño).
- * 2. La foto incrustada mas pesada: es la principal (un logo o icono pesa poco).
+ * 2. La primera foto del dossier (en orden de lectura) que sea de las grandes:
+ *    suele ser la imagen de cabecera. Se exige al menos la mitad del tamaño
+ *    de la foto mas pesada para no elegir nunca un logo o icono.
  * 3. La primera imagen enlazada (https), o la primera imagen de fondo en CSS.
  */
-function findCover(doc: Document, html: string, photoSizes: Map<string, number>): string | null {
+function findCover(
+  doc: Document,
+  html: string,
+  photos: { url: string; size: number; order: number }[],
+): string | null {
   const og = doc.querySelector("meta[property='og:image'], meta[name='og:image']")?.getAttribute("content")
   if (og && /^https?:/i.test(og)) return og
-  const largest = [...photoSizes.entries()].sort((a, b) => b[1] - a[1])[0]
-  if (largest) return largest[0]
+  if (photos.length) {
+    const max = Math.max(...photos.map((p) => p.size))
+    const hero = [...photos].sort((a, b) => a.order - b.order).find((p) => p.size >= max * 0.5)
+    if (hero) return hero.url
+  }
   for (const img of Array.from(doc.querySelectorAll("img[src]"))) {
     const src = img.getAttribute("src") || ""
     if (/^https?:/i.test(src) && !/\.svg(\?|$)/i.test(src)) return src
@@ -155,8 +164,8 @@ export async function processDossierHtml(
     ([, v]) => UPLOADABLE_PHOTO.includes(v.mime) || UPLOADABLE_VIDEO.includes(v.mime),
   )
   const replacements = new Map<string, string>()
-  // Tamaño de cada foto subida, para elegir la portada (la mas grande, nunca un logo)
-  const photoSizes = new Map<string, number>()
+  // Fotos subidas (tamaño y orden en el dossier), para elegir la portada
+  const photos: { url: string; size: number; order: number }[] = []
   let done = 0
   onProgress?.({ step: "uploading", done, total: uploadable.length })
 
@@ -170,7 +179,7 @@ export async function processDossierHtml(
       try {
         const url = await uploadAsset(token, file)
         replacements.set(uri, url)
-        if (mime.startsWith("image/")) photoSizes.set(url, base64.length)
+        if (mime.startsWith("image/")) photos.push({ url, size: base64.length, order: index })
       } catch (err) {
         const reason = err instanceof Error ? err.message : ""
         throw new Error(
@@ -194,7 +203,7 @@ export async function processDossierHtml(
   return {
     html,
     title,
-    coverUrl: findCover(doc, html, photoSizes),
+    coverUrl: findCover(doc, html, photos),
     text: visibleText(doc),
     uploadedCount: replacements.size,
     keptInline: unique.size - uploadable.length,

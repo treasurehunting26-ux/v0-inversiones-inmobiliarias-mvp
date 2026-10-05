@@ -360,7 +360,7 @@ export function FieldsForm({
       <Field label="Título" required value={fields.title} onChange={set("title")} disabled={disabled} />
       <Field label="Ubicación" required value={fields.location} onChange={set("location")} disabled={disabled} placeholder="Marbella, Costa del Sol" />
       <Field label="Tipo de activo" required value={fields.asset_type} onChange={set("asset_type")} disabled={disabled} placeholder="Villa, ático, edificio…" />
-      <Field label="Inversión" required value={fields.investment_range} onChange={set("investment_range")} disabled={disabled} placeholder="3.450.000 €" />
+      <Field label="Inversión" required value={fields.investment_range} onChange={set("investment_range")} disabled={disabled} placeholder="3.450.000 € o «Precio bajo consulta»" />
       <Field label="Horizonte" value={fields.horizon} onChange={set("horizon")} disabled={disabled} placeholder="Opcional" />
       <label className="flex flex-col gap-1.5 sm:col-span-2">
         <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Notas de riesgo</span>
