@@ -93,6 +93,10 @@ class SignalScoreResult:
     estimated_investment_capacity: str | None = None
     preferred_property_market: str | None = None
     preferred_asset_type: str | None = None
+    # True solo si el modelo respondio y el JSON se pudo leer. Un fallo
+    # tecnico deja scored=False para que el item se reintente mas adelante
+    # en vez de darse por visto con score 0.
+    scored: bool = False
 
 
 def _build_user_content(title: str, snippet: str, available_property_markets: list[str]) -> str:
@@ -195,6 +199,7 @@ def score_signal(
                 estimated_investment_capacity=_clean(parsed.get("estimated_investment_capacity")),
                 preferred_property_market=_clean(parsed.get("preferred_property_market")),
                 preferred_asset_type=_clean(parsed.get("preferred_asset_type")),
+                scored=True,
             )
     except urllib.error.HTTPError as exc:
         try:

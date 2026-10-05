@@ -60,9 +60,14 @@ export function ProspectingPanel({ token, onUnauthorized }: ProspectingPanelProp
     setRunResult(null)
     try {
       const result = await runProspectingCycle(token)
-      setRunResult(
-        `Ciclo completado: ${result.signals_found} señales revisadas, ${result.signals_qualified} cualificadas (score >= 60).`,
-      )
+      const parts = [
+        `${result.signals_found} noticias leídas`,
+        `${result.scored ?? result.signals_found} analizadas`,
+        `${result.signals_qualified} cualificadas (score >= 60)`,
+      ]
+      if (result.skipped_already_seen) parts.push(`${result.skipped_already_seen} ya analizadas antes`)
+      if (result.deferred) parts.push(`${result.deferred} para la próxima ejecución`)
+      setRunResult(`Ciclo completado: ${parts.join(", ")}.`)
       refresh()
     } catch {
       setRunResult("No se pudo ejecutar el ciclo de captación. Intenta de nuevo en unos segundos.")
