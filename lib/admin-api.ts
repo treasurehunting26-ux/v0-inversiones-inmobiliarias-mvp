@@ -253,3 +253,50 @@ export async function uploadDossierHtml(token: string, file: File): Promise<stri
     clearTimeout(timeoutId)
   }
 }
+
+export type AiUsageReport = {
+  period: { days: number; since: string; until: string }
+  budget: {
+    month_start: string
+    spent_usd: number
+    budget_usd: number
+    ratio: number
+    state: "ok" | "warning" | "exhausted"
+    hard_stop: boolean
+  }
+  totals: { cost_usd: number; calls: number; estimated_calls: number }
+  assistant: {
+    cost_usd: number
+    calls: number
+    conversations: number
+    qualified_investors: number
+    leads: number
+    cost_per_conversation: number | null
+    cost_per_qualified: number | null
+    cost_per_lead: number | null
+    handoff_rate: number | null
+  }
+  prospecting: {
+    cost_usd: number
+    calls: number
+    signals: number
+    approved: number
+    cost_per_signal: number | null
+    cost_per_approved: number | null
+  }
+  all_leads: number
+  daily: { date: string; assistant: number; prospecting: number }[]
+}
+
+/** Metricas de coste de IA (AI_RUNTIME_AND_COST_GUARDRAILS.md, seccion 5). */
+export async function getAiUsage(token: string, days: number): Promise<AiUsageReport> {
+  const res = await fetch(`${API_URL}/admin/ai-usage?days=${days}`, {
+    headers: authHeaders(token),
+    cache: "no-store",
+  })
+  if (!res.ok) {
+    if (res.status === 401) throw new Error("UNAUTHORIZED")
+    throw new Error(`Error ${res.status}`)
+  }
+  return res.json()
+}

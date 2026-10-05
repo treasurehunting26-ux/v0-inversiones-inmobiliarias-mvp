@@ -47,6 +47,7 @@ from models.investor import Investor, QualificationStatus
 from models.lead_escalation import EscalationStatus, LeadEscalation
 from models.property import Property
 from rate_limit import enforce_ai_rate_limit
+from services.ai_usage import budget_exhausted, record_usage
 from schemas.ai_assistant import (
     AssistantRequest,
     AssistantResponse,
@@ -309,7 +310,12 @@ def parse_model_output(content: str) -> dict:
     return result
 
 
-async def call_ai_model(system_prompt: str, history: list[dict], user_message: str) -> Optional[str]:
+async def call_ai_model(
+    system_prompt: str,
+    history: list[dict],
+    user_message: str,
+    conversation_id: Optional[str] = None,
+) -> Optional[str]:
     """
     Llama al modelo via Vercel AI Gateway. Devuelve el contenido en bruto,
     o None si falla (el llamador responde con el mensaje de respaldo).
@@ -339,6 +345,7 @@ async def call_ai_model(system_prompt: str, history: list[dict], user_message: s
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            record_usage(data, feature="assistant", model=MODEL, conversation_id=conversation_id)
             return data["choices"][0]["message"]["content"]
     except urllib.error.HTTPError as exc:
         try:
@@ -445,7 +452,12 @@ async def interact_with_assistant(
     db.commit()
 
     # 3. Respuesta
-    raw = await call_ai_model(system_prompt, history, request.message)
+    # Presupuesto mensual agotado (AI_RUNTIME_AND_COST_GUARDRAILS.md): no se
+    # llama al modelo; Brigitte ofrece el contacto con el equipo.
+    if budget_exhausted():
+        raw = None
+    else:
+        raw = await call_ai_model(system_prompt, history, request.message, conversation_id=conversation.id)
     parsed = parse_model_output(raw) if raw is not None else None
 
     if not parsed or not parsed["reply"]:
