@@ -1,13 +1,13 @@
 "use client"
 
 import { useState } from "react"
-import { Archive, Check, CheckCircle2, Clock, Copy, ImagePlus, Trash2 } from "lucide-react"
+import { Archive, CheckCircle2, Clock, FileCode, Trash2 } from "lucide-react"
 import {
   AdminProperty,
   deleteProperty,
   updateStatus,
 } from "@/lib/admin-api"
-import { PropertyContentEditor } from "@/components/admin/property-content-editor"
+import { PropertyDossierPanel } from "@/components/admin/property-dossier-panel"
 
 interface PropertyListProps {
   token: string
@@ -22,16 +22,6 @@ export function PropertyList({
 }: PropertyListProps) {
   const [busyId, setBusyId] = useState<string | null>(null)
   const [editingId, setEditingId] = useState<string | null>(null)
-  const [copiedId, setCopiedId] = useState<string | null>(null)
-
-  async function copyDossierLink(p: AdminProperty) {
-    if (!p.dossier_slug) return
-    const url = `${window.location.origin}/dossier/${p.dossier_slug}`
-    await navigator.clipboard.writeText(url)
-    setCopiedId(p.id)
-    setTimeout(() => setCopiedId(null), 2000)
-  }
-
   async function setStatus(p: AdminProperty, status: AdminProperty["status"]) {
     setBusyId(p.id)
     try {
@@ -57,8 +47,7 @@ export function PropertyList({
     return (
       <div className="rounded-lg border border-dashed border-border bg-card p-10 text-center">
         <p className="text-sm text-muted-foreground">
-          Aun no hay propiedades. Crea la primera para que aparezca en el
-          catalogo.
+          Aún no hay propiedades. Pulsa «Nueva propiedad» y arrastra el dossier HTML.
         </p>
       </div>
     )
@@ -74,12 +63,24 @@ export function PropertyList({
             className="rounded-lg border border-border bg-card p-5"
           >
             <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
+              {p.photos?.[0] ? (
+                <img
+                  src={p.photos[0]}
+                  alt=""
+                  className="h-20 w-28 shrink-0 rounded-md border border-border object-cover"
+                />
+              ) : (
+                <div className="flex h-20 w-28 shrink-0 items-center justify-center rounded-md border border-dashed border-border text-[10px] uppercase tracking-wide text-muted-foreground">
+                  Sin portada
+                </div>
+              )}
               <div className="flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h3 className="font-serif text-lg font-semibold text-foreground">
                     {p.title}
                   </h3>
                   <StatusBadge status={p.status} />
+                  <DossierBadge property={p} />
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {p.location} {"\u00B7"} {p.asset_type}
@@ -104,23 +105,9 @@ export function PropertyList({
                   onClick={() => setEditingId(editingId === p.id ? null : p.id)}
                   className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
                 >
-                  <ImagePlus className="h-3.5 w-3.5" />
-                  {editingId === p.id ? "Cerrar contenido" : "Contenido y dossier"}
+                  <FileCode className="h-3.5 w-3.5" />
+                  {editingId === p.id ? "Cerrar" : "Dossier y datos"}
                 </button>
-                {p.dossier_slug && (
-                  <button
-                    disabled={busy}
-                    onClick={() => copyDossierLink(p)}
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-border px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:bg-muted disabled:opacity-50"
-                  >
-                    {copiedId === p.id ? (
-                      <Check className="h-3.5 w-3.5" />
-                    ) : (
-                      <Copy className="h-3.5 w-3.5" />
-                    )}
-                    {copiedId === p.id ? "Copiado" : "Copiar enlace de dossier"}
-                  </button>
-                )}
                 {p.status !== "published" && (
                   <button
                     disabled={busy}
@@ -163,14 +150,11 @@ export function PropertyList({
             </div>
 
             {editingId === p.id && (
-              <PropertyContentEditor
+              <PropertyDossierPanel
                 token={token}
                 property={p}
                 onClose={() => setEditingId(null)}
-                onSaved={() => {
-                  setEditingId(null)
-                  onChanged()
-                }}
+                onChanged={onChanged}
               />
             )}
           </li>
@@ -189,6 +173,16 @@ function Info({ label, value }: { label: string; value: string }) {
       <dd className="text-foreground">{value}</dd>
     </div>
   )
+}
+
+function DossierBadge({ property }: { property: AdminProperty }) {
+  const legacy = Boolean(property.dossier_html_url) && property.dossier_kb === 0
+  const [label, className] = legacy
+    ? ["Dossier antiguo: recuperar", "border border-foreground/40 text-foreground"]
+    : property.has_dossier
+      ? ["Con dossier", "bg-muted text-foreground"]
+      : ["Sin dossier", "border border-dashed border-border text-muted-foreground"]
+  return <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${className}`}>{label}</span>
 }
 
 function StatusBadge({ status }: { status: AdminProperty["status"] }) {

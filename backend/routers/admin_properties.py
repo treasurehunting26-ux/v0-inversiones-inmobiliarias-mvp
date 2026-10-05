@@ -23,8 +23,18 @@ from schemas.admin_property import (
     PropertyCreate,
     PropertyStatusUpdate,
     PropertyContentUpdate,
+    PropertyFieldsUpdate,
     PropertyAdminRead,
+    PropertyAdminDetail,
     PropertyAdminListResponse,
+    ExtractFieldsRequest,
+    ExtractFieldsResponse,
+    FetchDossierResponse,
+)
+from services.dossier import (
+    extract_fields_with_ai,
+    fetch_blob_html,
+    is_full_html_document,
 )
 
 
@@ -69,6 +79,16 @@ def generate_dossier_slug(
             return candidate
     # Salvaguarda muy improbable: 50 propiedades con el mismo titulo
     return f"{base}-{uuid.uuid4().hex[:6]}"
+
+
+def to_admin_read(prop: Property, detail: bool = False) -> PropertyAdminRead:
+    """Lectura admin. El listado no lleva el HTML del dossier (solo su tamano)."""
+    html = prop.description_html or ""
+    model = PropertyAdminDetail if detail else PropertyAdminRead
+    data = model.model_validate(prop)
+    data.has_dossier = bool(prop.dossier_html_url) or is_full_html_document(html)
+    data.dossier_kb = round(len(html.encode("utf-8")) / 1024)
+    return data
 
 
 def verify_admin_token(x_admin_token: str = Header(default="")) -> None:
@@ -175,9 +195,76 @@ def admin_list_properties(
     """
     items = db.query(Property).order_by(Property.created_at.desc()).all()
     return PropertyAdminListResponse(
-        properties=[PropertyAdminRead.model_validate(p) for p in items],
+        properties=[to_admin_read(p) for p in items],
         count=len(items),
     )
+
+
+@router.post("/extract-fields", response_model=ExtractFieldsResponse)
+def admin_extract_fields(
+    data: ExtractFieldsRequest,
+    _: None = Depends(verify_admin_token),
+) -> ExtractFieldsResponse:
+    """
+    Propone los datos de la ficha leyendo el texto del dossier.
+    Solo extrae lo que el dossier dice literalmente (null si no aparece).
+    Es una PROPUESTA: el humano la revisa y la guarda (DATA_MODEL_AND_PERMISSIONS.md:
+    solo humanos crean propiedades).
+    """
+    return extract_fields_with_ai(data.text, data.title_hint)
+
+
+@router.get("/{property_id}", response_model=PropertyAdminDetail)
+def admin_get_property(
+    property_id: str,
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> PropertyAdminDetail:
+    """Propiedad completa, con el HTML del dossier."""
+    prop = db.query(Property).filter(Property.id == property_id).first()
+    if not prop:
+        raise HTTPException(status_code=404, detail="Propiedad no encontrada")
+    return to_admin_read(prop, detail=True)
+
+
+@router.patch("/{property_id}", response_model=PropertyAdminRead)
+def admin_update_fields(
+    property_id: str,
+    data: PropertyFieldsUpdate,
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> PropertyAdminRead:
+    """Corrige los datos de la ficha (titulo, ubicacion, precio...). No cambia el estado."""
+    prop = db.query(Property).filter(Property.id == property_id).first()
+    if not prop:
+        raise HTTPException(status_code=404, detail="Propiedad no encontrada")
+    for field, value in data.model_dump(exclude_unset=True).items():
+        if value is not None:
+            setattr(prop, field, value.strip())
+    prop.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(prop)
+    return to_admin_read(prop)
+
+
+@router.post("/{property_id}/fetch-dossier-url", response_model=FetchDossierResponse)
+def admin_fetch_dossier_url(
+    property_id: str,
+    db: Session = Depends(get_db),
+    _: None = Depends(verify_admin_token),
+) -> FetchDossierResponse:
+    """
+    Recupera el HTML de un dossier subido antes como archivo a Vercel Blob
+    (dossier_html_url). Blob sirve sus archivos con cabeceras que impiden
+    mostrarlos como pagina (X-Frame-Options: DENY, CSP default-src 'none'),
+    asi que el panel lo reimporta al nuevo formato.
+    """
+    prop = db.query(Property).filter(Property.id == property_id).first()
+    if not prop:
+        raise HTTPException(status_code=404, detail="Propiedad no encontrada")
+    if not prop.dossier_html_url:
+        raise HTTPException(status_code=404, detail="Esta propiedad no tiene un dossier subido como archivo")
+    return FetchDossierResponse(html=fetch_blob_html(prop.dossier_html_url))
 
 
 @router.post("", response_model=PropertyAdminRead, status_code=201)
@@ -196,8 +283,10 @@ def admin_create_property(
         location=data.location,
         asset_type=data.asset_type,
         investment_range=data.investment_range,
-        horizon=data.horizon,
-        risk_notes=data.risk_notes,
+        horizon=data.horizon.strip(),
+        risk_notes=data.risk_notes.strip(),
+        description_html=data.description_html,
+        photos=data.photos or [],
         status="draft",
         created_by="admin",
         dossier_slug=generate_dossier_slug(db, data.title),
@@ -207,7 +296,7 @@ def admin_create_property(
     db.add(new_property)
     db.commit()
     db.refresh(new_property)
-    return PropertyAdminRead.model_validate(new_property)
+    return to_admin_read(new_property)
 
 
 @router.patch("/{property_id}/content", response_model=PropertyAdminRead)
@@ -233,12 +322,13 @@ def admin_update_content(
     if data.video_url is not None:
         prop.video_url = data.video_url
     if data.dossier_html_url is not None:
-        prop.dossier_html_url = data.dossier_html_url
+        # "" = quitar (el dossier pasa a guardarse en description_html)
+        prop.dossier_html_url = data.dossier_html_url.strip() or None
     prop.updated_at = datetime.utcnow()
 
     db.commit()
     db.refresh(prop)
-    return PropertyAdminRead.model_validate(prop)
+    return to_admin_read(prop)
 
 
 @router.patch("/{property_id}/status", response_model=PropertyAdminRead)
@@ -263,7 +353,7 @@ def admin_update_status(
 
     db.commit()
     db.refresh(prop)
-    return PropertyAdminRead.model_validate(prop)
+    return to_admin_read(prop)
 
 
 @router.delete("/{property_id}", status_code=204)

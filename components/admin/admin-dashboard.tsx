@@ -7,7 +7,7 @@ import {
   listProperties,
   migrateContentFields,
 } from "@/lib/admin-api"
-import { PropertyForm } from "./property-form"
+import { DossierImporter } from "./dossier-importer"
 import { PropertyList } from "./property-list"
 import { ProspectingPanel } from "./prospecting-panel"
 import { LeadsPanel } from "./leads-panel"
@@ -115,10 +115,10 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
           <div className="mb-8 flex flex-col gap-3 rounded-lg border border-border bg-card p-4 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-sm font-medium text-foreground">
-                Contenido enriquecido (fotos, video, dossier)
+                Mantenimiento de la base de datos
               </p>
               <p className="text-xs text-muted-foreground">
-                Prepara la base de datos y acorta los enlaces de dossier. Es seguro repetirlo.
+                Solo hace falta tras una actualización de la plataforma. Es seguro repetirlo.
               </p>
             </div>
             <div className="flex flex-col items-start gap-2 sm:items-end">
@@ -165,12 +165,13 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
 
           {showForm && (
             <div className="mb-8 rounded-lg border border-border bg-card p-6">
-              <PropertyForm
+              <DossierImporter
                 token={token}
-                onCreated={() => {
+                onDone={() => {
                   setShowForm(false)
                   refresh()
                 }}
+                onCancel={() => setShowForm(false)}
               />
             </div>
           )}
