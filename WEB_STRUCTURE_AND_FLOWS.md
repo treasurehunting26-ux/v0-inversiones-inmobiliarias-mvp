@@ -220,6 +220,21 @@ Catálogo → Asistente (consulta específica) → Handoff humano
 
 ---
 
+## 11. IDIOMAS (v1.1 — Octubre 2026)
+
+La web pública es multiidioma. Idiomas activos: **español** (por defecto, sin prefijo: `/oportunidades`) e **inglés** (`/en/opportunities`).
+
+- Las URLs en español no cambian, para conservar el posicionamiento.
+- Cada página publica `hreflang`, canonical y su versión en el sitemap.
+- El selector de idioma lleva a la misma página en el otro idioma.
+- El asistente (Brigitte) responde en el idioma del visitante.
+- `/admin` y los dossiers privados siguen solo en español.
+- Las fichas de propiedades muestran los datos tal como se cargan en el panel (no se traducen automáticamente).
+
+Para añadir un idioma, ver las instrucciones al inicio de `lib/i18n/config.ts`.
+
+---
+
 ## 10. DOCUMENTO VINCULANTE
 
 Este documento es **fuente de verdad** para:
@@ -232,6 +247,6 @@ Cualquier desviación requiere aprobación explícita del responsable del proyec
 
 ---
 
-**Última actualización:** Enero 2026  
-**Versión:** 1.0  
+**Última actualización:** Octubre 2026  
+**Versión:** 1.1  
 **Estado:** VIGENTE

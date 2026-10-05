@@ -3,9 +3,14 @@
 import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
+import { useI18n } from "@/lib/i18n/client"
+import { homeAnchor, localizedPath } from "@/lib/i18n/config"
+import { LanguageSwitcher } from "@/components/i18n/language-switcher"
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false)
+  const { locale, dict } = useI18n()
+  const t = dict.nav
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -21,7 +26,7 @@ export function NavBar() {
       }`}
     >
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:h-28 lg:px-10">
-        <Link href="/" className="flex items-center" aria-label="B&G Consulting — Inicio">
+        <Link href={localizedPath(locale, "home")} className="flex items-center" aria-label={t.homeAria}>
           <Image
             src="/brand/logo-bg-consulting-v2.png"
             alt="B&G Consulting"
@@ -34,10 +39,10 @@ export function NavBar() {
 
         <nav className="hidden items-center gap-10 lg:flex">
           {[
-            { label: "Cómo funciona", href: "/#como-funciona" },
-            { label: "Oportunidades", href: "/oportunidades" },
-            { label: "Guías", href: "/guias" },
-            { label: "Nosotros", href: "/#nosotros" },
+            { label: t.howItWorks, href: homeAnchor(locale, "como-funciona") },
+            { label: t.opportunities, href: localizedPath(locale, "opportunities") },
+            { label: t.guides, href: localizedPath(locale, "guides") },
+            { label: t.about, href: homeAnchor(locale, "nosotros") },
           ].map((item) => (
             <Link
               key={item.href}
@@ -49,12 +54,15 @@ export function NavBar() {
           ))}
         </nav>
 
-        <Link
-          href="/asistente"
-          className="border border-gold/60 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-gold transition-colors hover:bg-gold hover:text-noir"
-        >
-          Hablar con un asesor
-        </Link>
+        <div className="flex items-center gap-5 sm:gap-7">
+          <LanguageSwitcher />
+          <Link
+            href={localizedPath(locale, "assistant")}
+            className="hidden border border-gold/60 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-gold transition-colors hover:bg-gold hover:text-noir sm:inline-block"
+          >
+            {t.talkToAdvisor}
+          </Link>
+        </div>
       </div>
     </header>
   )

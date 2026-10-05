@@ -4,41 +4,37 @@ import Image from "next/image"
 import Link from "next/link"
 import { NavBar } from "@/components/landing/nav-bar"
 import { Footer } from "@/components/landing/footer"
-import { getGuide, getAllGuideSlugs } from "@/lib/guides"
+import { getGuide, getGuides, getGuideSlugsById } from "@/lib/guides"
+import { format, getDictionary, locales, localizedPath, pageMetadata, type Locale } from "@/lib/i18n"
+
+type Props = { params: Promise<{ lang: string; slug: string }> }
 
 export function generateStaticParams() {
-  return getAllGuideSlugs().map((slug) => ({ slug }))
+  return locales.flatMap((lang) => getGuides(lang).map((g) => ({ lang, slug: g.slug })))
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}): Promise<Metadata> {
-  const { slug } = await params
-  const guide = getGuide(slug)
-  if (!guide) return { title: "Guía no encontrada" }
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { lang, slug } = await params
+  const locale = lang as Locale
+  const guide = getGuide(locale, slug)
+  if (!guide) return { title: getDictionary(locale).guides.notFound }
 
-  return {
+  return pageMetadata({
+    locale,
+    route: "guides",
+    rest: getGuideSlugsById(guide.id),
     title: guide.metaTitle,
     description: guide.metaDescription,
     keywords: guide.keywords.join(", "),
-    alternates: { canonical: `/guias/${guide.slug}` },
-    openGraph: {
-      title: guide.metaTitle,
-      description: guide.metaDescription,
-      type: "article",
-    },
-  }
+    type: "article",
+  })
 }
 
-export default async function GuidePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>
-}) {
-  const { slug } = await params
-  const guide = getGuide(slug)
+export default async function GuidePage({ params }: Props) {
+  const { lang, slug } = await params
+  const locale = lang as Locale
+  const t = getDictionary(locale).guides
+  const guide = getGuide(locale, slug)
   if (!guide) notFound()
 
   // JSON-LD para GEO: ser citable por motores de IA
@@ -47,9 +43,10 @@ export default async function GuidePage({
     "@type": "Article",
     headline: guide.title,
     description: guide.metaDescription,
-    dateModified: "2026-01-15",
-    inLanguage: "es",
-    articleSection: guide.category,
+    dateModified: guide.dateModified,
+    inLanguage: locale,
+    articleSection: t.categories[guide.category],
+    publisher: { "@type": "Organization", name: "B&G Consulting" },
   }
 
   const faqSchema =
@@ -78,21 +75,21 @@ export default async function GuidePage({
       <header className="bg-[var(--color-noir)] px-6 pb-16 pt-36 text-[var(--color-noir-foreground)]">
         <div className="mx-auto max-w-3xl">
           <Link
-            href="/guias"
+            href={localizedPath(locale, "guides")}
             className="mb-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
           >
-            ← Todas las guías
+            {t.backToAll}
           </Link>
           <div className="mb-5 flex items-center gap-3">
-            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">{guide.category}</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">{t.categories[guide.category]}</span>
             <span className="text-xs text-[var(--color-noir-foreground)]/40">·</span>
-            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/60">{guide.region}</span>
+            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/60">{t.regions[guide.region]}</span>
           </div>
           <h1 className="font-serif text-4xl font-light leading-[1.1] text-balance md:text-5xl">{guide.title}</h1>
           <p className="mt-6 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/50">
-            <span>{guide.readingTime} de lectura</span>
+            <span>{format(t.readingTime, { time: guide.readingTime })}</span>
             <span>·</span>
-            <span>Actualizado {guide.updated}</span>
+            <span>{format(t.updated, { date: guide.updated })}</span>
           </p>
         </div>
       </header>
@@ -140,7 +137,7 @@ export default async function GuidePage({
           {/* FAQs */}
           {guide.faqs.length > 0 && (
             <section className="mt-16 border-t border-border pt-12">
-              <h2 className="font-serif text-2xl font-light text-foreground md:text-3xl">Preguntas frecuentes</h2>
+              <h2 className="font-serif text-2xl font-light text-foreground md:text-3xl">{t.faqTitle}</h2>
               <dl className="mt-8 space-y-8">
                 {guide.faqs.map((faq, i) => (
                   <div key={i}>
@@ -154,8 +151,7 @@ export default async function GuidePage({
 
           {/* Aviso */}
           <p className="mt-16 border-l-2 border-[var(--color-gold)] pl-5 text-sm italic leading-relaxed text-muted-foreground">
-            Este contenido es informativo y no constituye asesoramiento financiero, fiscal ni legal. Cada operación
-            debe analizarse de forma individualizada con asesoramiento profesional.
+            {t.disclaimer}
           </p>
         </div>
       </article>
@@ -164,16 +160,16 @@ export default async function GuidePage({
       <section className="bg-[var(--color-noir)] px-6 py-20 text-center text-[var(--color-noir-foreground)]">
         <div className="mx-auto max-w-2xl">
           <h2 className="font-serif text-3xl font-light leading-tight text-balance md:text-4xl">
-            ¿Quieres explorar oportunidades reales con este criterio?
+            {t.ctaTitle}
           </h2>
           <p className="mt-5 text-base leading-relaxed text-[var(--color-noir-foreground)]/70">
-            Conversa con un asesor para entender qué activos validados encajan con tu perfil y objetivos de inversión.
+            {t.ctaBody}
           </p>
           <Link
-            href="/asistente"
+            href={localizedPath(locale, "assistant")}
             className="mt-8 inline-flex items-center justify-center gap-2 border border-[var(--color-gold)] bg-[var(--color-gold)] px-9 py-4 text-xs uppercase tracking-[0.2em] text-[var(--color-noir)] transition-colors hover:bg-transparent hover:text-[var(--color-gold)]"
           >
-            Hablar con un asesor
+            {t.ctaButton}
           </Link>
         </div>
       </section>

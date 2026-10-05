@@ -8,6 +8,8 @@ Formulario breve: nombre, email, contexto.
 
 import re
 
+from typing import Optional
+
 from pydantic import BaseModel, Field, field_validator
 
 _EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
@@ -42,6 +44,11 @@ class ContactCreate(BaseModel):
         min_length=1,
         max_length=2000,
         description="Contexto o motivo de contacto",
+    )
+    locale: Optional[str] = Field(
+        default=None,
+        max_length=10,
+        description="Idioma de la web desde la que escribe (es, en...)",
     )
 
 

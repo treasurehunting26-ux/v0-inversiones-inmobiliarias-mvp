@@ -1,13 +1,19 @@
+"use client"
+
 import Image from "next/image"
 import Link from "next/link"
 import type { Property } from "@/lib/properties-api"
+import { useI18n } from "@/lib/i18n/client"
+import { localizedPath } from "@/lib/i18n/config"
 
 export function PropertyCard({ property }: { property: Property }) {
+  const { locale, dict } = useI18n()
+  const t = dict.opportunities
   const coverPhoto = property.photos?.[0]
 
   return (
     <Link
-      href={`/oportunidades/${property.id}`}
+      href={localizedPath(locale, "opportunities", property.id)}
       className="group flex flex-col overflow-hidden border border-border bg-card transition-all duration-300 hover:border-[var(--color-gold)]/50 hover:shadow-[0_20px_60px_-20px_rgba(0,0,0,0.25)]"
     >
       {/* Cabecera visual */}
@@ -40,7 +46,7 @@ export function PropertyCard({ property }: { property: Property }) {
         <div className="absolute bottom-5 right-5">
           <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
-            Validada
+            {t.validated}
           </span>
         </div>
       </div>
@@ -56,17 +62,17 @@ export function PropertyCard({ property }: { property: Property }) {
 
         <div className="mt-auto grid grid-cols-2 gap-4 border-t border-border pt-5">
           <div className="flex flex-col gap-1">
-            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Inversión</span>
+            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.investment}</span>
             <span className="text-sm font-semibold text-foreground">{property.investment_range}</span>
           </div>
           <div className="flex flex-col gap-1">
-            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">Horizonte</span>
+            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.horizon}</span>
             <span className="text-sm font-semibold text-foreground">{property.horizon}</span>
           </div>
         </div>
 
         <span className="inline-flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-foreground">
-          Ver oportunidad
+          {t.viewOpportunity}
           <svg
             width="14"
             height="14"

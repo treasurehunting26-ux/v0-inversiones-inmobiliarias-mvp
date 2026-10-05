@@ -1,35 +1,13 @@
-export type GuideSection = {
-  heading: string
-  paragraphs: string[]
-  bullets?: string[]
-}
+import type { Guide } from "./types"
+import { guideSlugs } from "./slugs"
 
-export type GuideFAQ = {
-  question: string
-  answer: string
-}
-
-export type Guide = {
-  slug: string
-  category: "Guía de zona" | "Comparativa de mercado" | "Análisis" | "Preguntas frecuentes"
-  region: "Europa" | "Latinoamérica" | "Dubái" | "Internacional"
-  image: string
-  title: string
-  metaTitle: string
-  metaDescription: string
-  keywords: string[]
-  excerpt: string
-  readingTime: string
-  updated: string
-  sections: GuideSection[]
-  faqs: GuideFAQ[]
-}
-
-export const guides: Guide[] = [
+/** Guias en espanol. */
+export const guidesEs: Guide[] = [
   {
-    slug: "invertir-inmuebles-marbella-costa-del-sol",
-    category: "Guía de zona",
-    region: "Europa",
+    id: "marbella",
+    slug: guideSlugs["marbella"].es,
+    category: "zone-guide",
+    region: "europe",
     image: "/guias/marbella-costa-del-sol.png",
     title: "Cómo invertir en inmuebles en Marbella y la Costa del Sol",
     metaTitle: "Invertir en inmuebles en Marbella: guía para inversores 2026",
@@ -45,7 +23,8 @@ export const guides: Guide[] = [
     excerpt:
       "Qué considerar antes de invertir en la Costa del Sol: demanda internacional, tipos de activo, estacionalidad y marco fiscal para no residentes.",
     readingTime: "8 min",
-    updated: "Enero 2026",
+    updated: "enero de 2026",
+    dateModified: "2026-01-15",
     sections: [
       {
         heading: "Por qué la Costa del Sol atrae capital internacional",
@@ -88,9 +67,10 @@ export const guides: Guide[] = [
     ],
   },
   {
-    slug: "invertir-inmuebles-dubai-guia-inversor",
-    category: "Guía de zona",
-    region: "Dubái",
+    id: "dubai",
+    slug: guideSlugs["dubai"].es,
+    category: "zone-guide",
+    region: "dubai",
     image: "/guias/dubai-inversion.png",
     title: "Invertir en inmuebles en Dubái: guía para inversores internacionales",
     metaTitle: "Invertir en inmuebles en Dubái: guía 2026 para inversores",
@@ -106,7 +86,8 @@ export const guides: Guide[] = [
     excerpt:
       "Zonas freehold, papel del RERA, fiscalidad y factores de demanda en uno de los mercados inmobiliarios más dinámicos del mundo.",
     readingTime: "7 min",
-    updated: "Enero 2026",
+    updated: "enero de 2026",
+    dateModified: "2026-01-15",
     sections: [
       {
         heading: "El concepto de propiedad freehold",
@@ -144,9 +125,10 @@ export const guides: Guide[] = [
     ],
   },
   {
-    slug: "comparativa-mercados-europa-latam-dubai",
-    category: "Comparativa de mercado",
-    region: "Internacional",
+    id: "market-comparison",
+    slug: guideSlugs["market-comparison"].es,
+    category: "market-comparison",
+    region: "international",
     image: "/guias/comparativa-mercados.png",
     title: "Europa, Latinoamérica y Dubái: cómo comparar mercados inmobiliarios",
     metaTitle: "Comparativa de mercados inmobiliarios: Europa, LatAm y Dubái",
@@ -161,7 +143,8 @@ export const guides: Guide[] = [
     excerpt:
       "Un marco de criterios objetivos —liquidez, marco legal, divisa y demanda— para comparar mercados antes de comprometer capital.",
     readingTime: "9 min",
-    updated: "Enero 2026",
+    updated: "enero de 2026",
+    dateModified: "2026-01-15",
     sections: [
       {
         heading: "No existe un mercado mejor, sino uno adecuado a cada objetivo",
@@ -203,9 +186,10 @@ export const guides: Guide[] = [
     ],
   },
   {
-    slug: "preguntas-frecuentes-inversion-inmobiliaria",
-    category: "Preguntas frecuentes",
-    region: "Internacional",
+    id: "faq",
+    slug: guideSlugs["faq"].es,
+    category: "faq",
+    region: "international",
     image: "/guias/preguntas-frecuentes.png",
     title: "Preguntas frecuentes sobre inversión inmobiliaria internacional",
     metaTitle: "Inversión inmobiliaria internacional: preguntas frecuentes",
@@ -220,7 +204,8 @@ export const guides: Guide[] = [
     excerpt:
       "Respuestas claras y sin promesas a las dudas más comunes del inversor inmobiliario internacional.",
     readingTime: "6 min",
-    updated: "Enero 2026",
+    updated: "enero de 2026",
+    dateModified: "2026-01-15",
     sections: [
       {
         heading: "Sobre el proceso de inversión",
@@ -253,11 +238,3 @@ export const guides: Guide[] = [
     ],
   },
 ]
-
-export function getGuide(slug: string): Guide | undefined {
-  return guides.find((g) => g.slug === slug)
-}
-
-export function getAllGuideSlugs(): string[] {
-  return guides.map((g) => g.slug)
-}
