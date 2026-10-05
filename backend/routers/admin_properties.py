@@ -7,6 +7,7 @@ Referencia: DATA_MODEL_AND_PERMISSIONS.md
 - El status "published" requiere accion humana explicita
 """
 
+import hmac
 import os
 import re
 import uuid
@@ -81,7 +82,8 @@ def verify_admin_token(x_admin_token: str = Header(default="")) -> None:
             status_code=503,
             detail="Admin no configurado en el servidor",
         )
-    if x_admin_token != expected:
+    # Comparacion en tiempo constante (evita ataques por tiempo de respuesta)
+    if not hmac.compare_digest(x_admin_token.encode(), expected.encode()):
         raise HTTPException(status_code=401, detail="No autorizado")
 
 
