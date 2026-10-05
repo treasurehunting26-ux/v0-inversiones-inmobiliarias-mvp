@@ -20,6 +20,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from database import get_db
+from routers.admin_properties import verify_admin_token
 from models.investor import Investor
 from models.lead_escalation import LeadEscalation, EscalationStatus
 from schemas.lead_escalation import (
@@ -29,7 +30,11 @@ from schemas.lead_escalation import (
 
 router = APIRouter(
     prefix="/lead-escalations",
-    tags=["lead-escalations"]
+    tags=["lead-escalations"],
+    # Uso interno: la web no llama a estos endpoints (Brigitte escribe
+    # directamente desde /ai/assistant). Sin token, cualquiera podria
+    # inyectar mensajes o escalados falsos.
+    dependencies=[Depends(verify_admin_token)],
 )
 
 

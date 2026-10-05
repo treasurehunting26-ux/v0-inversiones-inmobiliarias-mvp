@@ -17,6 +17,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from database import get_db
+from routers.admin_properties import verify_admin_token
 from models.conversation import Conversation, Message
 from schemas.conversation import (
     ConversationCreate,
@@ -29,6 +30,10 @@ from schemas.conversation import (
 router = APIRouter(
     prefix="/conversations",
     tags=["conversations"],
+    # Uso interno: la web no llama a estos endpoints (Brigitte escribe
+    # directamente desde /ai/assistant). Sin token, cualquiera podria
+    # inyectar mensajes o escalados falsos.
+    dependencies=[Depends(verify_admin_token)],
 )
 
 

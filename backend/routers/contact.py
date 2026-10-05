@@ -20,6 +20,7 @@ from datetime import datetime
 from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
 
+from contact_limit import enforce_contact_rate_limit
 from database import get_db
 from emailer import send_lead_notification
 from models.investor import Investor, QualificationStatus
@@ -47,6 +48,7 @@ router = APIRouter(
 def create_contact(
     data: ContactCreate,
     db: Session = Depends(get_db),
+    _rate_limit: None = Depends(enforce_contact_rate_limit),
 ) -> ContactCreated:
     """
     Registra una solicitud de contacto directo.
