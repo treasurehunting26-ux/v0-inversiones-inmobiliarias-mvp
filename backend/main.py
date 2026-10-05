@@ -26,6 +26,7 @@ from routers import (
     prospecting,
     prospecting_sources,
     admin_leads,
+    admin_ai_usage,
 )
 
 app = FastAPI(
@@ -84,6 +85,7 @@ app.include_router(contact.router)
 app.include_router(prospecting.router)
 app.include_router(prospecting_sources.router)
 app.include_router(admin_leads.router)
+app.include_router(admin_ai_usage.router)
 
 
 @app.exception_handler(Exception)

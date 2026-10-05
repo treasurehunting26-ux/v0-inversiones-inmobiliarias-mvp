@@ -152,6 +152,14 @@ Nunca:
 
 ---
 
+## 8. IMPLEMENTACIÓN (Octubre 2026)
+
+- **Registro:** cada llamada al modelo (Brigitte y Agente Captador) guarda tokens y coste en USD en `ai_usage_logs`. El coste es el que informa el Vercel AI Gateway (`usage.cost`); si no viene, se estima con `AI_PRICE_INPUT_PER_MTOK` / `AI_PRICE_OUTPUT_PER_MTOK`. No se guarda ningún contenido.
+- **Métricas (sección 5):** panel `/admin` → "Costes IA": coste por conversación, por inversor cualificado y por lead, ratio de paso a persona, coste del Captador por señal y por señal aprobada, gasto diario.
+- **Presupuesto mensual:** `AI_MONTHLY_BUDGET_USD` (150 por defecto, Fase 0). Aviso al 80 %. Al 100 %, si `AI_BUDGET_HARD_STOP` está activo (por defecto), la IA se detiene de forma segura: Brigitte ofrece el contacto con el equipo y el Captador aplaza el análisis. Solo el Product Owner cambia estas variables (sección 6).
+
+---
+
 ## 7. CRITERIO FINAL DE CORRECTITUD
 
 La IA es correcta si:

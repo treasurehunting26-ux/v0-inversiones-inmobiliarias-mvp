@@ -11,13 +11,14 @@ import { PropertyForm } from "./property-form"
 import { PropertyList } from "./property-list"
 import { ProspectingPanel } from "./prospecting-panel"
 import { LeadsPanel } from "./leads-panel"
+import { AiCostPanel } from "./ai-cost-panel"
 
 interface AdminDashboardProps {
   token: string
   onLogout: () => void
 }
 
-type Tab = "leads" | "properties" | "prospecting"
+type Tab = "leads" | "properties" | "prospecting" | "costs"
 
 export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
   const [tab, setTab] = useState<Tab>("leads")
@@ -101,6 +102,9 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
         </TabButton>
         <TabButton active={tab === "prospecting"} onClick={() => setTab("prospecting")}>
           Captación
+        </TabButton>
+        <TabButton active={tab === "costs"} onClick={() => setTab("costs")}>
+          Costes IA
         </TabButton>
       </div>
 
@@ -187,6 +191,8 @@ export function AdminDashboard({ token, onLogout }: AdminDashboardProps) {
             />
           )}
         </>
+      ) : tab === "costs" ? (
+        <AiCostPanel token={token} onUnauthorized={onLogout} />
       ) : (
         <ProspectingPanel token={token} onUnauthorized={onLogout} />
       )}

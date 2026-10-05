@@ -67,7 +67,7 @@ calls: list[dict] = []
 queue: list = []
 
 
-async def fake_model(system_prompt, history, user_message):
+async def fake_model(system_prompt, history, user_message, conversation_id=None):
     calls.append({"system": system_prompt, "history": history, "user": user_message})
     return queue.pop(0)
 

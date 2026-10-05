@@ -29,6 +29,8 @@ import urllib.request
 import urllib.error
 from dataclasses import dataclass, field
 
+from services.ai_usage import budget_exhausted, record_usage
+
 logger = logging.getLogger("uvicorn.error")
 
 SCORING_PROMPT = """Eres un analista que evalúa señales PÚBLICAS de posible interés en \
@@ -127,6 +129,11 @@ def score_signal(
     inválido, retorna score=0 (se descarta; nunca se sobre-puntúa por
     un error técnico), sin ningún campo de perfil inventado.
     """
+    # Presupuesto mensual agotado: no se puntua (scored=False -> se reintenta
+    # en una ejecucion posterior, cuando haya presupuesto).
+    if budget_exhausted():
+        return SignalScoreResult()
+
     user_content = _build_user_content(title, snippet, available_property_markets or [])
 
     api_key = (
@@ -163,6 +170,7 @@ def score_signal(
     try:
         with urllib.request.urlopen(req, timeout=30) as resp:
             data = json.loads(resp.read().decode("utf-8"))
+            record_usage(data, feature="prospecting", model="openai/gpt-4o-mini")
             raw_content = data["choices"][0]["message"]["content"].strip()
             if raw_content.startswith("```"):
                 raw_content = raw_content.strip("`")
