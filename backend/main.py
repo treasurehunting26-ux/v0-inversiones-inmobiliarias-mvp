@@ -6,7 +6,8 @@ Referencia: MVP_TECHNICAL_BLUEPRINT.md
 import os
 import logging
 import traceback
-from fastapi import FastAPI, Request
+import uuid
+from fastapi import FastAPI, Header, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import text
@@ -86,17 +87,18 @@ app.include_router(prospecting_sources.router)
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
     """
-    Captura errores no controlados y devuelve el detalle real.
-    Necesario para diagnosticar el MVP (conexion DB, tablas, driver...).
+    Errores no controlados: el detalle tecnico va SOLO a los logs.
+    Al publico se le devuelve un mensaje generico con un codigo para poder
+    localizar el error en los logs (DEPLOYMENT_AND_ENVIRONMENT_RULES.md:
+    nada de detalles internos en el frontend).
     """
-    logger.error("[error] %s en %s\n%s", exc, request.url.path, traceback.format_exc())
+    error_id = uuid.uuid4().hex[:12]
+    logger.error(
+        "[error %s] %s en %s\n%s", error_id, exc, request.url.path, traceback.format_exc()
+    )
     return JSONResponse(
         status_code=500,
-        content={
-            "detail": str(exc),
-            "type": exc.__class__.__name__,
-            "path": request.url.path,
-        },
+        content={"detail": "Error interno del servidor", "error_id": error_id},
     )
 
 
@@ -107,14 +109,19 @@ def health_check():
 
 
 @app.get("/health/db")
-def health_db():
+def health_db(x_admin_token: str = Header(default="")):
     """
-    Comprueba la conexion real a PostgreSQL y lista las tablas existentes.
-    Permite verificar si DATABASE_URL esta bien enlazada.
+    Comprueba la conexion real a PostgreSQL.
+    Publico: solo ok/error. Con X-Admin-Token valido: tablas y detalle del error
+    (para diagnosticar sin exponer la infraestructura a cualquiera).
     """
+    expected = os.getenv("ADMIN_TOKEN", "")
+    is_admin = bool(expected) and x_admin_token == expected
     try:
         with engine.connect() as conn:
             conn.execute(text("SELECT 1"))
+            if not is_admin:
+                return {"db": "ok"}
             tables = [
                 row[0]
                 for row in conn.execute(
@@ -126,14 +133,11 @@ def health_db():
             ]
         return {"db": "ok", "tables": tables}
     except Exception as exc:  # noqa: BLE001
-        return JSONResponse(
-            status_code=500,
-            content={
-                "db": "error",
-                "detail": str(exc),
-                "type": exc.__class__.__name__,
-            },
-        )
+        logger.error("[health/db] %s: %s", exc.__class__.__name__, exc)
+        content = {"db": "error"}
+        if is_admin:
+            content.update({"detail": str(exc), "type": exc.__class__.__name__})
+        return JSONResponse(status_code=500, content=content)
 
 
 if __name__ == "__main__":
