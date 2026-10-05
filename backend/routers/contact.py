@@ -71,7 +71,10 @@ def create_contact(
     escalation = LeadEscalation(
         id=str(uuid.uuid4()),
         investor_id=investor.id,
-        reason=f"Contacto directo desde formulario web. Mensaje: {data.context}",
+        reason=(
+            f"Contacto directo desde formulario web"
+            f"{f' (idioma: {data.locale})' if data.locale else ''}. Mensaje: {data.context}"
+        ),
         created_at=now,
         status=EscalationStatus.OPEN.value,
         handled_by=None,
@@ -89,7 +92,7 @@ def create_contact(
     send_lead_notification(
         name=data.name,
         email=data.email,
-        context=data.context,
+        context=f"[Idioma: {data.locale}]\n{data.context}" if data.locale else data.context,
         source=source,
     )
 

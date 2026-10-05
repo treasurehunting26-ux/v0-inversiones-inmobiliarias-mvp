@@ -1,18 +1,34 @@
 "use client"
 
+import { useEffect } from "react"
 import useSWR from "swr"
 import Link from "next/link"
 import { useParams } from "next/navigation"
 import { propertyFetcher, type Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
+import { useI18n } from "@/lib/i18n/client"
+import { localizedPath } from "@/lib/i18n/config"
+import { format } from "@/lib/i18n/format"
+import { useBrigitte } from "@/components/brigitte/brigitte-provider"
 
 export function PropertyDetail() {
+  const { locale, dict } = useI18n()
+  const t = dict.property
+  const brigitte = useBrigitte()
   const params = useParams()
   const id = params?.id as string
   const { data, error, isLoading } = useSWR<Property>(
     id ? `/properties/${id}` : null,
     propertyFetcher,
   )
+
+  // Si el visitante abre el chat en esta ficha, Brigitte sabe de que activo habla.
+  const { setPageProperty } = brigitte
+  useEffect(() => {
+    if (!data) return
+    setPageProperty({ id: data.id, title: data.title })
+    return () => setPageProperty(null)
+  }, [data, setPageProperty])
 
   if (isLoading) {
     return (
@@ -27,23 +43,22 @@ export function PropertyDetail() {
   if (error || !data) {
     return (
       <div className="mx-auto flex max-w-4xl flex-col items-center gap-4 px-6 pt-44 pb-28 text-center">
-        <h1 className="font-serif text-4xl font-light text-foreground">Oportunidad no disponible</h1>
+        <h1 className="font-serif text-4xl font-light text-foreground">{t.notFoundTitle}</h1>
         <p className="max-w-md text-sm text-muted-foreground">
-          Esta oportunidad no existe o ya no esta disponible. Explora el resto de activos validados o habla
-          con un asesor.
+          {t.notFoundBody}
         </p>
         <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
           <Link
-            href="/oportunidades"
+            href={localizedPath(locale, "opportunities")}
             className="inline-flex items-center rounded-none border border-border px-7 py-3 text-xs font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-card"
           >
-            Ver oportunidades
+            {t.viewOpportunities}
           </Link>
           <Link
-            href="/asistente"
+            href={localizedPath(locale, "assistant")}
             className="inline-flex items-center rounded-none bg-[var(--color-noir)] px-7 py-3 text-xs font-medium uppercase tracking-widest text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90"
           >
-            Hablar con un asesor
+            {t.talkToAdvisor}
           </Link>
         </div>
       </div>
@@ -66,7 +81,7 @@ export function PropertyDetail() {
     return (
       <iframe
         src={data.dossier_html_url}
-        title={`Dossier de ${data.title}`}
+        title={format(t.dossierOf, { title: data.title })}
         className="block h-screen w-full border-0"
         sandbox="allow-same-origin"
       />
@@ -77,7 +92,7 @@ export function PropertyDetail() {
     return (
       <iframe
         srcDoc={fullDossierHtml}
-        title={`Dossier de ${data.title}`}
+        title={format(t.dossierOf, { title: data.title })}
         className="block h-screen w-full border-0"
         sandbox="allow-same-origin"
       />
@@ -85,10 +100,10 @@ export function PropertyDetail() {
   }
 
   const facts = [
-    { label: "Tipo de activo", value: data.asset_type },
-    { label: "Ubicación", value: data.location },
-    { label: "Rango de inversión", value: data.investment_range },
-    { label: "Horizonte", value: data.horizon },
+    { label: t.facts.assetType, value: data.asset_type },
+    { label: t.facts.location, value: data.location },
+    { label: t.facts.investmentRange, value: data.investment_range },
+    { label: t.facts.horizon, value: data.horizon },
   ]
 
   return (
@@ -98,7 +113,7 @@ export function PropertyDetail() {
         <div className="absolute inset-0 bg-gradient-to-br from-[var(--color-noir)] via-[var(--color-noir)] to-[#2a2622]" />
         <div className="relative mx-auto max-w-4xl">
           <Link
-            href="/oportunidades"
+            href={localizedPath(locale, "opportunities")}
             className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -110,7 +125,7 @@ export function PropertyDetail() {
                 strokeLinejoin="round"
               />
             </svg>
-            Volver al catálogo
+            {t.back}
           </Link>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
@@ -119,7 +134,7 @@ export function PropertyDetail() {
             </span>
             <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
-              Validada por nuestro equipo
+              {t.validatedByTeam}
             </span>
           </div>
           <h1 className="mt-5 max-w-3xl font-serif text-4xl font-light leading-[1.08] text-balance text-[var(--color-noir-foreground)] md:text-5xl">
@@ -144,7 +159,7 @@ export function PropertyDetail() {
         {data.dossier_html_url ? (
           <iframe
             src={data.dossier_html_url}
-            title={`Dossier de ${data.title}`}
+            title={format(t.dossierOf, { title: data.title })}
             className="mt-16 block h-[85vh] w-full border border-border"
             sandbox="allow-same-origin"
           />
@@ -162,18 +177,18 @@ export function PropertyDetail() {
         <div className="mt-16 flex flex-col items-start gap-6 border border-border bg-[var(--color-noir)] p-10 md:flex-row md:items-center md:justify-between">
           <div className="flex flex-col gap-2 md:max-w-md">
             <h3 className="font-serif text-3xl font-light text-[var(--color-noir-foreground)]">
-              ¿Te interesa esta oportunidad?
+              {t.ctaTitle}
             </h3>
             <p className="text-sm leading-relaxed text-[var(--color-noir-foreground)]/70">
-              Conversa con un asesor sobre este activo. Te explicaremos los detalles y resolveremos tus dudas
-              sin compromiso.
+              {t.ctaBody}
             </p>
           </div>
-          <Link
-            href={`/asistente?propiedad=${data.id}`}
+          <button
+            type="button"
+            onClick={() => brigitte.open({ property: { id: data.id, title: data.title } })}
             className="inline-flex shrink-0 items-center justify-center gap-2 rounded-none border border-[var(--color-gold)] bg-[var(--color-gold)] px-8 py-4 text-xs font-medium uppercase tracking-widest text-[var(--color-noir)] transition-all hover:bg-transparent hover:text-[var(--color-gold)]"
           >
-            Consultar esta oportunidad
+            {t.ctaButton}
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
                 d="M3 8H13M13 8L9 4M13 8L9 12"
@@ -183,7 +198,7 @@ export function PropertyDetail() {
                 strokeLinejoin="round"
               />
             </svg>
-          </Link>
+          </button>
         </div>
       </div>
     </article>

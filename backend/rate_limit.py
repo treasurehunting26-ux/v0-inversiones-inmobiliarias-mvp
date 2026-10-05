@@ -59,6 +59,36 @@ def _client_ip(request: Request) -> str:
     return request.client.host if request.client else "desconocida"
 
 
+# Mensajes al visitante en su idioma (cabecera X-Locale enviada por la web).
+_MESSAGES = {
+    "es": {
+        "burst": (
+            "Me has escrito varios mensajes muy seguidos. Dame un momento y seguimos, "
+            "o si lo prefieres, escríbenos por el formulario de contacto."
+        ),
+        "day": (
+            "Por hoy hemos llegado al límite de mensajes. Si quieres seguir avanzando, "
+            "déjanos tus datos en el formulario de contacto y alguien del equipo te escribe."
+        ),
+    },
+    "en": {
+        "burst": (
+            "You've sent several messages in a row. Give me a moment and we'll carry on, "
+            "or if you prefer, write to us through the contact form."
+        ),
+        "day": (
+            "We've reached today's message limit. If you'd like to keep going, leave your "
+            "details in the contact form and someone from the team will write to you."
+        ),
+    },
+}
+
+
+def _message(request: Request, kind: str) -> str:
+    locale = (request.headers.get("x-locale") or "es").strip().lower()[:2]
+    return _MESSAGES.get(locale, _MESSAGES["en"])[kind]
+
+
 def _purge_inactive(now: float) -> None:
     """Elimina IPs sin actividad en las ultimas 24 h. Requiere _lock."""
     global _last_cleanup
@@ -94,11 +124,7 @@ def enforce_ai_rate_limit(request: Request) -> None:
             retry_after = max(1, int(WINDOW_SECONDS - (now - oldest)) + 1)
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=(
-                    "Has enviado varios mensajes muy seguidos. "
-                    "Espera un momento antes de continuar, o escríbenos "
-                    "por el formulario de contacto si prefieres hablar con un asesor."
-                ),
+                detail=_message(request, "burst"),
                 headers={"Retry-After": str(retry_after)},
             )
 
@@ -106,11 +132,7 @@ def enforce_ai_rate_limit(request: Request) -> None:
             retry_after = max(1, int(DAY_SECONDS - (now - hits[0])) + 1)
             raise HTTPException(
                 status_code=status.HTTP_429_TOO_MANY_REQUESTS,
-                detail=(
-                    "Has alcanzado el límite de mensajes por hoy. "
-                    "Si quieres seguir avanzando, déjanos tus datos en el "
-                    "formulario de contacto y un asesor se pondrá en contacto contigo."
-                ),
+                detail=_message(request, "day"),
                 headers={"Retry-After": str(retry_after)},
             )
 

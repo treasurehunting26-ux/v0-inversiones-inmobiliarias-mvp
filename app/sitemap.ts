@@ -1,22 +1,46 @@
 import type { MetadataRoute } from "next"
-import { getAllGuideSlugs } from "@/lib/guides"
+import { guideSlugs, getGuides, type GuideId } from "@/lib/guides"
+import { defaultLocale, locales, localizedPath, SITE_URL, type Locale, type RouteKey } from "@/lib/i18n/config"
 
-const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://aterra.vercel.app"
+type Freq = MetadataRoute.Sitemap[number]["changeFrequency"]
+
+/** Una entrada por idioma, cada una con sus alternativas hreflang. */
+function entries(
+  route: RouteKey,
+  restFor: (l: Locale) => string[] | null,
+  changeFrequency: Freq,
+  priority: number,
+): MetadataRoute.Sitemap {
+  const available = locales.filter((l) => restFor(l) !== null)
+  const urlFor = (l: Locale) => `${SITE_URL}${localizedPath(l, route, ...(restFor(l) ?? []))}`
+  const languages = Object.fromEntries(available.map((l) => [l, urlFor(l)]))
+  if (available.includes(defaultLocale)) languages["x-default"] = urlFor(defaultLocale)
+
+  return available.map((l) => ({
+    url: urlFor(l),
+    changeFrequency,
+    priority,
+    alternates: { languages },
+  }))
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticRoutes: MetadataRoute.Sitemap = [
-    { url: `${BASE_URL}/`, changeFrequency: "weekly", priority: 1 },
-    { url: `${BASE_URL}/oportunidades`, changeFrequency: "daily", priority: 0.9 },
-    { url: `${BASE_URL}/guias`, changeFrequency: "weekly", priority: 0.8 },
-    { url: `${BASE_URL}/asistente`, changeFrequency: "monthly", priority: 0.7 },
-    { url: `${BASE_URL}/contacto`, changeFrequency: "monthly", priority: 0.6 },
+  const always = () => []
+  const guideIds = Object.keys(guideSlugs) as GuideId[]
+
+  return [
+    ...entries("home", always, "weekly", 1),
+    ...entries("opportunities", always, "daily", 0.9),
+    ...entries("guides", always, "weekly", 0.8),
+    ...entries("assistant", always, "monthly", 0.7),
+    ...entries("contact", always, "monthly", 0.6),
+    ...guideIds.flatMap((id) =>
+      entries(
+        "guides",
+        (l) => (getGuides(l).some((g) => g.id === id) ? [guideSlugs[id][l]] : null),
+        "monthly",
+        0.6,
+      ),
+    ),
   ]
-
-  const guideRoutes: MetadataRoute.Sitemap = getAllGuideSlugs().map((slug) => ({
-    url: `${BASE_URL}/guias/${slug}`,
-    changeFrequency: "monthly",
-    priority: 0.6,
-  }))
-
-  return [...staticRoutes, ...guideRoutes]
 }
