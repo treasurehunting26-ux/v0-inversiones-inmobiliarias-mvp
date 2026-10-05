@@ -4,8 +4,11 @@ import { useMemo, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import type { Guide } from "@/lib/guides"
+import { useI18n } from "@/lib/i18n/client"
+import { localizedPath } from "@/lib/i18n/config"
+import { format } from "@/lib/i18n/format"
 
-const CATEGORY_ALL = "Todas"
+const CATEGORY_ALL = "all"
 
 function useUniqueValues(guides: Guide[], key: "category" | "region") {
   return useMemo(() => {
@@ -15,6 +18,11 @@ function useUniqueValues(guides: Guide[], key: "category" | "region") {
 }
 
 export function GuidesIndex({ guides }: { guides: Guide[] }) {
+  const { locale, dict } = useI18n()
+  const t = dict.guides
+  const categoryLabel = (c: string) =>
+    c === CATEGORY_ALL ? t.all : t.categories[c as Guide["category"]]
+  const regionLabel = (r: string) => (r === CATEGORY_ALL ? t.all : t.regions[r as Guide["region"]])
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<string>(CATEGORY_ALL)
   const [region, setRegion] = useState<string>(CATEGORY_ALL)
@@ -54,7 +62,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                     : "border-border text-muted-foreground hover:border-[var(--color-gold)] hover:text-foreground"
                 }`}
               >
-                {c}
+                {categoryLabel(c)}
               </button>
             ))}
           </div>
@@ -72,18 +80,18 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                       : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
                   }`}
                 >
-                  {r}
+                  {regionLabel(r)}
                 </button>
               ))}
             </div>
 
             <label className="relative">
-              <span className="sr-only">Buscar guías</span>
+              <span className="sr-only">{t.searchLabel}</span>
               <input
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar guías..."
+                placeholder={t.searchPlaceholder}
                 className="w-full min-w-[220px] rounded-full border border-border bg-card px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-[var(--color-gold)] sm:w-auto"
               />
             </label>
@@ -95,9 +103,9 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
       {showFeatured && featured && (
         <section className="px-6 py-16">
           <div className="mx-auto max-w-5xl">
-            <p className="mb-6 text-xs uppercase tracking-[0.3em] text-[var(--color-gold)]">Destacado</p>
+            <p className="mb-6 text-xs uppercase tracking-[0.3em] text-[var(--color-gold)]">{t.featured}</p>
             <Link
-              href={`/guias/${featured.slug}`}
+              href={localizedPath(locale, "guides", featured.slug)}
               className="group grid overflow-hidden rounded-sm border border-border bg-card md:grid-cols-2"
             >
               <div className="relative aspect-[4/3] overflow-hidden md:aspect-auto">
@@ -113,11 +121,11 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
               <div className="flex flex-col justify-center p-8 md:p-10">
                 <div className="mb-5 flex items-center gap-3">
                   <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">
-                    {featured.category}
+                    {categoryLabel(featured.category)}
                   </span>
                   <span className="text-xs text-muted-foreground">·</span>
                   <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                    {featured.region}
+                    {regionLabel(featured.region)}
                   </span>
                 </div>
                 <h2 className="font-serif text-3xl font-light leading-tight text-foreground text-balance md:text-4xl">
@@ -126,10 +134,10 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{featured.excerpt}</p>
                 <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
                   <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                    {featured.readingTime} de lectura
+                    {format(t.readingTime, { time: featured.readingTime })}
                   </span>
                   <span className="text-sm text-[var(--color-gold)] transition-transform group-hover:translate-x-1">
-                    Leer guía →
+                    {t.readGuide}
                   </span>
                 </div>
               </div>
@@ -143,14 +151,14 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
         <div className="mx-auto max-w-5xl">
           {filtered.length === 0 ? (
             <p className="py-16 text-center text-sm text-muted-foreground">
-              No encontramos guías que coincidan con tu búsqueda. Prueba con otro término o filtro.
+              {t.noResults}
             </p>
           ) : (
             <div className="grid gap-8 md:grid-cols-2">
               {filtered.map((guide) => (
                 <Link
                   key={guide.slug}
-                  href={`/guias/${guide.slug}`}
+                  href={localizedPath(locale, "guides", guide.slug)}
                   className="group flex flex-col overflow-hidden rounded-sm border border-border bg-card transition-colors hover:border-[var(--color-gold)]"
                 >
                   <div className="relative aspect-[16/10] overflow-hidden">
@@ -166,11 +174,11 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                     <div>
                       <div className="mb-5 flex items-center gap-3">
                         <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">
-                          {guide.category}
+                          {categoryLabel(guide.category)}
                         </span>
                         <span className="text-xs text-muted-foreground">·</span>
                         <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                          {guide.region}
+                          {regionLabel(guide.region)}
                         </span>
                       </div>
                       <h2 className="font-serif text-2xl font-light leading-snug text-foreground text-balance">
@@ -180,10 +188,10 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                     </div>
                     <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
                       <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                        {guide.readingTime} de lectura
+                        {format(t.readingTime, { time: guide.readingTime })}
                       </span>
                       <span className="text-sm text-[var(--color-gold)] transition-transform group-hover:translate-x-1">
-                        Leer guía →
+                        {t.readGuide}
                       </span>
                     </div>
                   </div>

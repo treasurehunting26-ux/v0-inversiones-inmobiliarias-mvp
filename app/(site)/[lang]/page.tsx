@@ -8,19 +8,23 @@ import { Features } from "@/components/landing/features"
 import { Faq } from "@/components/landing/faq"
 import { CTA } from "@/components/landing/cta"
 import { Footer } from "@/components/landing/footer"
+import { getDictionary, type Locale } from "@/lib/i18n"
 
-export default function Home() {
+export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
+  const locale = (await params).lang as Locale
+  const t = getDictionary(locale)
+
   return (
     <main className="min-h-screen bg-background">
       <NavBar />
-      <Hero />
-      <Credibility />
-      <Markets />
-      <HowItWorks />
-      <Showcase />
-      <Features />
-      <Faq />
-      <CTA />
+      <Hero locale={locale} t={t.hero} />
+      <Credibility t={t.credibility} />
+      <Markets locale={locale} t={t.markets} />
+      <HowItWorks t={t.howItWorks} />
+      <Showcase locale={locale} t={t.showcase} />
+      <Features t={t.features} />
+      <Faq t={t.faq} />
+      <CTA locale={locale} t={t.cta} />
       <Footer />
     </main>
   )

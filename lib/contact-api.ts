@@ -4,6 +4,8 @@ export interface ContactPayload {
   name: string
   email: string
   context: string
+  /** Idioma en el que escribe el visitante (se muestra al equipo) */
+  locale?: string
 }
 
 export interface ContactResponse {
@@ -11,7 +13,10 @@ export interface ContactResponse {
   status: string
 }
 
-export async function submitContact(payload: ContactPayload): Promise<ContactResponse> {
+export async function submitContact(
+  payload: ContactPayload,
+  fallbackError = "No se pudo enviar tu solicitud. Inténtalo de nuevo.",
+): Promise<ContactResponse> {
   const res = await fetch(`${API_URL}/contact`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -19,7 +24,7 @@ export async function submitContact(payload: ContactPayload): Promise<ContactRes
   })
 
   if (!res.ok) {
-    let detail = "No se pudo enviar tu solicitud. Inténtalo de nuevo."
+    let detail = fallbackError
     try {
       const data = await res.json()
       if (typeof data?.detail === "string") detail = data.detail

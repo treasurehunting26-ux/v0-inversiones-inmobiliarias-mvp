@@ -4,8 +4,12 @@ import useSWR from "swr"
 import Link from "next/link"
 import { fetcher, type PropertyListResponse } from "@/lib/properties-api"
 import { PropertyCard } from "./property-card"
+import { useI18n } from "@/lib/i18n/client"
+import { localizedPath } from "@/lib/i18n/config"
 
 export function CatalogoGrid() {
+  const { locale, dict } = useI18n()
+  const t = dict.opportunities
   const { data, error, isLoading } = useSWR<PropertyListResponse>("/properties", fetcher)
 
   if (isLoading) {
@@ -21,16 +25,15 @@ export function CatalogoGrid() {
   if (error) {
     return (
       <div className="flex flex-col items-center gap-4 border border-border bg-card px-6 py-20 text-center">
-        <p className="text-base font-semibold text-foreground">No pudimos cargar las oportunidades</p>
+        <p className="text-base font-semibold text-foreground">{t.errorTitle}</p>
         <p className="max-w-md text-sm text-muted-foreground">
-          Estamos teniendo dificultades tecnicas. Por favor, vuelve a intentarlo en unos minutos o habla
-          directamente con un asesor.
+          {t.errorBody}
         </p>
         <Link
-          href="/asistente"
+          href={localizedPath(locale, "assistant")}
           className="mt-2 inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Hablar con un asesor
+          {t.talkToAdvisor}
         </Link>
       </div>
     )
@@ -41,16 +44,15 @@ export function CatalogoGrid() {
   if (properties.length === 0) {
     return (
       <div className="flex flex-col items-center gap-4 border border-border bg-card px-6 py-20 text-center">
-        <p className="text-base font-semibold text-foreground">Aun no hay oportunidades publicadas</p>
+        <p className="text-base font-semibold text-foreground">{t.emptyTitle}</p>
         <p className="max-w-md text-sm text-muted-foreground">
-          Estamos seleccionando los proximos activos. Dejanos tu perfil y te avisaremos en cuanto haya
-          oportunidades que encajen contigo.
+          {t.emptyBody}
         </p>
         <Link
-          href="/asistente"
+          href={localizedPath(locale, "assistant")}
           className="mt-2 inline-flex items-center rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-primary-foreground transition-opacity hover:opacity-90"
         >
-          Dejar mi perfil
+          {t.leaveProfile}
         </Link>
       </div>
     )

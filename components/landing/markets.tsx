@@ -1,52 +1,34 @@
 import Link from "next/link"
+import { format, type Dictionary, type Locale } from "@/lib/i18n"
+import { localizedPath } from "@/lib/i18n/config"
 
-const markets = [
-  {
-    name: "Europa",
-    location: "Costa del Sol · Madrid · Lisboa",
-    image: "/images/market-europa.png",
-    description: "Activos consolidados en los mercados más estables y demandados del continente.",
-  },
-  {
-    name: "Latinoamérica",
-    location: "Tulum · Ciudad de México · Punta del Este",
-    image: "/images/market-latam.png",
-    description: "Oportunidades de alto crecimiento en destinos emergentes de lujo.",
-  },
-  {
-    name: "Dubái",
-    location: "Palm Jumeirah · Downtown · Marina",
-    image: "/images/market-dubai.png",
-    description: "Rentabilidades excepcionales en uno de los mercados más dinámicos del mundo.",
-  },
-]
+const MARKET_IMAGES = ["/images/market-europa.png", "/images/market-latam.png", "/images/market-dubai.png"]
 
-export function Markets() {
+export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"] }) {
   return (
     <section className="bg-background py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mb-16 max-w-2xl">
-          <span className="text-xs font-light uppercase tracking-[0.3em] text-accent">Nuestros mercados</span>
+          <span className="text-xs font-light uppercase tracking-[0.3em] text-accent">{t.eyebrow}</span>
           <h2 className="mt-5 font-serif text-4xl font-light leading-tight text-balance text-foreground md:text-5xl">
-            Tres geografías, una misma exigencia
+            {t.title}
           </h2>
           <p className="mt-5 text-base font-light leading-relaxed text-muted-foreground">
-            Seleccionamos activos en mercados internacionales con potencial verificado, combinando
-            estabilidad patrimonial y oportunidades de revalorización.
+            {t.intro}
           </p>
         </div>
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
-          {markets.map((market) => (
+          {t.items.map((market, i) => (
             <Link
               key={market.name}
-              href="/oportunidades"
+              href={localizedPath(locale, "opportunities")}
               className="group relative block overflow-hidden"
             >
               <div className="relative aspect-[3/4] overflow-hidden">
                 <img
-                  src={market.image || "/placeholder.svg"}
-                  alt={`Inversión inmobiliaria en ${market.name}`}
+                  src={MARKET_IMAGES[i] || "/placeholder.svg"}
+                  alt={format(t.imageAlt, { name: market.name })}
                   className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-noir/90 via-noir/20 to-transparent" />
@@ -59,7 +41,7 @@ export function Markets() {
                     {market.description}
                   </p>
                   <span className="mt-5 inline-flex items-center gap-2 text-xs font-light uppercase tracking-[0.2em] text-noir-foreground">
-                    Explorar
+                    {t.explore}
                     <span className="h-px w-8 bg-gold transition-all duration-300 group-hover:w-12" />
                   </span>
                 </div>
