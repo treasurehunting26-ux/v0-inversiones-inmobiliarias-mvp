@@ -50,13 +50,33 @@ export function PropertyDetail() {
     )
   }
 
-  // Si hay un dossier prediseñado (pagina HTML completa subida por el admin),
-  // esa pagina ES la ficha: se muestra a pantalla completa, sin el
-  // encabezado/CTA genericos de abajo, para respetar su propio diseño.
+  // El dossier puede llegar como un documento HTML completo (con su propio
+  // <html>/<head>/<style>), ya sea subido como archivo (dossier_html_url) o
+  // pegado directamente en el editor de contenido (description_html). En
+  // ambos casos esa pagina ES la ficha: se muestra a pantalla completa, con
+  // su propio diseño, sin el encabezado/CTA genericos de abajo.
+  const isFullHtmlDocument = (html: string) => /<html[\s>]|<!doctype html/i.test(html)
+  const fullDossierHtml = data.dossier_html_url
+    ? null
+    : data.description_html && isFullHtmlDocument(data.description_html)
+      ? data.description_html
+      : null
+
   if (data.dossier_html_url) {
     return (
       <iframe
         src={data.dossier_html_url}
+        title={`Dossier de ${data.title}`}
+        className="block h-screen w-full border-0"
+        sandbox="allow-same-origin"
+      />
+    )
+  }
+
+  if (fullDossierHtml) {
+    return (
+      <iframe
+        srcDoc={fullDossierHtml}
         title={`Dossier de ${data.title}`}
         className="block h-screen w-full border-0"
         sandbox="allow-same-origin"
