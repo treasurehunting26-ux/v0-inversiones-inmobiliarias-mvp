@@ -5,13 +5,14 @@
  * `orientation`:
  * - "portrait": vídeo vertical (móvil). En escritorio se muestra enmarcado
  *   junto al titular; en móvil, a pantalla completa.
- * - "landscape": vídeo horizontal (1920×1080 o más). Se muestra a pantalla
- *   completa también en escritorio.
+ * - "landscape": pantalla completa también en escritorio (lo elegido para la
+ *   portada). Con un vídeo vertical se recorta arriba y abajo y pierde
+ *   nitidez en pantallas grandes; lo ideal es un vídeo horizontal 1920×1080.
  */
 export const HERO_MEDIA = {
   video:
     "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/videos/villa-los-monteros-hero_1-Rwys8FiIJb31VsLNYjYgMTXeDvxmO2.mp4",
   poster:
     "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/dossiers/media/villa-los-monteros-dossier-privado-marbe-1-jVWBvNgw2WYc8zUHsg5eBi9nVVPgOi.jpg",
-  orientation: "portrait" as "portrait" | "landscape",
+  orientation: "landscape" as "portrait" | "landscape",
 }

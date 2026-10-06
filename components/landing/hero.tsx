@@ -22,7 +22,7 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
       {/* Fondo: vídeo a pantalla completa (móvil siempre; escritorio si es horizontal) */}
       <div className={`absolute inset-0 ${landscape ? "" : "lg:hidden"}`}>
         <HeroVideo label={t.videoLabel} className="h-full w-full object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-b from-noir/75 via-noir/55 to-noir/85" />
+        <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
       </div>
 
       {/* Escritorio con vídeo vertical: foto aérea de fondo con zoom lento */}
