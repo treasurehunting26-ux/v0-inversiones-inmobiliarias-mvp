@@ -5,6 +5,8 @@ import { DossierView } from "@/components/dossier/dossier-view"
 
 interface DossierPageProps {
   params: Promise<{ slug: string }>
+  // ?lang=en -> version en ingles del dossier (si existe)
+  searchParams: Promise<{ lang?: string }>
 }
 
 export async function generateMetadata({ params }: DossierPageProps): Promise<Metadata> {
@@ -17,13 +19,14 @@ export async function generateMetadata({ params }: DossierPageProps): Promise<Me
   }
 }
 
-export default async function DossierPage({ params }: DossierPageProps) {
+export default async function DossierPage({ params, searchParams }: DossierPageProps) {
   const { slug } = await params
+  const { lang } = await searchParams
   const property = await getDossier(slug)
 
   if (!property) {
     notFound()
   }
 
-  return <DossierView property={property} />
+  return <DossierView property={property} locale={lang === "en" ? "en" : "es"} />
 }

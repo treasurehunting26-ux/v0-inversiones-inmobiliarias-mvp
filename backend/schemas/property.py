@@ -35,6 +35,7 @@ class PropertyDetailRead(PropertyRead):
     El HTML se sanea en el frontend antes de renderizar.
     """
     description_html: Optional[str] = None
+    description_html_en: Optional[str] = None
     video_url: Optional[str] = None
     dossier_slug: Optional[str] = None
     dossier_html_url: Optional[str] = None

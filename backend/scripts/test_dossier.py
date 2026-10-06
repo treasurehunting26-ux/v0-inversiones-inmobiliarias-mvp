@@ -170,7 +170,41 @@ def main_test() -> None:
     assert "Dossier excerpt:" in catalog and "Villa contemporánea" in catalog
     s.close()
 
-    print("OK: dossier como ficha verificado (alta, datos, IA, Blob, catálogo, Brigitte)")
+    # 8. Versión en inglés: se añade, se sirve en la ficha y Brigitte la usa en inglés
+    DOSSIER_EN = DOSSIER.replace('lang="es"', 'lang="en"').replace(
+        "Villa contemporánea de 6 dormitorios con vistas al mar.", "Contemporary 6-bedroom villa with sea views.")
+    r = client.patch(f"/admin/properties/{pid}/content", headers=H, json={"description_html_en": DOSSIER_EN})
+    assert r.status_code == 200 and r.json()["has_dossier_en"] is True and r.json()["dossier_en_kb"] >= 0, r.text
+    assert client.get(f"/admin/properties/{pid}", headers=H).json()["description_html_en"] == DOSSIER_EN
+    assert client.get(f"/admin/properties/{pid}", headers=H).json()["description_html"] == DOSSIER, "el español no cambia"
+    public = client.get(f"/properties/{pid}").json()
+    assert public["description_html_en"] == DOSSIER_EN and public["description_html"] == DOSSIER
+    s = TestSessionLocal()
+    assert "6-bedroom" in ai_assistant.get_property_focus(s, pid, "en")
+    assert "6 dormitorios" in ai_assistant.get_property_focus(s, pid, "es")
+    assert "6-bedroom" in ai_assistant.build_context_prompt(ai_assistant.get_published_properties(s, "en"))
+    s.close()
+    # "" quita la versión en inglés: en inglés se vuelve a mostrar el español
+    r = client.patch(f"/admin/properties/{pid}/content", headers=H, json={"description_html_en": ""})
+    assert r.json()["has_dossier_en"] is False
+    s = TestSessionLocal()
+    assert "6 dormitorios" in ai_assistant.get_property_focus(s, pid, "en")
+    s.close()
+
+    # 9. Columna nueva en una base de datos ya existente (producción): se añade al arrancar
+    from sqlalchemy import inspect as sa_inspect, text as sa_text
+    legacy_engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False}, poolclass=StaticPool)
+    with legacy_engine.begin() as conn:
+        conn.execute(sa_text("CREATE TABLE properties (id VARCHAR PRIMARY KEY, title VARCHAR, description_html TEXT)"))
+    original_engine = main.engine
+    main.engine = legacy_engine
+    main.ensure_new_columns()
+    main.ensure_new_columns()  # idempotente
+    main.engine = original_engine
+    cols = {c["name"] for c in sa_inspect(legacy_engine).get_columns("properties")}
+    assert "description_html_en" in cols, cols
+
+    print("OK: dossier como ficha verificado (alta, datos, IA, Blob, catálogo, Brigitte, inglés, migración)")
 
 
 if __name__ == "__main__":

@@ -37,6 +37,9 @@ class Property(Base):
     photos = Column(JSON, nullable=True, default=list)  # lista de URLs (Vercel Blob)
     video_url = Column(String, nullable=True)  # URL de video (Vercel Blob)
     dossier_slug = Column(String, nullable=True, unique=True, index=True)
+    # Version en ingles del dossier (documento HTML completo). Se muestra
+    # cuando la web esta en ingles; si falta, se muestra el dossier en espanol.
+    description_html_en = Column(Text, nullable=True)
 
     # Dossier prediseñado fuera del panel (documento HTML completo y
     # autocontenido, subido a Vercel Blob). Cuando esta presente, se sirve

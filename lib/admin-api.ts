@@ -25,10 +25,13 @@ export type AdminProperty = {
   dossier_html_url: string | null
   has_dossier: boolean
   dossier_kb: number
+  /** Version en ingles del dossier (se muestra cuando la web esta en ingles). */
+  has_dossier_en: boolean
+  dossier_en_kb: number
 }
 
 /** Propiedad con el HTML del dossier (GET /admin/properties/{id}). */
-export type AdminPropertyDetail = AdminProperty & { description_html: string | null }
+export type AdminPropertyDetail = AdminProperty & { description_html: string | null; description_html_en: string | null }
 
 export type PropertyFields = {
   title: string
@@ -41,6 +44,8 @@ export type PropertyFields = {
 
 export type PropertyContentPayload = {
   description_html?: string
+  /** "" = quitar la version en ingles */
+  description_html_en?: string
   photos?: string[]
   video_url?: string
   dossier_html_url?: string
@@ -48,6 +53,7 @@ export type PropertyContentPayload = {
 
 export type PropertyCreatePayload = PropertyFields & {
   description_html?: string
+  description_html_en?: string
   photos?: string[]
 }
 

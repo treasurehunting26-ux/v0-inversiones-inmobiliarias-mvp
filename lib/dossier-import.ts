@@ -138,6 +138,101 @@ function visibleText(doc: Document): string {
   return text.slice(0, 20000)
 }
 
+/**
+ * Dossiers exportados como "pagina empaquetada" (bundle de Claude Design y
+ * similares): el HTML visible es solo un cargador; el diseño real va en
+ * <script type="__bundler/template"> y las fotos/scripts en
+ * <script type="__bundler/manifest"> (base64, a veces gzip). Se desempaqueta
+ * aqui igual que haria el cargador en el navegador, pero dejando un HTML
+ * normal: cada recurso pasa a data: URI y el paso siguiente sube las fotos a
+ * Blob. Asi el dossier pesa poco, tiene portada y Brigitte puede leer su texto.
+ */
+type BundleEntry = { mime: string; compressed?: boolean; data: string }
+
+/** Texto de un titulo respetando los saltos de linea (<br>) como espacios. */
+function headingText(el: Element | null): string {
+  if (!el) return ""
+  const clone = el.cloneNode(true) as Element
+  clone.querySelectorAll("br").forEach((br) => br.replaceWith(" "))
+  return (clone.textContent || "").replace(/\s+/g, " ").trim()
+}
+
+function isBundledPage(html: string): boolean {
+  return /type=["']__bundler\/manifest["']/i.test(html) && /type=["']__bundler\/template["']/i.test(html)
+}
+
+async function gunzip(bytes: Uint8Array<ArrayBuffer>): Promise<Uint8Array> {
+  const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream("gzip"))
+  return new Uint8Array(await new Response(stream).arrayBuffer())
+}
+
+function bytesToBase64(bytes: Uint8Array): string {
+  let bin = ""
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000))
+  return btoa(bin)
+}
+
+async function unbundlePage(html: string): Promise<string> {
+  const outer = new DOMParser().parseFromString(html, "text/html")
+  const read = (type: string) => outer.querySelector(`script[type="${type}"]`)?.textContent ?? ""
+  const manifest = JSON.parse(read("__bundler/manifest") || "{}") as Record<string, BundleEntry>
+  let template = JSON.parse(read("__bundler/template") || '""') as string
+  const extResources = JSON.parse(read("__bundler/ext_resources") || "[]") as { id: string; uuid: string }[]
+  const pageOrder = JSON.parse(read("__bundler/page_order") || "[]") as string[]
+  if (!template) throw new Error("El dossier empaquetado no contiene su diseño (falta la plantilla).")
+  // Paginas anidadas (iframes dentro del dossier): caso raro, se deja tal cual.
+  if (pageOrder.length > 0) return html
+
+  // Recurso -> data: URI (descomprimido si viene en gzip)
+  const dataUris: Record<string, string> = {}
+  const texts: Record<string, string> = {}
+  for (const [uuid, entry] of Object.entries(manifest)) {
+    let base64 = entry.data.replace(/\s+/g, "")
+    if (entry.compressed) {
+      const raw = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+      const plain = await gunzip(raw)
+      base64 = bytesToBase64(plain)
+      if (/javascript|jsx|babel|text\//i.test(entry.mime)) texts[uuid] = new TextDecoder().decode(plain)
+    } else if (/javascript|jsx|babel|text\//i.test(entry.mime)) {
+      texts[uuid] = new TextDecoder().decode(Uint8Array.from(atob(base64), (c) => c.charCodeAt(0)))
+    }
+    dataUris[uuid] = `data:${entry.mime};base64,${base64}`
+  }
+
+  // Scripts text/babel con src: se incrustan (Babel no puede leer data: por XHR)
+  const doc = new DOMParser().parseFromString(template, "text/html")
+  doc.querySelectorAll('script[type="text/babel"][src], script[type="text/jsx"][src]').forEach((s) => {
+    const uuid = s.getAttribute("src") || ""
+    if (texts[uuid] !== undefined) {
+      s.textContent = texts[uuid]
+      s.removeAttribute("src")
+    }
+  })
+  template = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML
+
+  for (const [uuid, uri] of Object.entries(dataUris)) template = template.split(uuid).join(uri)
+  template = template.replace(/\s+integrity="[^"]*"/gi, "").replace(/\s+crossorigin="[^"]*"/gi, "")
+
+  // Librerias externas (React, etc.) que el diseño pide por su URL original
+  const resourceMap: Record<string, string> = {}
+  for (const r of extResources) if (dataUris[r.uuid]) resourceMap[r.id] = dataUris[r.uuid]
+  const resourceScript = `<script>window.__resources = ${JSON.stringify(resourceMap).replace(/<\//g, "<\\/")};</script>`
+  const head = template.match(/<head[^>]*>/i)
+  if (head && head.index !== undefined) {
+    const i = head.index + head[0].length
+    template = template.slice(0, i) + resourceScript + template.slice(i)
+  }
+  // Titulo: el cargador se llama "Bundled Page"; se usa el del diseño o su h1
+  if (!/<title>/i.test(template)) {
+    const h1 = headingText(doc.querySelector("h1"))
+    if (h1 && head && head.index !== undefined) {
+      const at = template.indexOf(">", template.search(/<head[^>]*>/i)) + 1
+      template = template.slice(0, at) + `<title>${h1.replace(/</g, "&lt;")}</title>` + template.slice(at)
+    }
+  }
+  return template
+}
+
 export function isFullHtmlDocument(html: string): boolean {
   return /<html[\s>]|<!doctype html/i.test(html.slice(0, 5000))
 }
@@ -151,6 +246,7 @@ export async function processDossierHtml(
   if (!isFullHtmlDocument(rawHtml)) {
     throw new Error("El archivo no parece un documento HTML completo (falta <html> o <!DOCTYPE html>).")
   }
+  if (isBundledPage(rawHtml)) rawHtml = await unbundlePage(rawHtml)
 
   const probe = new DOMParser().parseFromString(rawHtml, "text/html")
   const baseName = slug(probe.querySelector("title")?.textContent || probe.querySelector("h1")?.textContent || "dossier")
@@ -198,7 +294,7 @@ export async function processDossierHtml(
   // 3. Titulo, portada y texto
   onProgress?.({ step: "analyzing", done: 0, total: 0 })
   const doc = new DOMParser().parseFromString(html, "text/html")
-  const title = (doc.querySelector("title")?.textContent || doc.querySelector("h1")?.textContent || "").trim() || null
+  const title = (doc.querySelector("title")?.textContent || headingText(doc.querySelector("h1")) || "").trim() || null
 
   return {
     html,

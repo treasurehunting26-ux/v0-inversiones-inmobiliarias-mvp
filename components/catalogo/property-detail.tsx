@@ -4,7 +4,7 @@ import { useEffect } from "react"
 import useSWR from "swr"
 import Link from "next/link"
 import { useParams } from "next/navigation"
-import { propertyFetcher, type Property } from "@/lib/properties-api"
+import { dossierHtmlFor, propertyFetcher, type Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
 import { useI18n } from "@/lib/i18n/client"
 import { localizedPath } from "@/lib/i18n/config"
@@ -71,8 +71,10 @@ export function PropertyDetail() {
   // Vercel Blob (dossier_html_url) no se pueden mostrar como pagina (Blob
   // lo impide con sus cabeceras): hasta reimportarlos desde el panel se
   // muestra la ficha basica de abajo.
-  if (data.description_html && isFullHtmlDocument(data.description_html)) {
-    return <DossierListing id={data.id} title={data.title} html={data.description_html} />
+  // En ingles se muestra la version inglesa del dossier si existe.
+  const dossierHtml = dossierHtmlFor(data, locale)
+  if (dossierHtml && isFullHtmlDocument(dossierHtml)) {
+    return <DossierListing id={data.id} title={data.title} html={dossierHtml} />
   }
 
   const facts = [

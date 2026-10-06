@@ -27,6 +27,7 @@ class PropertyCreate(BaseModel):
     horizon: str = Field(default="", max_length=200)
     risk_notes: str = Field(default="", max_length=4000)
     description_html: Optional[str] = None
+    description_html_en: Optional[str] = None
     photos: Optional[list[str]] = None
 
 
@@ -70,6 +71,8 @@ class PropertyContentUpdate(BaseModel):
     El HTML se guarda tal cual; se sanea en el frontend antes de mostrarse.
     """
     description_html: Optional[str] = None
+    # "" = quitar la version en ingles
+    description_html_en: Optional[str] = None
     photos: Optional[list[str]] = None
     video_url: Optional[str] = None
     dossier_html_url: Optional[str] = None
@@ -98,6 +101,8 @@ class PropertyAdminRead(BaseModel):
     dossier_slug: Optional[str] = None
     dossier_html_url: Optional[str] = None
     has_dossier: bool = False
+    has_dossier_en: bool = False
+    dossier_en_kb: int = 0
     dossier_kb: int = 0
 
     class Config:
@@ -107,6 +112,7 @@ class PropertyAdminRead(BaseModel):
 class PropertyAdminDetail(PropertyAdminRead):
     """Lectura admin de una propiedad con el HTML del dossier."""
     description_html: Optional[str] = None
+    description_html_en: Optional[str] = None
 
 
 class FetchDossierResponse(BaseModel):

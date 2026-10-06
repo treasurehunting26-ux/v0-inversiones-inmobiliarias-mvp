@@ -180,3 +180,10 @@ def fetch_blob_html(url: str) -> str:
         except UnicodeDecodeError:
             continue
     return raw.decode("utf-8", errors="replace")
+
+
+def dossier_html_for(prop, locale: str | None) -> str:
+    """HTML del dossier en el idioma pedido; si no hay version en ese idioma, el espanol."""
+    if (locale or "").lower().startswith("en") and getattr(prop, "description_html_en", None):
+        return prop.description_html_en
+    return prop.description_html or ""

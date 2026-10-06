@@ -21,6 +21,8 @@ interface DossierImporterProps {
   property?: AdminProperty
   /** Reimportar el dossier subido con el sistema anterior (Vercel Blob). */
   recoverLegacy?: boolean
+  /** Subir la version en ingles del dossier de una propiedad existente. */
+  english?: boolean
   onDone: () => void
   onCancel: () => void
 }
@@ -44,8 +46,16 @@ function progressLabel(p: DossierProgress | null): string {
   return "Leyendo los datos del dossier…"
 }
 
-export function DossierImporter({ token, property, recoverLegacy = false, onDone, onCancel }: DossierImporterProps) {
+export function DossierImporter({
+  token,
+  property,
+  recoverLegacy = false,
+  english = false,
+  onDone,
+  onCancel,
+}: DossierImporterProps) {
   const isNew = !property
+  const englishOnly = english && !isNew
   const [stage, setStage] = useState<Stage>("pick")
   const [progress, setProgress] = useState<DossierProgress | null>(null)
   const [result, setResult] = useState<ProcessedDossier | null>(null)
@@ -65,6 +75,23 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
   const [error, setError] = useState<string | null>(null)
   const [dragging, setDragging] = useState(false)
   const inputRef = useRef<HTMLInputElement>(null)
+  // Alta nueva: version en ingles opcional, subida junto a la española
+  const [englishResult, setEnglishResult] = useState<ProcessedDossier | null>(null)
+  const [englishBusy, setEnglishBusy] = useState(false)
+  const [englishError, setEnglishError] = useState<string | null>(null)
+
+  async function processEnglish(file: File | undefined) {
+    if (!file) return
+    setEnglishError(null)
+    setEnglishBusy(true)
+    try {
+      setEnglishResult(await processDossierHtml(await readFileAsText(file), token))
+    } catch (err) {
+      setEnglishError(err instanceof Error ? err.message : "No se pudo procesar la versión en inglés")
+    } finally {
+      setEnglishBusy(false)
+    }
+  }
 
   async function process(getHtml: () => Promise<string>) {
     setError(null)
@@ -74,6 +101,11 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
       const html = await getHtml()
       const processed = await processDossierHtml(html, token, setProgress)
       setResult(processed)
+      if (englishOnly) {
+        // Version en ingles: los datos de la ficha no cambian
+        setStage("review")
+        return
+      }
 
       // Propuesta de datos desde el texto del dossier (la revisa el humano)
       setProgress({ step: "analyzing", done: 0, total: 0 })
@@ -109,6 +141,18 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
 
   async function save(publish: boolean) {
     if (!result) return
+    if (englishOnly) {
+      setError(null)
+      setStage("saving")
+      try {
+        await updateContent(token, property.id, { description_html_en: result.html })
+        onDone()
+      } catch (err) {
+        setError(err instanceof Error ? err.message : "No se pudo guardar")
+        setStage("review")
+      }
+      return
+    }
     const missing = REQUIRED.filter((k) => !fields[k].trim())
     if (missing.length) {
       setError("Completa título, ubicación, tipo de activo e inversión antes de guardar.")
@@ -124,6 +168,7 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
         const created = await createProperty(token, {
           ...cleanFields,
           description_html: result.html,
+          ...(englishResult ? { description_html_en: englishResult.html } : {}),
           photos: result.coverUrl ? [result.coverUrl] : [],
         })
         if (publish) await updateStatus(token, created.id, "published")
@@ -146,10 +191,20 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
     <div className="flex flex-col gap-5">
       <div>
         <h3 className="font-serif text-lg font-semibold text-foreground">
-          {isNew ? "Nueva propiedad desde su dossier" : recoverLegacy ? "Recuperar el dossier subido" : "Reemplazar dossier"}
+          {isNew
+            ? "Nueva propiedad desde su dossier"
+            : englishOnly
+              ? property.has_dossier_en
+                ? "Reemplazar la versión en inglés"
+                : "Versión en inglés del dossier"
+              : recoverLegacy
+                ? "Recuperar el dossier subido"
+                : "Reemplazar dossier"}
         </h3>
         <p className="text-sm text-muted-foreground">
-          El dossier es la ficha: así es como se verá la propiedad en la web, tal cual lo diseñaste.
+          {englishOnly
+            ? "Se muestra a quien visita la web en inglés. Las fotos se suben igual que en la versión en español."
+            : "El dossier es la ficha: así es como se verá la propiedad en la web, tal cual lo diseñaste."}
         </p>
       </div>
 
@@ -183,7 +238,9 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
             }`}
           >
             <UploadCloud className="h-8 w-8 text-muted-foreground" />
-            <span className="text-sm font-medium text-foreground">Arrastra aquí el archivo .html del dossier</span>
+            <span className="text-sm font-medium text-foreground">
+              {englishOnly ? "Arrastra aquí el dossier en inglés (.html)" : "Arrastra aquí el archivo .html del dossier"}
+            </span>
             <span className="text-xs text-muted-foreground">
               o haz clic para elegirlo. Las fotos y vídeos incrustados se suben solos.
             </span>
@@ -253,6 +310,32 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
             )}
           </div>
 
+          {englishOnly ? (
+            <div className="flex flex-col gap-4">
+              <p className="text-sm text-foreground">
+                Así se verá «{property.title}» para quien visite la web en inglés. Los datos de la ficha no cambian.
+              </p>
+              {error && <p className="text-sm text-destructive">{error}</p>}
+              <div className="flex flex-wrap justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={onCancel}
+                  disabled={stage === "saving"}
+                  className="rounded-lg border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="button"
+                  onClick={() => void save(false)}
+                  disabled={stage === "saving"}
+                  className="rounded-lg bg-primary px-4 py-2 text-sm font-semibold text-primary-foreground hover:opacity-90 disabled:opacity-50"
+                >
+                  {stage === "saving" ? "Guardando…" : "Guardar versión en inglés"}
+                </button>
+              </div>
+            </div>
+          ) : (
           <div className="flex flex-col gap-4">
             <div className="flex items-start justify-between gap-2">
               <p className="text-sm text-foreground">
@@ -271,6 +354,17 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
               </button>
             )}
             <FieldsForm fields={fields} onChange={setFields} disabled={stage === "saving"} />
+
+            {isNew && (
+              <EnglishSlot
+                result={englishResult}
+                busy={englishBusy}
+                error={englishError}
+                disabled={stage === "saving"}
+                onFile={(f) => void processEnglish(f)}
+                onRemove={() => setEnglishResult(null)}
+              />
+            )}
 
             {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -314,6 +408,7 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
               )}
             </div>
           </div>
+          )}
         </div>
       )}
 
@@ -329,6 +424,68 @@ export function DossierImporter({ token, property, recoverLegacy = false, onDone
           </button>
         </div>
       )}
+    </div>
+  )
+}
+
+/** Alta nueva: hueco opcional para subir a la vez la version en ingles. */
+function EnglishSlot({
+  result,
+  busy,
+  error,
+  disabled,
+  onFile,
+  onRemove,
+}: {
+  result: ProcessedDossier | null
+  busy: boolean
+  error: string | null
+  disabled: boolean
+  onFile: (file: File | undefined) => void
+  onRemove: () => void
+}) {
+  return (
+    <div className="rounded-lg border border-dashed border-border bg-card p-4">
+      <p className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Versión en inglés (opcional)</p>
+      {result ? (
+        <div className="mt-2 flex items-center justify-between gap-3 text-sm text-foreground">
+          <span className="flex items-center gap-1.5">
+            <CheckCircle2 className="h-4 w-4" />
+            {result.title || "Dossier en inglés"} · {result.uploadedCount} fotos · {result.sizeKb} KB
+          </span>
+          <button
+            type="button"
+            onClick={onRemove}
+            disabled={disabled}
+            className="text-xs font-medium underline disabled:opacity-50"
+          >
+            Quitar
+          </button>
+        </div>
+      ) : busy ? (
+        <p className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Procesando la versión en inglés…
+        </p>
+      ) : (
+        <label className="mt-2 flex cursor-pointer items-center gap-2 text-sm text-foreground">
+          <UploadCloud className="h-4 w-4 text-muted-foreground" />
+          <span className="underline">Elegir el dossier en inglés (.html)</span>
+          <input
+            type="file"
+            accept=".html,.htm,text/html"
+            className="hidden"
+            disabled={disabled}
+            onChange={(e) => {
+              onFile(e.target.files?.[0])
+              e.target.value = ""
+            }}
+          />
+        </label>
+      )}
+      <p className="mt-2 text-xs text-muted-foreground">
+        Se muestra a quien visita la web en inglés. Si no la subes, verán la versión en español.
+      </p>
+      {error && <p className="mt-2 text-xs text-destructive">{error}</p>}
     </div>
   )
 }

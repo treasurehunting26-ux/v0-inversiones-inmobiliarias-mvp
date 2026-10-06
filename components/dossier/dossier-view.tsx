@@ -1,5 +1,5 @@
 import Link from "next/link"
-import type { Property } from "@/lib/properties-api"
+import { dossierHtmlFor, type Property } from "@/lib/properties-api"
 import { sanitizePropertyHtml } from "@/lib/sanitize-html"
 import { Reveal } from "@/components/dossier/reveal"
 import { DossierFrame } from "@/components/dossier/dossier-frame"
@@ -7,6 +7,7 @@ import { isFullHtmlDocument } from "@/lib/dossier-import"
 
 interface DossierViewProps {
   property: Property
+  locale?: "es" | "en"
 }
 
 /**
@@ -23,13 +24,15 @@ interface DossierViewProps {
  * desde el panel), este enlace muestra esa pagina tal cual, a pantalla
  * completa, en vez de construir la pagina con la plantilla de abajo.
  */
-export function DossierView({ property }: DossierViewProps) {
-  // El dossier completo (documento HTML) es la pagina tal cual.
-  if (property.description_html && isFullHtmlDocument(property.description_html)) {
+export function DossierView({ property, locale = "es" }: DossierViewProps) {
+  // El dossier completo (documento HTML) es la pagina tal cual, en el
+  // idioma del enlace (?lang=en) si hay version en ese idioma.
+  const dossierHtml = dossierHtmlFor(property, locale)
+  if (dossierHtml && isFullHtmlDocument(dossierHtml)) {
     return (
       <DossierFrame
-        html={property.description_html}
-        title={`Dossier de ${property.title}`}
+        html={dossierHtml}
+        title={locale === "en" ? `${property.title} dossier` : `Dossier de ${property.title}`}
         className="h-dvh"
       />
     )
