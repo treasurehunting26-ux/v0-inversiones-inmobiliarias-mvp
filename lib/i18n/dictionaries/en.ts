@@ -29,6 +29,32 @@ export const en: Dictionary = {
     body: "An exclusive selection of high-value assets, analysed and validated one by one by our team of advisors. Where wealth finds its best opportunity.",
     primary: "View opportunities",
     secondary: "Speak with an advisor",
+    titleLead: "Exceptional real estate",
+    titleAccent: "investments",
+    videoLabel: "A walk through Villa Los Monteros, Marbella",
+    scroll: "Discover",
+  },
+
+  home: {
+    manifesto: {
+      eyebrow: "How we work",
+      text: "We don't publish endless catalogues. We study every asset one by one —location, title, potential and risk— and only present the ones that meet our standards.",
+    },
+    featured: {
+      eyebrow: "Featured opportunity",
+      cta: "View dossier",
+      investment: "Investment",
+    },
+    rail: {
+      eyebrow: "Current selection",
+      title: "Validated opportunities",
+      viewAll: "View the full catalogue",
+      prev: "Previous",
+      next: "Next",
+    },
+    ticker: {
+      label: "Now in portfolio",
+    },
   },
 
   credibility: {

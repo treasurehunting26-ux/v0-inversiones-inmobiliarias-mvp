@@ -32,6 +32,32 @@ export const es = {
     body: "Una selección exclusiva de activos de alto valor, analizados y validados uno a uno por nuestro equipo de asesores. Donde el patrimonio encuentra su mejor oportunidad.",
     primary: "Ver oportunidades",
     secondary: "Hablar con un asesor",
+    titleLead: "Inversiones inmobiliarias",
+    titleAccent: "de excepción",
+    videoLabel: "Recorrido por Villa Los Monteros, Marbella",
+    scroll: "Descubrir",
+  },
+
+  home: {
+    manifesto: {
+      eyebrow: "Nuestra forma de trabajar",
+      text: "No publicamos catálogos interminables. Estudiamos cada activo uno a uno —ubicación, título, potencial y riesgo— y solo te presentamos los que superan nuestro criterio.",
+    },
+    featured: {
+      eyebrow: "Oportunidad destacada",
+      cta: "Ver dossier",
+      investment: "Inversión",
+    },
+    rail: {
+      eyebrow: "Selección actual",
+      title: "Oportunidades validadas",
+      viewAll: "Ver todo el catálogo",
+      prev: "Anterior",
+      next: "Siguiente",
+    },
+    ticker: {
+      label: "Ahora en cartera",
+    },
   },
 
   credibility: {
