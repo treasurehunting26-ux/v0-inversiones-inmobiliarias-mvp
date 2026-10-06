@@ -1,6 +1,6 @@
 import { NavBar } from "@/components/landing/nav-bar"
 import { Hero } from "@/components/landing/hero"
-import { Manifesto } from "@/components/landing/manifesto"
+import { Intro } from "@/components/landing/intro"
 import { FeaturedProperty } from "@/components/landing/featured-property"
 import { OpportunitiesRail } from "@/components/landing/opportunities-rail"
 import { Ticker } from "@/components/landing/ticker"
@@ -27,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     <main className="min-h-screen bg-background">
       <NavBar />
       <Hero locale={locale} t={t.hero} />
-      <Manifesto t={t.home.manifesto} />
+      <Intro locale={locale} t={t.home.intro} activeCount={properties.length} />
       {featured && <FeaturedProperty locale={locale} t={t.home.featured} property={featured} />}
       {rail.length > 0 && <OpportunitiesRail locale={locale} t={t.home.rail} properties={rail} />}
       <Ticker t={t.home.ticker} properties={withCover.length ? withCover : properties} />

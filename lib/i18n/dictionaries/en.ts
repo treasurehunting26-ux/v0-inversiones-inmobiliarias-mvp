@@ -40,6 +40,21 @@ export const en: Dictionary = {
       eyebrow: "How we work",
       text: "We don't publish endless catalogues. We study every asset one by one —location, title, potential and risk— and only present the ones that meet our standards.",
     },
+    intro: {
+      eyebrow: "B&G Consulting · Real estate investment advisory",
+      title: "Real estate investment with judgement in Marbella, Latin America and Dubai",
+      body: [
+        "We select villas, luxury apartments, licensed land and industrial assets with verified potential. Every opportunity goes through a prior review of location, title, price and risk before it is published.",
+        "Each asset comes with its own private dossier and an advisor who accompanies you from the first enquiry to closing, with the discretion a transaction of this level requires.",
+      ],
+      facts: {
+        active: "Active opportunities",
+        markets: "Markets",
+        reviewed: "Assets reviewed before publication",
+        languages: "Service in English and Spanish",
+      },
+      cta: "View the catalogue",
+    },
     featured: {
       eyebrow: "Featured opportunity",
       cta: "View dossier",

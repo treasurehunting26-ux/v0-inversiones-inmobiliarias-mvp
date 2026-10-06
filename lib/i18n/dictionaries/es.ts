@@ -43,6 +43,21 @@ export const es = {
       eyebrow: "Nuestra forma de trabajar",
       text: "No publicamos catálogos interminables. Estudiamos cada activo uno a uno —ubicación, título, potencial y riesgo— y solo te presentamos los que superan nuestro criterio.",
     },
+    intro: {
+      eyebrow: "B&G Consulting · Asesoría de inversión inmobiliaria",
+      title: "Inversión inmobiliaria con criterio en Marbella, Latinoamérica y Dubái",
+      body: [
+        "Seleccionamos villas, apartamentos de lujo, terrenos con licencia y activos industriales con potencial verificado. Cada oportunidad pasa por un análisis previo de ubicación, situación registral, precio y riesgo antes de publicarse.",
+        "Cada activo cuenta con su dossier privado y un asesor que te acompaña desde la primera consulta hasta el cierre, con la discreción que exige una operación de este nivel.",
+      ],
+      facts: {
+        active: "Oportunidades activas",
+        markets: "Mercados",
+        reviewed: "Activos revisados antes de publicarse",
+        languages: "Atención en español e inglés",
+      },
+      cta: "Ver el catálogo",
+    },
     featured: {
       eyebrow: "Oportunidad destacada",
       cta: "Ver dossier",
