@@ -81,6 +81,11 @@ export function PropertyList({
                   </h3>
                   <StatusBadge status={p.status} />
                   <DossierBadge property={p} />
+                  {p.has_dossier_en && (
+                    <span className="inline-flex items-center rounded-full bg-muted px-2 py-0.5 text-xs font-medium text-foreground">
+                      EN
+                    </span>
+                  )}
                 </div>
                 <p className="mt-1 text-sm text-muted-foreground">
                   {p.location} {"\u00B7"} {p.asset_type}

@@ -1,8 +1,8 @@
 "use client"
 
 import { useState } from "react"
-import { AlertTriangle, Check, Copy, ExternalLink, FileCode, Pencil, X } from "lucide-react"
-import { type AdminProperty, type PropertyFields, updateFields } from "@/lib/admin-api"
+import { AlertTriangle, Check, Copy, ExternalLink, FileCode, Languages, Pencil, Trash2, X } from "lucide-react"
+import { type AdminProperty, type PropertyFields, updateContent, updateFields } from "@/lib/admin-api"
 import { DossierImporter, FieldsForm } from "./dossier-importer"
 
 interface PropertyDossierPanelProps {
@@ -12,7 +12,7 @@ interface PropertyDossierPanelProps {
   onClose: () => void
 }
 
-type Mode = "menu" | "replace" | "recover" | "edit"
+type Mode = "menu" | "replace" | "recover" | "edit" | "english"
 
 /** Dossier y datos de una propiedad: ver, compartir, corregir datos o reemplazar el dossier. */
 export function PropertyDossierPanel({ token, property, onChanged, onClose }: PropertyDossierPanelProps) {
@@ -28,17 +28,34 @@ export function PropertyDossierPanel({ token, property, onChanged, onClose }: Pr
   })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState<"es" | "en" | null>(null)
 
   const origin = typeof window !== "undefined" ? window.location.origin : ""
   const dossierUrl = property.dossier_slug ? `${origin}/dossier/${property.dossier_slug}` : null
+  const dossierUrlEn = dossierUrl ? `${dossierUrl}?lang=en` : null
   const listingUrl = `${origin}/oportunidades/${property.id}`
+  const listingUrlEn = `${origin}/en/opportunities/${property.id}`
 
-  async function copy() {
-    if (!dossierUrl) return
-    await navigator.clipboard.writeText(dossierUrl)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
+  async function copy(lang: "es" | "en") {
+    const url = lang === "en" ? dossierUrlEn : dossierUrl
+    if (!url) return
+    await navigator.clipboard.writeText(url)
+    setCopied(lang)
+    setTimeout(() => setCopied(null), 2000)
+  }
+
+  async function removeEnglish() {
+    if (!confirm("¿Quitar la versión en inglés? En inglés se mostrará el dossier en español.")) return
+    setSaving(true)
+    setError(null)
+    try {
+      await updateContent(token, property.id, { description_html_en: "" })
+      onChanged()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "No se pudo quitar")
+    } finally {
+      setSaving(false)
+    }
   }
 
   async function saveFields() {
@@ -69,11 +86,12 @@ export function PropertyDossierPanel({ token, property, onChanged, onClose }: Pr
         </button>
       </div>
 
-      {(mode === "replace" || mode === "recover") && (
+      {(mode === "replace" || mode === "recover" || mode === "english") && (
         <DossierImporter
           token={token}
           property={property}
           recoverLegacy={mode === "recover"}
+          english={mode === "english"}
           onDone={() => {
             onChanged()
             setMode("menu")
@@ -133,9 +151,9 @@ export function PropertyDossierPanel({ token, property, onChanged, onClose }: Pr
               </ActionLink>
             )}
             {dossierUrl && (
-              <button type="button" onClick={copy} className={actionClass}>
-                {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-                {copied ? "Copiado" : "Copiar enlace privado"}
+              <button type="button" onClick={() => void copy("es")} className={actionClass}>
+                {copied === "es" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                {copied === "es" ? "Copiado" : "Copiar enlace privado"}
               </button>
             )}
             <button type="button" onClick={() => setMode("replace")} className={actionClass}>
@@ -144,6 +162,40 @@ export function PropertyDossierPanel({ token, property, onChanged, onClose }: Pr
             <button type="button" onClick={() => setMode("edit")} className={actionClass}>
               <Pencil className="h-3.5 w-3.5" /> Corregir datos
             </button>
+          </div>
+
+          <div className="flex flex-col gap-2 border-t border-border pt-4">
+            <p className="flex items-center gap-1.5 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+              <Languages className="h-3.5 w-3.5" /> Versión en inglés
+            </p>
+            <p className="text-xs text-muted-foreground">
+              {property.has_dossier_en
+                ? `Subida (${property.dossier_en_kb} KB). Se muestra a quien visita la web en inglés.`
+                : "Aún no hay versión en inglés: en inglés se muestra el dossier en español."}
+            </p>
+            <div className="flex flex-wrap gap-2">
+              <button type="button" onClick={() => setMode("english")} className={actionClass}>
+                <FileCode className="h-3.5 w-3.5" />
+                {property.has_dossier_en ? "Reemplazar versión en inglés" : "Subir versión en inglés"}
+              </button>
+              {property.has_dossier_en && (
+                <>
+                  <ActionLink href={listingUrlEn} disabled={property.status !== "published"}>
+                    <ExternalLink className="h-3.5 w-3.5" /> Ver ficha en inglés
+                  </ActionLink>
+                  {dossierUrlEn && (
+                    <button type="button" onClick={() => void copy("en")} className={actionClass}>
+                      {copied === "en" ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+                      {copied === "en" ? "Copiado" : "Copiar enlace privado (EN)"}
+                    </button>
+                  )}
+                  <button type="button" onClick={() => void removeEnglish()} disabled={saving} className={actionClass}>
+                    <Trash2 className="h-3.5 w-3.5" /> Quitar
+                  </button>
+                </>
+              )}
+            </div>
+            {error && <p className="text-sm text-destructive">{error}</p>}
           </div>
           <p className="text-xs text-muted-foreground">
             El enlace privado funciona aunque la propiedad esté en borrador: sirve para enviarla por WhatsApp o email

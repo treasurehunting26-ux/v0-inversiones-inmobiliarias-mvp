@@ -88,6 +88,9 @@ def to_admin_read(prop: Property, detail: bool = False) -> PropertyAdminRead:
     data = model.model_validate(prop)
     data.has_dossier = bool(prop.dossier_html_url) or is_full_html_document(html)
     data.dossier_kb = round(len(html.encode("utf-8")) / 1024)
+    html_en = prop.description_html_en or ""
+    data.has_dossier_en = is_full_html_document(html_en)
+    data.dossier_en_kb = round(len(html_en.encode("utf-8")) / 1024)
     return data
 
 
@@ -128,6 +131,7 @@ def admin_migrate_content_fields(
         "CREATE UNIQUE INDEX IF NOT EXISTS ix_properties_dossier_slug "
         "ON properties (dossier_slug)",
         "ALTER TABLE properties ADD COLUMN IF NOT EXISTS dossier_html_url VARCHAR",
+        "ALTER TABLE properties ADD COLUMN IF NOT EXISTS description_html_en TEXT",
     ]
     for stmt in statements:
         db.execute(text(stmt))
@@ -286,6 +290,7 @@ def admin_create_property(
         horizon=data.horizon.strip(),
         risk_notes=data.risk_notes.strip(),
         description_html=data.description_html,
+        description_html_en=data.description_html_en or None,
         photos=data.photos or [],
         status="draft",
         created_by="admin",
@@ -317,6 +322,9 @@ def admin_update_content(
 
     if data.description_html is not None:
         prop.description_html = data.description_html
+    if data.description_html_en is not None:
+        # "" = quitar la version en ingles
+        prop.description_html_en = data.description_html_en or None
     if data.photos is not None:
         prop.photos = data.photos
     if data.video_url is not None:

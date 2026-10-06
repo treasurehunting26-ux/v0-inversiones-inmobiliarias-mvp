@@ -49,6 +49,32 @@ def on_startup() -> None:
         logger.info("[startup] Tablas verificadas/creadas correctamente")
     except Exception as exc:  # noqa: BLE001
         logger.error("[startup] Fallo al crear tablas: %s: %s", exc.__class__.__name__, exc)
+    ensure_new_columns()
+
+
+# Columnas anadidas a tablas que ya existen en produccion. create_all no
+# modifica tablas existentes: se anaden aqui al arrancar (idempotente y
+# portable: se comprueba con el inspector antes de hacer ALTER TABLE).
+NEW_COLUMNS = [
+    ("properties", "description_html_en", "TEXT"),
+]
+
+
+def ensure_new_columns() -> None:
+    from sqlalchemy import inspect, text
+
+    try:
+        inspector = inspect(engine)
+        for table, column, sql_type in NEW_COLUMNS:
+            if not inspector.has_table(table):
+                continue
+            existing = {c["name"] for c in inspector.get_columns(table)}
+            if column not in existing:
+                with engine.begin() as conn:
+                    conn.execute(text(f"ALTER TABLE {table} ADD COLUMN {column} {sql_type}"))
+                logger.info("[startup] Columna anadida: %s.%s", table, column)
+    except Exception as exc:  # noqa: BLE001
+        logger.error("[startup] Fallo al anadir columnas: %s: %s", exc.__class__.__name__, exc)
 
 
 # CORS: permite frontend local + dominio de produccion + Vercel preview.

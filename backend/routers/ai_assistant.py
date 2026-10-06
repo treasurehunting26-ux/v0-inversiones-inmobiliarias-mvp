@@ -48,7 +48,7 @@ from models.lead_escalation import EscalationStatus, LeadEscalation
 from models.property import Property
 from rate_limit import enforce_ai_rate_limit
 from services.ai_usage import budget_exhausted, record_usage
-from services.dossier import html_to_text
+from services.dossier import dossier_html_for, html_to_text
 from schemas.ai_assistant import (
     AssistantRequest,
     AssistantResponse,
@@ -171,7 +171,7 @@ def fallback_message(locale: Optional[str]) -> str:
     return FALLBACK_MESSAGES.get(locale or "es", FALLBACK_MESSAGES["en"])
 
 
-def get_published_properties(db: Session) -> list[dict]:
+def get_published_properties(db: Session, locale: Optional[str] = None) -> list[dict]:
     """Propiedades publicadas para el contexto. Solo lectura, filtro en SQL."""
     properties = db.query(Property).filter(Property.status == "published").all()
     return [
@@ -184,7 +184,7 @@ def get_published_properties(db: Session) -> list[dict]:
             "horizon": p.horizon,
             "risk_notes": p.risk_notes,
             # Extracto del dossier: lo que el equipo ha publicado sobre el activo.
-            "dossier_excerpt": html_to_text(p.description_html, limit=DOSSIER_EXCERPT_CHARS),
+            "dossier_excerpt": html_to_text(dossier_html_for(p, locale), limit=DOSSIER_EXCERPT_CHARS),
         }
         for p in properties
     ]
@@ -218,7 +218,7 @@ def build_context_prompt(properties: list[dict]) -> str:
     return "\n".join(lines)
 
 
-def get_property_focus(db: Session, property_id: Optional[str]) -> str:
+def get_property_focus(db: Session, property_id: Optional[str], locale: Optional[str] = None) -> str:
     """Si el chat se abrio desde la ficha de una propiedad publicada, se indica al modelo."""
     if not property_id:
         return ""
@@ -233,7 +233,7 @@ def get_property_focus(db: Session, property_id: Optional[str]) -> str:
         "VISITOR CONTEXT:\nThe visitor opened the chat from the page of this opportunity: "
         f"{prop.title} ({prop.location}). Assume their questions refer to it unless they say otherwise."
     )
-    dossier_text = html_to_text(prop.description_html, limit=DOSSIER_FOCUS_CHARS)
+    dossier_text = html_to_text(dossier_html_for(prop, locale), limit=DOSSIER_FOCUS_CHARS)
     if dossier_text:
         context += (
             "\n\nDOSSIER OF THIS OPPORTUNITY (published by the team; you may use these facts, "
@@ -452,8 +452,8 @@ async def interact_with_assistant(
 
     # 2. Contexto
     context_blocks = [
-        build_context_prompt(get_published_properties(db)),
-        get_property_focus(db, request.property_id),
+        build_context_prompt(get_published_properties(db, locale)),
+        get_property_focus(db, request.property_id, locale),
         get_investor_profile_context(investor),
     ]
     system_prompt = SYSTEM_PROMPT.replace("{language}", language_name(locale)) + "\n\n" + "\n\n".join(

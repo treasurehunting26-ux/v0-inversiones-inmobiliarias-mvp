@@ -14,6 +14,8 @@ export type Property = {
   horizon: string
   risk_notes: string
   description_html?: string | null
+  /** Version en ingles del dossier; si falta, en ingles se muestra la española. */
+  description_html_en?: string | null
   photos?: string[] | null
   video_url?: string | null
   dossier_slug?: string | null
@@ -49,4 +51,10 @@ export async function getDossier(slug: string): Promise<Property | null> {
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`Error ${res.status}`)
   return res.json()
+}
+
+/** Dossier en el idioma de la web; si no hay version en ese idioma, el español. */
+export function dossierHtmlFor(property: Pick<Property, "description_html" | "description_html_en">, locale: string): string | null {
+  if (locale.startsWith("en") && property.description_html_en) return property.description_html_en
+  return property.description_html ?? null
 }
