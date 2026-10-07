@@ -27,7 +27,7 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
     <main className="min-h-screen bg-background">
       <NavBar />
       <Hero locale={locale} t={t.hero} />
-      <Intro locale={locale} t={t.home.intro} activeCount={properties.length} />
+      <Intro locale={locale} t={t.home.intro} />
       {featured && <FeaturedProperty locale={locale} t={t.home.featured} property={featured} />}
       {rail.length > 0 && <OpportunitiesRail locale={locale} t={t.home.rail} properties={rail} />}
       <Ticker t={t.home.ticker} properties={withCover.length ? withCover : properties} />

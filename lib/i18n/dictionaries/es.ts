@@ -45,17 +45,18 @@ export const es = {
     },
     intro: {
       eyebrow: "B&G Consulting · Asesoría de inversión inmobiliaria",
-      title: "Inversión inmobiliaria con criterio en Marbella, Latinoamérica y Dubái",
+      titleLead: "Inversión inmobiliaria",
+      titleAccent: "con criterio",
+      titleTail: "en Marbella, Latinoamérica y Dubái",
       body: [
         "Seleccionamos villas, apartamentos de lujo, terrenos con licencia y activos industriales con potencial verificado. Cada oportunidad pasa por un análisis previo de ubicación, situación registral, precio y riesgo antes de publicarse.",
         "Cada activo cuenta con su dossier privado y un asesor que te acompaña desde la primera consulta hasta el cierre, con la discreción que exige una operación de este nivel.",
       ],
-      facts: {
-        active: "Oportunidades activas",
-        markets: "Mercados",
-        reviewed: "Activos revisados antes de publicarse",
-        languages: "Atención en español e inglés",
-      },
+      pillars: [
+        { title: "Selección curada", detail: "Pocas oportunidades, estudiadas una a una." },
+        { title: "Análisis registral y de riesgo", detail: "Antes de publicar, nunca después." },
+        { title: "Dossier privado", detail: "Cada activo, con su propia presentación." },
+      ],
       cta: "Ver el catálogo",
     },
     featured: {

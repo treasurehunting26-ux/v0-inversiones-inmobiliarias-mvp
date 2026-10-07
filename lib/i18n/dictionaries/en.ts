@@ -42,17 +42,18 @@ export const en: Dictionary = {
     },
     intro: {
       eyebrow: "B&G Consulting · Real estate investment advisory",
-      title: "Real estate investment with judgement in Marbella, Latin America and Dubai",
+      titleLead: "Real estate investment",
+      titleAccent: "with judgement",
+      titleTail: "in Marbella, Latin America and Dubai",
       body: [
         "We select villas, luxury apartments, licensed land and industrial assets with verified potential. Every opportunity goes through a prior review of location, title, price and risk before it is published.",
         "Each asset comes with its own private dossier and an advisor who accompanies you from the first enquiry to closing, with the discretion a transaction of this level requires.",
       ],
-      facts: {
-        active: "Active opportunities",
-        markets: "Markets",
-        reviewed: "Assets reviewed before publication",
-        languages: "Service in English and Spanish",
-      },
+      pillars: [
+        { title: "Curated selection", detail: "Few opportunities, studied one by one." },
+        { title: "Title and risk review", detail: "Before publication, never after." },
+        { title: "Private dossier", detail: "Every asset, with its own presentation." },
+      ],
       cta: "View the catalogue",
     },
     featured: {

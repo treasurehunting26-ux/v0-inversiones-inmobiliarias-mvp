@@ -3,66 +3,62 @@ import type { Dictionary, Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
 import { Reveal } from "@/components/dossier/reveal"
 
+const NUMERALS = ["I", "II", "III"]
+
 /**
  * Presentación tras la portada: quiénes somos y qué hacemos, con las
- * palabras clave del negocio (SEO) y cifras reales del catálogo.
+ * palabras clave del negocio en el titular (SEO) y tres pilares.
  */
-export function Intro({
-  locale,
-  t,
-  activeCount,
-}: {
-  locale: Locale
-  t: Dictionary["home"]["intro"]
-  activeCount: number
-}) {
-  const facts = [
-    ...(activeCount > 0 ? [{ value: String(activeCount), label: t.facts.active }] : []),
-    { value: "3", label: t.facts.markets },
-    { value: "100 %", label: t.facts.reviewed },
-    { value: "ES · EN", label: t.facts.languages },
-  ]
-
+export function Intro({ locale, t }: { locale: Locale; t: Dictionary["home"]["intro"] }) {
   return (
     <section className="bg-background">
-      <div className="mx-auto grid max-w-7xl gap-14 px-6 py-24 md:py-32 lg:grid-cols-[1.1fr_0.9fr] lg:gap-20 lg:px-10">
+      <div className="mx-auto max-w-7xl px-6 pt-28 md:pt-40 lg:px-10">
         <Reveal>
-          <span className="flex items-center gap-4 text-xs font-light uppercase tracking-[0.3em] text-copper-ink">
-            <span className="h-px w-10 shrink-0 bg-copper" aria-hidden />
-            {t.eyebrow}
-          </span>
-          <h2 className="mt-8 font-serif text-4xl font-light leading-[1.12] text-balance text-foreground md:text-5xl lg:text-[3.4rem]">
-            {t.title}
-          </h2>
+          <span className="text-[0.68rem] font-light uppercase tracking-[0.42em] text-copper-ink">{t.eyebrow}</span>
         </Reveal>
 
-        <Reveal className="flex flex-col justify-end">
-          {t.body.map((p) => (
-            <p key={p} className="mb-5 text-base font-light leading-relaxed text-muted-foreground md:text-lg">
-              {p}
-            </p>
-          ))}
-          <Link
-            href={localizedPath(locale, "opportunities")}
-            className="mt-3 inline-flex w-fit items-center gap-3 text-xs font-normal uppercase tracking-[0.22em] text-foreground"
-          >
-            {t.cta}
-            <span className="h-px w-10 bg-copper" />
-          </Link>
-        </Reveal>
+        <div className="mt-10 grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-24">
+          <Reveal>
+            <h2 className="font-serif text-[2.6rem] font-light leading-[1.08] tracking-[-0.01em] text-foreground md:text-6xl lg:text-[4.25rem]">
+              {t.titleLead}{" "}
+              <em className="font-light italic text-copper-ink">{t.titleAccent}</em>{" "}
+              <span className="text-foreground/80">{t.titleTail}</span>
+            </h2>
+          </Reveal>
+
+          <Reveal className="flex flex-col justify-end lg:pb-3">
+            <div className="mb-8 h-px w-16 bg-copper" aria-hidden />
+            {t.body.map((p) => (
+              <p key={p} className="mb-5 text-[0.98rem] font-light leading-[1.85] text-muted-foreground">
+                {p}
+              </p>
+            ))}
+            <Link
+              href={localizedPath(locale, "opportunities")}
+              className="group mt-4 inline-flex w-fit items-center gap-4 text-[0.7rem] font-normal uppercase tracking-[0.3em] text-foreground"
+            >
+              {t.cta}
+              <span className="h-px w-10 bg-copper transition-all duration-300 group-hover:w-16" />
+            </Link>
+          </Reveal>
+        </div>
       </div>
 
-      <div className="mx-auto max-w-7xl px-6 pb-24 lg:px-10">
-        <dl className="grid grid-cols-2 border-t border-border lg:grid-cols-4">
-          {facts.map((f) => (
-            <Reveal key={f.label} className="border-b border-border py-8 pr-6 lg:border-b-0">
-              <div className="flex flex-col-reverse gap-3">
-                <dt className="text-xs font-light uppercase tracking-[0.2em] text-muted-foreground">{f.label}</dt>
-                <dd className="font-serif text-4xl font-light text-foreground md:text-5xl">{f.value}</dd>
-              </div>
+      <div className="mx-auto max-w-7xl px-6 pb-28 pt-24 md:pb-36 lg:px-10">
+        <ul className="grid border-t border-foreground/15 md:grid-cols-3">
+          {t.pillars.map((pillar, i) => (
+            <Reveal
+              key={pillar.title}
+              className={`border-b border-foreground/10 py-10 md:border-b-0 md:py-12 ${i > 0 ? "md:border-l md:pl-10" : "md:pr-10"}`}
+            >
+              <li className="list-none">
+                <span className="font-serif text-sm italic tracking-[0.2em] text-copper-ink">{NUMERALS[i]}</span>
+                <h3 className="mt-5 font-serif text-[1.7rem] font-light leading-snug text-foreground">{pillar.title}</h3>
+                <p className="mt-3 text-sm font-light leading-relaxed text-muted-foreground">{pillar.detail}</p>
+              </li>
             </Reveal>
           ))}
-        </dl>
+        </ul>
       </div>
     </section>
   )
