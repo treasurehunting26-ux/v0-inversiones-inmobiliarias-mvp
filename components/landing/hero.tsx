@@ -35,19 +35,19 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
 
       <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl items-center px-6 pb-24 pt-32 lg:px-10">
         <div className={`grid w-full items-center gap-14 ${landscape ? "" : "lg:grid-cols-[1.25fr_0.75fr]"}`}>
-          <div className={landscape ? "mx-auto max-w-3xl text-center" : "text-center lg:text-left"}>
+          <div className={landscape ? "mx-auto max-w-4xl text-center" : "text-center lg:text-left"}>
             <span
-              className="bg-rise inline-block text-xs font-light uppercase tracking-[0.35em] text-gold-soft"
+              className="bg-rise inline-block text-base font-normal text-gold-soft"
               style={{ animationDelay: "150ms" }}
             >
               {t.eyebrow}
             </span>
-            <h1 className="mt-6 font-serif font-light leading-[1.02] text-noir-foreground">
+            <h1 className="mt-6 font-serif font-normal leading-[1.04] tracking-[-0.01em] text-noir-foreground">
               <span className="bg-rise block text-5xl md:text-7xl lg:text-[5.4rem]" style={{ animationDelay: "300ms" }}>
                 {t.titleLead}
               </span>
               <span
-                className="bg-rise block text-5xl italic text-gold-soft md:text-7xl lg:text-[5.4rem]"
+                className="bg-rise block text-5xl md:text-7xl lg:text-[5.4rem]"
                 style={{ animationDelay: "480ms" }}
               >
                 {t.titleAccent}
@@ -69,13 +69,13 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
             >
               <Link
                 href={localizedPath(locale, "opportunities")}
-                className="bg-copper-ink px-9 py-4 text-center text-xs font-normal uppercase tracking-[0.22em] text-white transition-colors hover:bg-copper"
+                className="bg-copper-ink px-9 py-4 text-center text-sm font-normal tracking-[0.01em] text-white transition-colors hover:bg-copper"
               >
                 {t.primary}
               </Link>
               <Link
                 href={localizedPath(locale, "assistant")}
-                className="border border-gold-soft/70 px-9 py-4 text-center text-xs font-light uppercase tracking-[0.22em] text-noir-foreground transition-colors hover:border-noir-foreground hover:bg-noir-foreground/10"
+                className="border border-gold-soft/70 px-9 py-4 text-center text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:border-noir-foreground hover:bg-noir-foreground/10"
               >
                 {t.secondary}
               </Link>
@@ -96,7 +96,7 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
 
       {/* Indicador para bajar */}
       <div className="absolute inset-x-0 bottom-7 z-10 flex flex-col items-center gap-2 text-noir-foreground/80">
-        <span className="text-[0.65rem] font-light uppercase tracking-[0.3em]">{t.scroll}</span>
+        <span className="text-[0.82rem] font-light tracking-[0.01em]">{t.scroll}</span>
         <span className="bg-cue block h-8 w-px bg-gold-soft" aria-hidden />
       </div>
     </section>

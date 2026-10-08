@@ -23,7 +23,7 @@ export default async function ContactPage({ params }: Props) {
       {/* Cabecera noir */}
       <section className="bg-noir px-6 pb-20 pt-40 lg:px-10">
         <div className="mx-auto max-w-3xl text-center">
-          <span className="text-xs font-light uppercase tracking-[0.28em] text-gold">{t.eyebrow}</span>
+          <span className="text-sm font-light tracking-[0.01em] text-gold">{t.eyebrow}</span>
           <h1 className="mt-6 font-serif text-5xl font-light leading-[1.05] text-noir-foreground md:text-6xl">
             {t.title}
           </h1>

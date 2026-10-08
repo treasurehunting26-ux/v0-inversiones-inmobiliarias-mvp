@@ -4,32 +4,32 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Jost", "Jost Fallback";
-  --font-serif: "Cormorant Garamond", "Cormorant Garamond Fallback";
+  --font-sans: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Bodoni Moda", "Bodoni Moda Fallback", Georgia, serif;
 
   /* Paleta del logo B&G: marfil calido, azul marino, cobre y grafito.
      Sin negro: el azul marino ocupa su lugar en superficies oscuras.
      ("noir"/"gold" se mantienen como nombres de token para no tocar cada
      componente: noir = azul marino, gold = cobre.) */
-  --color-background: #f5f1ea;
+  --color-background: #f4f2ee;
   --color-foreground: #1f2f4d;
   --color-card: #ffffff;
   --color-card-foreground: #1f2f4d;
   --color-primary: #1f2f4d;
-  --color-primary-foreground: #f5f1ea;
+  --color-primary-foreground: #f4f2ee;
   --color-secondary: #ede7dc;
   --color-secondary-foreground: #1f2f4d;
   --color-muted: #ede7dc;
   --color-muted-foreground: #6b6860;
   --color-accent: #8c5a35;
-  --color-accent-foreground: #f5f1ea;
+  --color-accent-foreground: #f4f2ee;
   --color-border: #ddd5c7;
   --color-input: #ddd5c7;
   --color-ring: #b07a52;
 
   /* Superficies oscuras (azul marino) y cobre */
   --color-noir: #1f2f4d;
-  --color-noir-foreground: #f5f1ea;
+  --color-noir-foreground: #f4f2ee;
   --color-gold: #c4916a;
   --color-gold-soft: #d9ab86;
   --color-copper: #b07a52;

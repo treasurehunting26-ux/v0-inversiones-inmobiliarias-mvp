@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
-import { jost, cormorant } from "@/lib/fonts"
+import { sans, serif } from "@/lib/fonts"
 import { SITE_URL } from "@/lib/i18n/config"
 import "../globals.css"
 
@@ -22,7 +22,7 @@ export const metadata: Metadata = {
 export default function StandaloneRootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="es" className="bg-background">
-      <body className={`${jost.variable} ${cormorant.variable} font-sans antialiased`}>{children}</body>
+      <body className={`${sans.variable} ${serif.variable} font-sans antialiased`}>{children}</body>
     </html>
   )
 }

@@ -10,7 +10,7 @@ export function Ticker({ t, properties }: { t: Dictionary["home"]["ticker"]; pro
 
   return (
     <section className="flex items-stretch overflow-hidden bg-copper-ink text-noir-foreground" aria-label={t.label}>
-      <div className="relative z-10 hidden shrink-0 items-center bg-noir px-6 text-[0.7rem] font-normal uppercase tracking-[0.3em] text-gold-soft sm:flex">
+      <div className="relative z-10 hidden shrink-0 items-center bg-noir px-6 text-[0.82rem] font-normal tracking-[0.01em] text-gold-soft sm:flex">
         {t.label}
       </div>
       <div className="flex-1 overflow-hidden py-4">
@@ -18,7 +18,7 @@ export function Ticker({ t, properties }: { t: Dictionary["home"]["ticker"]; pro
           {[0, 1].map((half) => (
             <li key={half} className="flex items-center">
               {loop.map((item, i) => (
-                <span key={`${half}-${i}`} className="flex items-center whitespace-nowrap text-xs font-light uppercase tracking-[0.2em]">
+                <span key={`${half}-${i}`} className="flex items-center whitespace-nowrap text-sm font-light tracking-[0.01em]">
                   <span className="px-8">{item}</span>
                   <span className="h-1 w-1 rotate-45 bg-gold-soft" />
                 </span>

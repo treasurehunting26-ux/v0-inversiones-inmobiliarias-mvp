@@ -30,7 +30,7 @@ export default async function GuidesIndexPage({ params }: Props) {
       {/* Encabezado editorial noir */}
       <header className="bg-[var(--color-noir)] px-6 pb-20 pt-36 text-[var(--color-noir-foreground)]">
         <div className="mx-auto max-w-5xl">
-          <p className="mb-5 text-xs uppercase tracking-[0.35em] text-[var(--color-gold)]">{t.eyebrow}</p>
+          <p className="mb-5 text-sm tracking-[0.01em] text-[var(--color-gold)]">{t.eyebrow}</p>
           <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-balance md:text-6xl">
             {t.title}
           </h1>

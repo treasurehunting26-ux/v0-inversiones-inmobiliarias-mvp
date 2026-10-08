@@ -3,7 +3,6 @@ import type { Dictionary, Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
 import { Reveal } from "@/components/dossier/reveal"
 
-const NUMERALS = ["I", "II", "III"]
 
 /**
  * Presentación tras la portada: quiénes somos y qué hacemos, con las
@@ -14,15 +13,15 @@ export function Intro({ locale, t }: { locale: Locale; t: Dictionary["home"]["in
     <section className="bg-background">
       <div className="mx-auto max-w-7xl px-6 pt-28 md:pt-40 lg:px-10">
         <Reveal>
-          <span className="text-[0.68rem] font-light uppercase tracking-[0.42em] text-copper-ink">{t.eyebrow}</span>
+          <span className="text-[0.82rem] font-light tracking-[0.01em] text-copper-ink">{t.eyebrow}</span>
         </Reveal>
 
         <div className="mt-10 grid gap-14 lg:grid-cols-[1.15fr_0.85fr] lg:gap-24">
           <Reveal>
             <h2 className="font-serif text-[2.6rem] font-light leading-[1.08] tracking-[-0.01em] text-foreground md:text-6xl lg:text-[4.25rem]">
               {t.titleLead}{" "}
-              <em className="font-light italic text-copper-ink">{t.titleAccent}</em>{" "}
-              <span className="text-foreground/80">{t.titleTail}</span>
+              {t.titleAccent}{" "}
+              {t.titleTail}
             </h2>
           </Reveal>
 
@@ -35,7 +34,7 @@ export function Intro({ locale, t }: { locale: Locale; t: Dictionary["home"]["in
             ))}
             <Link
               href={localizedPath(locale, "opportunities")}
-              className="group mt-4 inline-flex w-fit items-center gap-4 text-[0.7rem] font-normal uppercase tracking-[0.3em] text-foreground"
+              className="group mt-4 inline-flex w-fit items-center gap-4 text-[0.82rem] font-normal tracking-[0.01em] text-foreground"
             >
               {t.cta}
               <span className="h-px w-10 bg-copper transition-all duration-300 group-hover:w-16" />
@@ -52,8 +51,7 @@ export function Intro({ locale, t }: { locale: Locale; t: Dictionary["home"]["in
               className={`border-b border-foreground/10 py-10 md:border-b-0 md:py-12 ${i > 0 ? "md:border-l md:pl-10" : "md:pr-10"}`}
             >
               <li className="list-none">
-                <span className="font-serif text-sm italic tracking-[0.2em] text-copper-ink">{NUMERALS[i]}</span>
-                <h3 className="mt-5 font-serif text-[1.7rem] font-light leading-snug text-foreground">{pillar.title}</h3>
+                <h3 className="font-serif text-[1.7rem] font-light leading-snug text-foreground">{pillar.title}</h3>
                 <p className="mt-3 text-sm font-light leading-relaxed text-muted-foreground">{pillar.detail}</p>
               </li>
             </Reveal>

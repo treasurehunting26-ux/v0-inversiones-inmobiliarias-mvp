@@ -27,7 +27,7 @@ export const es = {
 
   hero: {
     imageAlt: "Villa de lujo con piscina infinita al atardecer en la Costa del Sol",
-    eyebrow: "Europa · Latinoamérica · Dubái",
+    eyebrow: "Marbella, Latinoamérica y Dubái",
     title: "Inversiones inmobiliarias de excepción",
     body: "Una selección exclusiva de activos de alto valor, analizados y validados uno a uno por nuestro equipo de asesores. Donde el patrimonio encuentra su mejor oportunidad.",
     primary: "Ver oportunidades",
@@ -44,7 +44,7 @@ export const es = {
       text: "No publicamos catálogos interminables. Estudiamos cada activo uno a uno —ubicación, título, potencial y riesgo— y solo te presentamos los que superan nuestro criterio.",
     },
     intro: {
-      eyebrow: "B&G Consulting · Asesoría de inversión inmobiliaria",
+      eyebrow: "Asesoría de inversión inmobiliaria",
       titleLead: "Inversión inmobiliaria",
       titleAccent: "con criterio",
       titleTail: "en Marbella, Latinoamérica y Dubái",
@@ -104,17 +104,17 @@ export const es = {
     items: [
       {
         name: "Europa",
-        location: "Costa del Sol · Madrid · Lisboa",
+        location: "Costa del Sol, Madrid y Lisboa",
         description: "Activos consolidados en los mercados más estables y demandados del continente.",
       },
       {
         name: "Latinoamérica",
-        location: "Tulum · Ciudad de México · Punta del Este",
+        location: "Tulum, Ciudad de México y Punta del Este",
         description: "Oportunidades de alto crecimiento en destinos emergentes de lujo.",
       },
       {
         name: "Dubái",
-        location: "Palm Jumeirah · Downtown · Marina",
+        location: "Palm Jumeirah, Downtown y Marina",
         description: "Rentabilidades excepcionales en uno de los mercados más dinámicos del mundo.",
       },
     ],
@@ -230,7 +230,7 @@ export const es = {
     body: "Conversamos sobre su perfil y le presentamos oportunidades reales, validadas por nuestro equipo. Con la máxima discreción y sin compromiso alguno.",
     primary: "Hablar con un asesor",
     secondary: "Ver oportunidades",
-    footnote: "Sin registro · Sin compromiso · Absoluta confidencialidad",
+    footnote: "Sin registro, sin compromiso y con absoluta confidencialidad.",
   },
 
   footer: {
@@ -252,7 +252,7 @@ export const es = {
     metaTitle: "Oportunidades de inversión inmobiliaria | Activos validados",
     metaDescription:
       "Explora oportunidades inmobiliarias seleccionadas y validadas una a una por nuestro equipo en Europa, Latinoamérica y Dubái.",
-    eyebrow: "Catálogo · Activos verificados",
+    eyebrow: "Activos verificados uno a uno",
     title: "Oportunidades de inversión, seleccionadas una a una",
     intro:
       "Cada activo ha sido revisado y aprobado por nuestro equipo antes de publicarse. Elige el que encaje con tu perfil y profundiza con un asesor dedicado.",
@@ -371,7 +371,7 @@ export const es = {
 
   brigitte: {
     name: "Brigitte",
-    role: "Asistente virtual · B&G Consulting",
+    role: "Asistente virtual de B&G Consulting",
     launcher: "Hablar con Brigitte",
     open: "Abrir chat con Brigitte",
     close: "Cerrar chat",

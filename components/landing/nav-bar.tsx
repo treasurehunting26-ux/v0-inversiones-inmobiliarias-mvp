@@ -47,7 +47,7 @@ export function NavBar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-xs font-light uppercase tracking-[0.18em] text-noir-foreground/80 transition-colors hover:text-gold"
+              className="text-sm font-light tracking-[0.01em] text-noir-foreground/80 transition-colors hover:text-gold"
             >
               {item.label}
             </Link>
@@ -58,7 +58,7 @@ export function NavBar() {
           <LanguageSwitcher />
           <Link
             href={localizedPath(locale, "assistant")}
-            className="hidden border border-gold-soft/80 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
+            className="hidden border border-gold-soft/80 px-6 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
           >
             {t.talkToAdvisor}
           </Link>

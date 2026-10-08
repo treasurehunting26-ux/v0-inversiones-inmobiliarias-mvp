@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import type { ReactNode } from "react"
 import { notFound } from "next/navigation"
-import { jost, cormorant } from "@/lib/fonts"
+import { sans, serif } from "@/lib/fonts"
 import { getDictionary, isLocale, languageAlternates, locales, SITE_URL } from "@/lib/i18n"
 import { I18nProvider } from "@/lib/i18n/client"
 import { BrigitteProvider } from "@/components/brigitte/brigitte-provider"
@@ -52,7 +52,7 @@ export default async function SiteRootLayout({ children, params }: Props) {
 
   return (
     <html lang={lang} className="bg-background">
-      <body className={`${jost.variable} ${cormorant.variable} font-sans antialiased`}>
+      <body className={`${sans.variable} ${serif.variable} font-sans antialiased`}>
         <I18nProvider locale={lang} dict={dict}>
           <BrigitteProvider>{children}</BrigitteProvider>
         </I18nProvider>

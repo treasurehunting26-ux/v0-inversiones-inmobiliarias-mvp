@@ -30,7 +30,7 @@ export function OpportunitiesRail({
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="flex items-center gap-4 text-xs font-light uppercase tracking-[0.35em] text-copper-ink">
+            <span className="flex items-center gap-4 text-sm font-light tracking-[0.01em] text-copper-ink">
               <span className="h-px w-10 bg-copper" aria-hidden />
               {t.eyebrow}
             </span>
@@ -79,7 +79,7 @@ export function OpportunitiesRail({
                 )}
                 <div className="absolute inset-0 bg-gradient-to-t from-noir/60 via-transparent to-transparent" />
                 {p.asset_type && (
-                  <span className="absolute left-5 top-5 bg-noir-foreground/90 px-3 py-1 text-[0.65rem] font-normal uppercase tracking-[0.2em] text-noir">
+                  <span className="absolute left-5 top-5 bg-noir-foreground/90 px-3 py-1 text-[0.82rem] font-normal tracking-[0.01em] text-noir">
                     {p.asset_type}
                   </span>
                 )}
@@ -88,8 +88,8 @@ export function OpportunitiesRail({
                 <h3 className="font-serif text-2xl font-light text-foreground transition-colors group-hover:text-copper-ink">
                   {p.title}
                 </h3>
-                <p className="mt-2 text-xs font-light uppercase tracking-[0.18em] text-muted-foreground">{p.location}</p>
-                {p.investment_range && <p className="mt-4 font-serif text-xl text-foreground">{p.investment_range}</p>}
+                <p className="mt-2 text-sm font-light tracking-[0.01em] text-muted-foreground">{p.location}</p>
+                {p.investment_range && <p className="mt-4 text-lg font-medium text-foreground">{p.investment_range}</p>}
               </div>
             </Link>
           </li>
@@ -99,7 +99,7 @@ export function OpportunitiesRail({
       <div className="mx-auto mt-10 max-w-7xl px-6 lg:px-10">
         <Link
           href={localizedPath(locale, "opportunities")}
-          className="inline-flex items-center gap-3 text-xs font-normal uppercase tracking-[0.22em] text-foreground"
+          className="inline-flex items-center gap-3 text-sm font-normal tracking-[0.01em] text-foreground"
         >
           {t.viewAll}
           <span className="h-px w-10 bg-copper" />

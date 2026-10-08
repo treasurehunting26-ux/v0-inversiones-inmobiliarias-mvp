@@ -24,7 +24,7 @@ export const en: Dictionary = {
 
   hero: {
     imageAlt: "Luxury villa with an infinity pool at sunset on the Costa del Sol",
-    eyebrow: "Europe · Latin America · Dubai",
+    eyebrow: "Marbella, Latin America and Dubai",
     title: "Exceptional real estate investments",
     body: "An exclusive selection of high-value assets, analysed and validated one by one by our team of advisors. Where wealth finds its best opportunity.",
     primary: "View opportunities",
@@ -41,7 +41,7 @@ export const en: Dictionary = {
       text: "We don't publish endless catalogues. We study every asset one by one —location, title, potential and risk— and only present the ones that meet our standards.",
     },
     intro: {
-      eyebrow: "B&G Consulting · Real estate investment advisory",
+      eyebrow: "Real estate investment advisory",
       titleLead: "Real estate investment",
       titleAccent: "with judgement",
       titleTail: "in Marbella, Latin America and Dubai",
@@ -101,17 +101,17 @@ export const en: Dictionary = {
     items: [
       {
         name: "Europe",
-        location: "Costa del Sol · Madrid · Lisbon",
+        location: "Costa del Sol, Madrid and Lisbon",
         description: "Established assets in the continent's most stable and sought-after markets.",
       },
       {
         name: "Latin America",
-        location: "Tulum · Mexico City · Punta del Este",
+        location: "Tulum, Mexico City and Punta del Este",
         description: "High-growth opportunities in emerging luxury destinations.",
       },
       {
         name: "Dubai",
-        location: "Palm Jumeirah · Downtown · Marina",
+        location: "Palm Jumeirah, Downtown and Marina",
         description: "Strong returns in one of the world's most dynamic markets.",
       },
     ],
@@ -227,7 +227,7 @@ export const en: Dictionary = {
     body: "We talk about your profile and present real opportunities, validated by our team. With complete discretion and no obligation.",
     primary: "Speak with an advisor",
     secondary: "View opportunities",
-    footnote: "No sign-up · No obligation · Complete confidentiality",
+    footnote: "No sign-up, no obligation and complete confidentiality.",
   },
 
   footer: {
@@ -249,7 +249,7 @@ export const en: Dictionary = {
     metaTitle: "Real estate investment opportunities | Validated assets",
     metaDescription:
       "Explore real estate opportunities selected and validated one by one by our team across Europe, Latin America and Dubai.",
-    eyebrow: "Catalogue · Verified assets",
+    eyebrow: "Assets verified one by one",
     title: "Investment opportunities, selected one by one",
     intro:
       "Every asset has been reviewed and approved by our team before being published. Choose the one that fits your profile and go deeper with a dedicated advisor.",
@@ -367,7 +367,7 @@ export const en: Dictionary = {
 
   brigitte: {
     name: "Brigitte",
-    role: "Virtual assistant · B&G Consulting",
+    role: "B&G Consulting virtual assistant",
     launcher: "Chat with Brigitte",
     open: "Open chat with Brigitte",
     close: "Close chat",

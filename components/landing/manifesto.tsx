@@ -47,7 +47,7 @@ export function Manifesto({ t }: { t: Dictionary["home"]["manifesto"] }) {
   return (
     <section className="bg-background">
       <div ref={ref} className="mx-auto max-w-6xl px-6 py-28 md:py-40 lg:px-10">
-        <span className="flex items-center gap-4 text-xs font-light uppercase tracking-[0.35em] text-copper-ink">
+        <span className="flex items-center gap-4 text-sm font-light tracking-[0.01em] text-copper-ink">
           <span className="h-px w-10 bg-copper" aria-hidden />
           {t.eyebrow}
         </span>

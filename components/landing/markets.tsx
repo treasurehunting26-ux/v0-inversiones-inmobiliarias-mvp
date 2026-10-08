@@ -9,7 +9,7 @@ export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"
     <section className="bg-background py-24 md:py-32">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <div className="mb-16 max-w-2xl">
-          <span className="text-xs font-light uppercase tracking-[0.3em] text-accent">{t.eyebrow}</span>
+          <span className="text-sm font-light tracking-[0.01em] text-accent">{t.eyebrow}</span>
           <h2 className="mt-5 font-serif text-4xl font-light leading-tight text-balance text-foreground md:text-5xl">
             {t.title}
           </h2>
@@ -33,14 +33,14 @@ export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-noir/90 via-noir/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-7">
-                  <div className="text-[0.7rem] font-light uppercase tracking-[0.2em] text-gold-soft">
+                  <div className="text-[0.82rem] font-light tracking-[0.01em] text-gold-soft">
                     {market.location}
                   </div>
                   <h3 className="mt-2 font-serif text-3xl font-light text-noir-foreground">{market.name}</h3>
                   <p className="mt-3 max-w-xs text-sm font-light leading-relaxed text-noir-foreground/75">
                     {market.description}
                   </p>
-                  <span className="mt-5 inline-flex items-center gap-2 text-xs font-light uppercase tracking-[0.2em] text-noir-foreground">
+                  <span className="mt-5 inline-flex items-center gap-2 text-sm font-light tracking-[0.01em] text-noir-foreground">
                     {t.explore}
                     <span className="h-px w-8 bg-gold transition-all duration-300 group-hover:w-12" />
                   </span>
