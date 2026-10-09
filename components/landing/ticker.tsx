@@ -7,6 +7,8 @@ export function Ticker({ t, properties }: { t: Dictionary["home"]["ticker"]; pro
   const items = properties.map((p) => [p.title, p.location, p.investment_range].filter(Boolean).join(" · "))
   // Se repite para que el bucle no deje huecos en pantallas anchas
   const loop = [...items, ...items, ...items, ...items]
+  // Velocidad pausada y constante (~35 px/s) sin importar cuántas propiedades haya
+  const duration = `${loop.length * 10}s`
 
   return (
     <section className="flex items-stretch overflow-hidden bg-copper-ink text-noir-foreground" aria-label={t.label}>
@@ -14,7 +16,7 @@ export function Ticker({ t, properties }: { t: Dictionary["home"]["ticker"]; pro
         {t.label}
       </div>
       <div className="flex-1 overflow-hidden py-4">
-        <ul className="bg-marquee flex w-max items-center" aria-hidden>
+        <ul className="bg-marquee flex w-max items-center" style={{ animationDuration: duration }} aria-hidden>
           {[0, 1].map((half) => (
             <li key={half} className="flex items-center">
               {loop.map((item, i) => (
