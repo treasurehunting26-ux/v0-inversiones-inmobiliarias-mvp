@@ -275,13 +275,13 @@ export const es = {
     other: "Otras oportunidades",
     categories: {
       prime: {
-        label: "Colección Prime",
-        title: "Colección Prime",
+        label: "Residencial",
+        title: "Residencial",
         intro:
-          "Residencial de muy alto valor en las mejores ubicaciones: villas y apartamentos listos para vivir o para alquiler de lujo.",
-        metaTitle: "Colección Prime | Villas y residencias de lujo en venta",
+          "Villas y apartamentos de muy alto valor en las mejores ubicaciones, listos para vivir o para alquiler de lujo.",
+        metaTitle: "Inmuebles residenciales de lujo en venta | Villas y apartamentos",
         metaDescription:
-          "Villas y apartamentos de lujo seleccionados uno a uno en Marbella y otros mercados prime, listos para vivir o invertir.",
+          "Villas y apartamentos de lujo seleccionados uno a uno en Marbella y otros mercados de alto valor, listos para vivir o invertir.",
       },
       value_add: {
         label: "Oportunidades de valor",

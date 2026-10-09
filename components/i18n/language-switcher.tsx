@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation"
 import { useI18n } from "@/lib/i18n/client"
 import { locales, localizedPath, parsePublicPath, type Locale } from "@/lib/i18n/config"
 import { translateGuideSlug } from "@/lib/guides/slugs"
-import { CATEGORY_SLUGS, categoryFromSlug } from "@/lib/categories"
+import { categoryFromSlug, categoryPathRest } from "@/lib/categories"
 
 /** Misma pagina en otro idioma (las guias tienen slug propio por idioma). */
 function pathInLocale(pathname: string, target: Locale): string {
@@ -17,7 +17,7 @@ function pathInLocale(pathname: string, target: Locale): string {
   }
   if (route === "opportunities" && rest[0]) {
     const category = categoryFromSlug(locale, rest[0])
-    if (category) return localizedPath(target, "opportunities", CATEGORY_SLUGS[target][category])
+    if (category) return localizedPath(target, "opportunities", ...categoryPathRest(target, category))
   }
   return localizedPath(target, route, ...rest)
 }

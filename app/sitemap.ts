@@ -32,7 +32,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...entries("home", always, "weekly", 1),
     ...entries("opportunities", always, "daily", 0.9),
-    ...CATEGORIES.flatMap((c) => entries("opportunities", (l) => [CATEGORY_SLUGS[l][c]], "daily", 0.85)),
+    ...CATEGORIES.filter((c) => c !== "prime").flatMap((c) =>
+      entries("opportunities", (l) => [CATEGORY_SLUGS[l][c]], "daily", 0.85),
+    ),
     ...entries("guides", always, "weekly", 0.8),
     ...entries("assistant", always, "monthly", 0.7),
     ...entries("contact", always, "monthly", 0.6),

@@ -13,7 +13,7 @@ export function isCategory(value: unknown): value is Category {
 
 /** Etiquetas para el panel admin. */
 export const CATEGORY_ADMIN_LABELS: Record<Category, string> = {
-  prime: "Colección Prime (sale en la portada)",
+  prime: "Residencial (sale en la portada)",
   value_add: "Oportunidades de valor (reforma)",
   development: "Proyectos y desarrollo",
   commercial: "Comercial e industrial",
@@ -21,11 +21,19 @@ export const CATEGORY_ADMIN_LABELS: Record<Category, string> = {
 
 /** Segmento de URL de cada categoría, por idioma. */
 export const CATEGORY_SLUGS: Record<"es" | "en", Record<Category, string>> = {
-  es: { prime: "prime", value_add: "reforma", development: "proyectos", commercial: "comercial" },
-  en: { prime: "prime", value_add: "value-add", development: "development", commercial: "commercial" },
+  es: { prime: "residencial", value_add: "reforma", development: "proyectos", commercial: "comercial" },
+  en: { prime: "residential", value_add: "value-add", development: "development", commercial: "commercial" },
 }
 
 export function categoryFromSlug(locale: "es" | "en", slug: string): Category | null {
   const entry = Object.entries(CATEGORY_SLUGS[locale]).find(([, s]) => s === slug)
   return entry ? (entry[0] as Category) : null
+}
+
+/**
+ * Ruta pública de una categoría. Residencial es la página principal del
+ * catálogo (/oportunidades); el resto cuelga de ella (/oportunidades/reforma).
+ */
+export function categoryPathRest(locale: "es" | "en", category: Category): string[] {
+  return category === "prime" ? [] : [CATEGORY_SLUGS[locale][category]]
 }

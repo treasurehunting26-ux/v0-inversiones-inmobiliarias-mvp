@@ -6,11 +6,11 @@ type Props = { params: Promise<{ lang: string }> }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const locale = (await params).lang as Locale
-  const t = getDictionary(locale).opportunities
+  const t = getDictionary(locale).opportunities.categories.prime
   return pageMetadata({ locale, route: "opportunities", title: t.metaTitle, description: t.metaDescription })
 }
 
 export default async function OpportunitiesPage({ params }: Props) {
   const locale = (await params).lang as Locale
-  return <OpportunitiesView locale={locale} active={null} />
+  return <OpportunitiesView locale={locale} active="prime" />
 }

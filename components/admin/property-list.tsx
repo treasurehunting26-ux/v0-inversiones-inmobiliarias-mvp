@@ -118,7 +118,7 @@ export function PropertyList({
                     ))}
                   </select>
                   {!p.category && (
-                    <span className="text-xs text-amber-700">Sin categoría: no sale en la portada</span>
+                    <span className="text-xs text-amber-700">Sin categoría: no aparece en la web</span>
                   )}
                 </label>
                 <dl className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-2">

@@ -272,13 +272,13 @@ export const en: Dictionary = {
     other: "Other opportunities",
     categories: {
       prime: {
-        label: "Prime Collection",
-        title: "Prime Collection",
+        label: "Residential",
+        title: "Residential",
         intro:
-          "Very high-value residential in the best locations: villas and apartments ready to live in or for luxury rental.",
-        metaTitle: "Prime Collection | Luxury villas and residences for sale",
+          "Very high-value villas and apartments in the best locations, ready to live in or for luxury rental.",
+        metaTitle: "Luxury residential property for sale | Villas and apartments",
         metaDescription:
-          "Luxury villas and apartments selected one by one in Marbella and other prime markets, ready to live in or invest.",
+          "Luxury villas and apartments selected one by one in Marbella and other high-value markets, ready to live in or invest.",
       },
       value_add: {
         label: "Value-add opportunities",

@@ -1,4 +1,6 @@
 import type { Metadata } from "next"
+import { permanentRedirect } from "next/navigation"
+import { localizedPath } from "@/lib/i18n/config"
 import { NavBar } from "@/components/landing/nav-bar"
 import { Footer } from "@/components/landing/footer"
 import { PropertyDetail } from "@/components/catalogo/property-detail"
@@ -60,6 +62,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function PropertyDetailPage({ params }: Props) {
   const { lang, id } = await params
   const category = categoryFromSlug(lang as Locale, id)
+  // Residencial es la portada del catálogo: /oportunidades/residencial -> /oportunidades
+  if (category === "prime") permanentRedirect(localizedPath(lang as Locale, "opportunities"))
   if (category) return <OpportunitiesView locale={lang as Locale} active={category} />
   return (
     <main className="min-h-screen bg-background">
