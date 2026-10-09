@@ -1,8 +1,8 @@
-import Link from "next/link"
 import { format, type Dictionary, type Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
 
-const MARKET_IMAGES = ["/images/market-europa.png", "/images/market-latam.png", "/images/market-dubai.png"]
+import { MARKET_MEDIA } from "@/lib/home-media"
+import { MarketCard } from "./market-card"
 
 export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"] }) {
   return (
@@ -20,18 +20,13 @@ export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"
 
         <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
           {t.items.map((market, i) => (
-            <Link
+            <MarketCard
               key={market.name}
               href={localizedPath(locale, "opportunities")}
-              className="group relative block overflow-hidden"
+              poster={MARKET_MEDIA[i]?.poster ?? "/placeholder.svg"}
+              video={MARKET_MEDIA[i]?.video ?? ""}
+              alt={format(t.imageAlt, { name: market.name })}
             >
-              <div className="relative aspect-[3/4] overflow-hidden">
-                <img
-                  src={MARKET_IMAGES[i] || "/placeholder.svg"}
-                  alt={format(t.imageAlt, { name: market.name })}
-                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-noir/90 via-noir/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-7">
                   <div className="text-[0.82rem] font-light tracking-[0.01em] text-gold-soft">
                     {market.location}
@@ -45,8 +40,7 @@ export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"
                     <span className="h-px w-8 bg-gold transition-all duration-300 group-hover:w-12" />
                   </span>
                 </div>
-              </div>
-            </Link>
+            </MarketCard>
           ))}
         </div>
       </div>

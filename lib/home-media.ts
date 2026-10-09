@@ -26,3 +26,15 @@ export const HERO_MEDIA = {
 }
 
 export const HERO_VIDEO_ON_DESKTOP = HERO_MEDIA.videoWidth >= 1280
+
+/**
+ * Tarjetas de mercados (Europa, Latinoamérica, Dubái), en el orden del
+ * diccionario. `poster`: foto fija (siempre visible; la única en móvil).
+ * `video`: clip corto que se reproduce al pasar el ratón en escritorio.
+ * Vídeo vacío = solo foto.
+ */
+export const MARKET_MEDIA: { poster: string; video: string }[] = [
+  { poster: "/images/market-europa.png", video: "" },
+  { poster: "/images/market-latam.png", video: "" },
+  { poster: "/images/market-dubai.jpg", video: "" },
+]
