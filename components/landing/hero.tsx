@@ -4,7 +4,7 @@ import Link from "next/link"
 import { useEffect, useRef } from "react"
 import type { Dictionary, Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
-import { HERO_MEDIA } from "@/lib/home-media"
+import { HERO_MEDIA, HERO_VIDEO_ON_DESKTOP } from "@/lib/home-media"
 
 /**
  * Portada con vídeo.
@@ -16,14 +16,24 @@ import { HERO_MEDIA } from "@/lib/home-media"
  */
 export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
   const landscape = HERO_MEDIA.orientation === "landscape"
+  // Con un vídeo de poca resolución, en escritorio va la foto en lugar del vídeo
+  const photoOnDesktop = landscape && !HERO_VIDEO_ON_DESKTOP
 
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-noir">
-      {/* Fondo: vídeo a pantalla completa (móvil siempre; escritorio si es horizontal) */}
-      <div className={`absolute inset-0 ${landscape ? "" : "lg:hidden"}`}>
+      {/* Fondo: vídeo a pantalla completa (móvil siempre; escritorio si es horizontal y nítido) */}
+      <div className={`absolute inset-0 ${landscape && !photoOnDesktop ? "" : "lg:hidden"}`}>
         <HeroVideo label={t.videoLabel} className="h-full w-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
       </div>
+
+      {/* Escritorio con vídeo de poca resolución: foto a pantalla completa con zoom lento */}
+      {photoOnDesktop && (
+        <div className="absolute inset-0 hidden lg:block">
+          <img src={HERO_MEDIA.poster} alt="" aria-hidden className="bg-kenburns h-full w-full object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
+        </div>
+      )}
 
       {/* Escritorio con vídeo vertical: foto aérea de fondo con zoom lento */}
       {!landscape && (

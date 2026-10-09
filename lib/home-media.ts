@@ -15,4 +15,13 @@ export const HERO_MEDIA = {
   poster:
     "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/dossiers/media/villa-los-monteros-dossier-privado-marbe-1-jVWBvNgw2WYc8zUHsg5eBi9nVVPgOi.jpg",
   orientation: "landscape" as "portrait" | "landscape",
+  /**
+   * Ancho real del vídeo en píxeles. Si es menor de 1280, en escritorio se
+   * muestra la foto (`poster`) con zoom lento en lugar del vídeo, porque
+   * estirado a pantalla completa se pixela. En móvil se ve el vídeo siempre.
+   * Al subir un vídeo horizontal 1920×1080, poner aquí 1920.
+   */
+  videoWidth: 478,
 }
+
+export const HERO_VIDEO_ON_DESKTOP = HERO_MEDIA.videoWidth >= 1280
