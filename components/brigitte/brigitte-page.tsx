@@ -40,7 +40,7 @@ export function BrigittePage() {
       <header className="flex items-center justify-between border-b border-noir-foreground/10 bg-noir px-5 py-3">
         <Link
           href={localizedPath(locale, "home")}
-          className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-noir-foreground/60 transition-colors hover:text-gold"
+          className="flex items-center gap-2 text-sm font-medium tracking-[0.01em] text-noir-foreground/60 transition-colors hover:text-gold"
         >
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M10 12L6 8L10 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />

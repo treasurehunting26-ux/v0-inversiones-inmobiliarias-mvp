@@ -58,3 +58,19 @@ export function dossierHtmlFor(property: Pick<Property, "description_html" | "de
   if (locale.startsWith("en") && property.description_html_en) return property.description_html_en
   return property.description_html ?? null
 }
+
+/**
+ * Propiedades publicadas para la portada (servidor). Se cachea 5 minutos:
+ * al publicar una propiedad aparece en la portada sin desplegar nada.
+ * Si la API falla, la portada se muestra igual sin las secciones dinámicas.
+ */
+export async function getPublishedProperties(): Promise<Property[]> {
+  try {
+    const res = await fetch(`${API_URL}/properties`, { next: { revalidate: 300 } })
+    if (!res.ok) return []
+    const data = (await res.json()) as PropertyListResponse
+    return data.properties ?? []
+  } catch {
+    return []
+  }
+}

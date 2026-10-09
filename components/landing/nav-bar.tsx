@@ -22,7 +22,7 @@ export function NavBar() {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-colors duration-500 ${
-        scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-transparent"
+        scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-gradient-to-b from-noir/70 to-transparent"
       }`}
     >
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:h-28 lg:px-10">
@@ -47,7 +47,7 @@ export function NavBar() {
             <Link
               key={item.href}
               href={item.href}
-              className="text-xs font-light uppercase tracking-[0.18em] text-noir-foreground/80 transition-colors hover:text-gold"
+              className="text-sm font-light tracking-[0.01em] text-noir-foreground/80 transition-colors hover:text-gold"
             >
               {item.label}
             </Link>
@@ -58,7 +58,7 @@ export function NavBar() {
           <LanguageSwitcher />
           <Link
             href={localizedPath(locale, "assistant")}
-            className="hidden border border-gold/60 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-gold transition-colors hover:bg-gold hover:text-noir sm:inline-block"
+            className="hidden border border-gold-soft/80 px-6 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
           >
             {t.talkToAdvisor}
           </Link>

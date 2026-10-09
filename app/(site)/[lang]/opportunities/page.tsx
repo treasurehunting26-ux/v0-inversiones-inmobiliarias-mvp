@@ -23,7 +23,7 @@ export default async function OpportunitiesPage({ params }: Props) {
       {/* Encabezado editorial sobre fondo noir */}
       <section className="relative overflow-hidden bg-[var(--color-noir)] px-6 pt-40 pb-24">
         <div className="mx-auto flex max-w-6xl flex-col gap-6">
-          <span className="text-xs font-medium uppercase tracking-[0.35em] text-[var(--color-gold)]">
+          <span className="text-sm font-medium tracking-[0.01em] text-[var(--color-gold)]">
             {t.eyebrow}
           </span>
           <h1 className="max-w-3xl font-serif text-5xl font-light leading-[1.05] text-balance text-[var(--color-noir-foreground)] md:text-6xl">

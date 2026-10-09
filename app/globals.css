@@ -4,31 +4,38 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans: "Jost", "Jost Fallback";
-  --font-serif: "Cormorant Garamond", "Cormorant Garamond Fallback";
+  --font-sans: "Inter Tight", "Inter Tight Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Bodoni Moda", "Bodoni Moda Fallback", Georgia, serif;
 
-  /* Luxury palette: deep charcoal, warm ivory, champagne gold */
-  --color-background: #f4f1ea;
-  --color-foreground: #1c1a16;
+  /* Paleta del logo B&G: marfil calido, azul marino, cobre y grafito.
+     Sin negro: el azul marino ocupa su lugar en superficies oscuras.
+     ("noir"/"gold" se mantienen como nombres de token para no tocar cada
+     componente: noir = azul marino, gold = cobre.) */
+  --color-background: #f4f2ee;
+  --color-foreground: #1f2f4d;
   --color-card: #ffffff;
-  --color-card-foreground: #1c1a16;
-  --color-primary: #14120e;
-  --color-primary-foreground: #f4f1ea;
-  --color-secondary: #e8e2d5;
-  --color-secondary-foreground: #1c1a16;
-  --color-muted: #e8e2d5;
-  --color-muted-foreground: #76706485;
-  --color-accent: #b8975a;
-  --color-accent-foreground: #14120e;
-  --color-border: #ddd6c8;
-  --color-input: #ddd6c8;
-  --color-ring: #b8975a;
+  --color-card-foreground: #1f2f4d;
+  --color-primary: #1f2f4d;
+  --color-primary-foreground: #f4f2ee;
+  --color-secondary: #ede7dc;
+  --color-secondary-foreground: #1f2f4d;
+  --color-muted: #ede7dc;
+  --color-muted-foreground: #6b6860;
+  --color-accent: #8c5a35;
+  --color-accent-foreground: #f4f2ee;
+  --color-border: #ddd5c7;
+  --color-input: #ddd5c7;
+  --color-ring: #b07a52;
 
-  /* Dark surfaces for luxury sections */
-  --color-noir: #14120e;
-  --color-noir-foreground: #f4f1ea;
-  --color-gold: #b8975a;
-  --color-gold-soft: #c9ad7a;
+  /* Superficies oscuras (azul marino) y cobre */
+  --color-noir: #1f2f4d;
+  --color-noir-foreground: #f4f2ee;
+  --color-gold: #c4916a;
+  --color-gold-soft: #d9ab86;
+  --color-copper: #b07a52;
+  --color-copper-ink: #8c5a35;
+  --color-mist: #e8ecf2;
+  --color-graphite: #46443f;
 
   --radius: 0.125rem;
 }
@@ -50,5 +57,48 @@ body {
 
 /* Muted foreground without alpha for readability */
 @theme inline {
-  --color-muted-foreground: #6f685a;
+  --color-muted-foreground: #6b6860;
+}
+
+
+/* ---------- Portada: movimiento ---------- */
+@keyframes bg-rise {
+  from { opacity: 0; transform: translateY(28px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes bg-marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@keyframes bg-kenburns {
+  from { transform: scale(1.08); }
+  to { transform: scale(1); }
+}
+@keyframes bg-cue {
+  0%, 100% { transform: translateY(0); opacity: 0.5; }
+  50% { transform: translateY(8px); opacity: 1; }
+}
+.bg-rise { opacity: 0; animation: bg-rise 1.1s cubic-bezier(0.2, 0.7, 0.2, 1) forwards; }
+.bg-marquee { animation: bg-marquee 45s linear infinite; }
+.bg-marquee:hover { animation-play-state: paused; }
+.bg-kenburns { animation: bg-kenburns 14s ease-out forwards; }
+.bg-cue { animation: bg-cue 2.4s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .bg-rise { opacity: 1; animation: none; }
+  .bg-marquee, .bg-kenburns, .bg-cue { animation: none; }
+}
+
+/* Aparición suave al entrar en pantalla (componente Reveal) */
+.dossier-reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.dossier-reveal.in {
+  opacity: 1;
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .dossier-reveal { opacity: 1; transform: none; transition: none; }
 }

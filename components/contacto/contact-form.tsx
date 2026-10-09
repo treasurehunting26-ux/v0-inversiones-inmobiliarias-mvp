@@ -47,13 +47,13 @@ export function ContactForm() {
         <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <Link
             href={localizedPath(locale, "opportunities")}
-            className="border border-foreground px-7 py-3 text-xs font-light uppercase tracking-[0.18em] text-foreground transition-colors hover:bg-foreground hover:text-background"
+            className="border border-foreground px-7 py-3 text-sm font-light tracking-[0.01em] text-foreground transition-colors hover:bg-foreground hover:text-background"
           >
             {t.viewOpportunities}
           </Link>
           <Link
             href={localizedPath(locale, "assistant")}
-            className="text-xs font-light uppercase tracking-[0.18em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
+            className="text-sm font-light tracking-[0.01em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
           >
             {t.talkToAdvisor}
           </Link>
@@ -65,7 +65,7 @@ export function ContactForm() {
   return (
     <form onSubmit={handleSubmit} className="flex flex-col gap-6">
       <div className="flex flex-col gap-2">
-        <label htmlFor="name" className="text-xs font-light uppercase tracking-[0.18em] text-muted-foreground">
+        <label htmlFor="name" className="text-sm font-light tracking-[0.01em] text-muted-foreground">
           {t.name}
         </label>
         <input
@@ -80,7 +80,7 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="email" className="text-xs font-light uppercase tracking-[0.18em] text-muted-foreground">
+        <label htmlFor="email" className="text-sm font-light tracking-[0.01em] text-muted-foreground">
           {t.email}
         </label>
         <input
@@ -95,7 +95,7 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor="context" className="text-xs font-light uppercase tracking-[0.18em] text-muted-foreground">
+        <label htmlFor="context" className="text-sm font-light tracking-[0.01em] text-muted-foreground">
           {t.context}
         </label>
         <textarea
@@ -118,7 +118,7 @@ export function ContactForm() {
       <button
         type="submit"
         disabled={!isValid || status === "submitting"}
-        className="mt-2 self-start bg-[var(--color-noir)] px-9 py-4 text-xs font-light uppercase tracking-[0.2em] text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90 disabled:opacity-40"
+        className="mt-2 self-start bg-[var(--color-noir)] px-9 py-4 text-sm font-light tracking-[0.01em] text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90 disabled:opacity-40"
       >
         {status === "submitting" ? t.submitting : t.submit}
       </button>
