@@ -4,7 +4,8 @@ import { Footer } from "@/components/landing/footer"
 import { PropertyCard } from "@/components/catalogo/property-card"
 import { PropertyRow } from "@/components/catalogo/property-row"
 import { getDictionary, type Locale } from "@/lib/i18n"
-import { localizedPath } from "@/lib/i18n/config"
+import { SITE_URL, localizedPath } from "@/lib/i18n/config"
+import { ORG_ID, breadcrumbSchema, jsonLd } from "@/lib/seo"
 import { getPublishedProperties } from "@/lib/properties-api"
 import { CATEGORIES, categoryPathRest, type Category } from "@/lib/categories"
 
@@ -19,9 +20,39 @@ export async function OpportunitiesView({ locale, active }: { locale: Locale; ac
   const t = getDictionary(locale).opportunities
   const items = (await getPublishedProperties()).filter((p) => p.category === active)
   const header = t.categories[active]
+  const pageUrl = `${SITE_URL}${localizedPath(locale, "opportunities", ...categoryPathRest(locale, active))}`
+  const schemas = [
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      name: header.title,
+      description: header.metaDescription,
+      url: pageUrl,
+      inLanguage: locale,
+      publisher: { "@id": ORG_ID },
+      mainEntity: {
+        "@type": "ItemList",
+        numberOfItems: items.length,
+        itemListElement: items.map((p, i) => ({
+          "@type": "ListItem",
+          position: i + 1,
+          name: p.title,
+          url: `${SITE_URL}${localizedPath(locale, "opportunities", p.id)}`,
+        })),
+      },
+    },
+    breadcrumbSchema([
+      { name: "B&G Consulting", url: `${SITE_URL}${localizedPath(locale, "home")}` },
+      { name: getDictionary(locale).nav.opportunities, url: `${SITE_URL}${localizedPath(locale, "opportunities")}` },
+      ...(active === "prime" ? [] : [{ name: header.title, url: pageUrl }]),
+    ]),
+  ]
 
   return (
     <main className="min-h-screen bg-background">
+      {schemas.map((schema, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      ))}
       <NavBar />
 
       <section className="relative overflow-hidden bg-noir px-6 pb-16 pt-40">
@@ -78,6 +109,16 @@ export async function OpportunitiesView({ locale, active }: { locale: Locale; ac
             ))}
           </div>
         )}
+
+        {/* Texto explicativo de la categoría: útil para el inversor y citable por buscadores e IA */}
+        <section className="mt-24 grid gap-10 border-t border-border pt-16 md:grid-cols-[1fr_1.4fr]">
+          <h2 className="font-serif text-3xl font-normal leading-tight text-foreground">{header.aboutTitle}</h2>
+          <div className="flex flex-col gap-5 leading-relaxed text-muted-foreground">
+            {header.about.map((paragraph) => (
+              <p key={paragraph.slice(0, 24)}>{paragraph}</p>
+            ))}
+          </div>
+        </section>
 
         <p className="mt-16 max-w-2xl border-t border-border pt-8 text-sm leading-relaxed text-muted-foreground">
           {t.disclaimer}

@@ -282,6 +282,11 @@ export const es = {
         metaTitle: "Inmuebles residenciales de lujo en venta | Villas y apartamentos",
         metaDescription:
           "Villas y apartamentos de lujo seleccionados uno a uno en Marbella y otros mercados de alto valor, listos para vivir o invertir.",
+        aboutTitle: "Inversión en residencial de lujo",
+        about: [
+          "La categoría Residencial reúne villas, áticos y apartamentos de alto valor en ubicaciones consolidadas como la Milla de Oro, Sierra Blanca o Los Monteros en Marbella. Son activos para vivir, para segunda residencia o para alquiler de lujo, con una demanda internacional estable.",
+          "Antes de publicar cada inmueble revisamos su situación registral, el precio frente a operaciones comparables de la zona y el estado de la vivienda. Cada propiedad tiene su dossier privado con planos, calidades y fotografías, y un asesor que acompaña la operación hasta la firma.",
+        ],
       },
       value_add: {
         label: "Oportunidades de valor",
@@ -291,6 +296,11 @@ export const es = {
         metaTitle: "Inmuebles para reformar | Oportunidades de inversión de valor",
         metaDescription:
           "Propiedades para reformar o reposicionar con margen de revalorización, analizadas por nuestro equipo antes de publicarse.",
+        aboutTitle: "Qué es una oportunidad de valor",
+        about: [
+          "Una oportunidad de valor es un inmueble que se compra por debajo de su precio de mercado porque necesita reforma, cambio de uso o reposicionamiento. La rentabilidad no depende de que el mercado suba, sino del trabajo que se hace sobre el activo.",
+          "En cada ficha indicamos el precio de compra y el plazo estimado. Junto al asesor se estudia el coste de la reforma, las licencias necesarias y el valor de salida, de forma que el inversor conozca los números antes de decidir.",
+        ],
       },
       development: {
         label: "Proyectos y desarrollo",
@@ -300,6 +310,11 @@ export const es = {
         metaTitle: "Proyectos inmobiliarios y suelos | Inversión en desarrollo",
         metaDescription:
           "Proyectos autorizados, suelos y promociones para inversores: hoteles boutique y desarrollos con plan y plazos definidos.",
+        aboutTitle: "Invertir en proyectos y suelo",
+        about: [
+          "Esta categoría incluye suelos, licencias y proyectos ya autorizados: hoteles boutique, promociones residenciales y desarrollos con su plan de obra definido. Es la estrategia con más potencial de revalorización y también la de plazo más largo.",
+          "Para cada proyecto verificamos la licencia o autorización, la situación del suelo y el calendario previsto. La memoria descriptiva y la documentación técnica se comparten con el inversor en su dossier privado.",
+        ],
       },
       commercial: {
         label: "Comercial e industrial",
@@ -309,6 +324,11 @@ export const es = {
         metaTitle: "Activos comerciales e industriales en venta | Naves y logística",
         metaDescription:
           "Naves industriales, centros logísticos y locales comerciales seleccionados para inversores y empresas.",
+        aboutTitle: "Activos comerciales e industriales",
+        about: [
+          "Naves industriales, centros logísticos, cámaras frigoríficas y locales comerciales: activos productivos que generan renta con contratos de empresa o que sirven para uso propio de una compañía.",
+          "En estos activos analizamos la superficie útil, las instalaciones, la zonificación y el uso permitido, además de la ubicación respecto a las vías de distribución. Cada ficha incluye los datos técnicos principales y un asesor para resolver dudas sobre la operación.",
+        ],
       },
     },
   },

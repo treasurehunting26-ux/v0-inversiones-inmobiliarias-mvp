@@ -12,6 +12,7 @@ import { CTA } from "@/components/landing/cta"
 import { Footer } from "@/components/landing/footer"
 import { getDictionary, type Locale } from "@/lib/i18n"
 import { getPublishedProperties } from "@/lib/properties-api"
+import { faqSchema, jsonLd, organizationSchema, websiteSchema } from "@/lib/seo"
 
 export default async function Home({ params }: { params: Promise<{ lang: string }> }) {
   const locale = (await params).lang as Locale
@@ -26,6 +27,10 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
 
   return (
     <main className="min-h-screen bg-background">
+      {/* Quién es la empresa y preguntas frecuentes, en formato que leen Google y los motores de IA */}
+      {[organizationSchema(locale, t.meta.description), websiteSchema(locale), faqSchema(t.faq.items)].map((schema, i) => (
+        <script key={i} type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
+      ))}
       <NavBar />
       <Hero locale={locale} t={t.hero} />
       <Intro locale={locale} t={t.home.intro} />

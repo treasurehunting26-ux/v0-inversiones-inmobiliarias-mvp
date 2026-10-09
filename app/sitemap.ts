@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next"
 import { CATEGORIES, CATEGORY_SLUGS } from "@/lib/categories"
+import { getPublishedProperties } from "@/lib/properties-api"
 import { guideSlugs, getGuides, type GuideId } from "@/lib/guides"
 import { defaultLocale, locales, localizedPath, SITE_URL, type Locale, type RouteKey } from "@/lib/i18n/config"
 
@@ -25,7 +26,12 @@ function entries(
   }))
 }
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  // Cada propiedad publicada y clasificada, en los dos idiomas
+  const properties = (await getPublishedProperties()).filter((p) => p.category)
+
   const always = () => []
   const guideIds = Object.keys(guideSlugs) as GuideId[]
 
@@ -35,6 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...CATEGORIES.filter((c) => c !== "prime").flatMap((c) =>
       entries("opportunities", (l) => [CATEGORY_SLUGS[l][c]], "daily", 0.85),
     ),
+    ...properties.flatMap((p) => entries("opportunities", () => [p.id], "weekly", 0.8)),
     ...entries("guides", always, "weekly", 0.8),
     ...entries("assistant", always, "monthly", 0.7),
     ...entries("contact", always, "monthly", 0.6),

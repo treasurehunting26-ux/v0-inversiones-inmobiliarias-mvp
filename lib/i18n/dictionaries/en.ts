@@ -279,6 +279,11 @@ export const en: Dictionary = {
         metaTitle: "Luxury residential property for sale | Villas and apartments",
         metaDescription:
           "Luxury villas and apartments selected one by one in Marbella and other high-value markets, ready to live in or invest.",
+        aboutTitle: "Investing in luxury residential property",
+        about: [
+          "The Residential category brings together high-value villas, penthouses and apartments in established locations such as the Golden Mile, Sierra Blanca and Los Monteros in Marbella. They are assets to live in, to use as a second home or for luxury rental, with steady international demand.",
+          "Before publishing each property we review its land registry status, its price against comparable sales in the area and its condition. Every property has its own private dossier with plans, specifications and photography, and an advisor who supports the deal through to completion.",
+        ],
       },
       value_add: {
         label: "Value-add opportunities",
@@ -288,6 +293,11 @@ export const en: Dictionary = {
         metaTitle: "Properties to renovate | Value-add real estate investment",
         metaDescription:
           "Properties to renovate or reposition with upside potential, analysed by our team before being published.",
+        aboutTitle: "What is a value-add opportunity",
+        about: [
+          "A value-add opportunity is a property bought below market value because it needs renovation, a change of use or repositioning. The return does not depend on the market rising but on the work done on the asset.",
+          "Each listing shows the purchase price and estimated timeline. Together with the advisor, the investor reviews renovation costs, the permits required and the exit value, so the numbers are clear before any decision.",
+        ],
       },
       development: {
         label: "Projects and development",
@@ -297,6 +307,11 @@ export const en: Dictionary = {
         metaTitle: "Real estate projects and land | Development investment",
         metaDescription:
           "Approved projects, land and residential schemes for investors: boutique hotels and developments with a defined plan and timeline.",
+        aboutTitle: "Investing in projects and land",
+        about: [
+          "This category covers land, permits and approved projects: boutique hotels, residential schemes and developments with a defined construction plan. It is the strategy with the greatest upside and also the longest timeline.",
+          "For each project we verify the permit or approval, the status of the land and the expected schedule. The project description and technical documentation are shared with the investor in their private dossier.",
+        ],
       },
       commercial: {
         label: "Commercial and industrial",
@@ -306,6 +321,11 @@ export const en: Dictionary = {
         metaTitle: "Commercial and industrial property for sale | Warehouses and logistics",
         metaDescription:
           "Industrial warehouses, logistics centres and retail units selected for investors and companies.",
+        aboutTitle: "Commercial and industrial assets",
+        about: [
+          "Industrial warehouses, logistics centres, cold-storage facilities and retail units: productive assets that generate income from business tenants or serve a company's own operations.",
+          "For these assets we analyse usable area, installations, zoning and permitted use, as well as the location relative to distribution routes. Each listing includes the main technical data and an advisor to answer questions about the deal.",
+        ],
       },
     },
   },

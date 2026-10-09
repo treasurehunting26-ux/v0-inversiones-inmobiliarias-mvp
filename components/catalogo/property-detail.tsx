@@ -12,7 +12,8 @@ import { useBrigitte } from "@/components/brigitte/brigitte-provider"
 import { DossierListing } from "@/components/dossier/dossier-listing"
 import { isFullHtmlDocument } from "@/lib/dossier-import"
 
-export function PropertyDetail() {
+/** `initialData`: ficha ya cargada en el servidor (la página llega pintada, sin esqueleto). */
+export function PropertyDetail({ initialData }: { initialData?: Property | null } = {}) {
   const { locale, dict } = useI18n()
   const t = dict.property
   const brigitte = useBrigitte()
@@ -21,6 +22,7 @@ export function PropertyDetail() {
   const { data, error, isLoading } = useSWR<Property>(
     id ? `/properties/${id}` : null,
     propertyFetcher,
+    initialData ? { fallbackData: initialData } : undefined,
   )
 
   // Si el visitante abre el chat en esta ficha, Brigitte sabe de que activo habla.
@@ -31,7 +33,7 @@ export function PropertyDetail() {
     return () => setPageProperty(null)
   }, [data, setPageProperty])
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="mx-auto max-w-4xl px-6 pt-40 pb-28">
         <div className="h-8 w-40 animate-pulse rounded bg-card" />
