@@ -12,19 +12,17 @@
  *   titular.
  */
 export const HERO_MEDIA = {
-  video:
-    "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/videos/villa-los-monteros-hero_1-Rwys8FiIJb31VsLNYjYgMTXeDvxmO2.mp4",
-  poster:
-    "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/dossiers/media/villa-los-monteros-dossier-privado-marbe-1-jVWBvNgw2WYc8zUHsg5eBi9nVVPgOi.jpg",
-  videoMobile: "",
-  posterMobile: "",
+  video: "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/videos/hero-desktop.mp4",
+  poster: "/hero/poster-desktop.jpg",
+  videoMobile: "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/videos/hero-mobile.mp4",
+  posterMobile: "/hero/poster-mobile.jpg",
   orientation: "landscape" as "portrait" | "landscape",
   /**
    * Ancho real del vídeo de escritorio en píxeles. Si es menor de 1280, en
    * escritorio se muestra la foto (`poster`) con zoom lento en lugar del
    * vídeo, porque estirado a pantalla completa se pixela.
    */
-  videoWidth: 478,
+  videoWidth: 2560,
 }
 
 export const HERO_VIDEO_ON_DESKTOP = HERO_MEDIA.videoWidth >= 1280
