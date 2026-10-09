@@ -18,7 +18,8 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
   const t = getDictionary(locale)
 
   // Secciones dinámicas: salen solas del catálogo publicado
-  const properties = await getPublishedProperties()
+  // Solo la Colección Prime sale en la portada; el resto vive en su categoría
+  const properties = (await getPublishedProperties()).filter((p) => p.category === "prime")
   const withCover = properties.filter((p) => p.photos?.[0])
   const featured = withCover[0]
   const rail = withCover.filter((p) => p.id !== featured?.id)

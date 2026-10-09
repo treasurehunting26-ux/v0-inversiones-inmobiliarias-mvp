@@ -4,6 +4,9 @@ import { Footer } from "@/components/landing/footer"
 import { PropertyDetail } from "@/components/catalogo/property-detail"
 import { pageMetadata, type Locale } from "@/lib/i18n"
 import type { Property } from "@/lib/properties-api"
+import { getDictionary } from "@/lib/i18n"
+import { OpportunitiesView } from "@/components/catalogo/opportunities-view"
+import { CATEGORY_SLUGS, categoryFromSlug } from "@/lib/categories"
 
 type Props = { params: Promise<{ lang: string; id: string }> }
 
@@ -22,6 +25,18 @@ async function fetchProperty(id: string): Promise<Property | null> {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { lang, id } = await params
   const locale = lang as Locale
+  // /oportunidades/reforma, /oportunidades/proyectos…: página de categoría
+  const category = categoryFromSlug(locale, id)
+  if (category) {
+    const t = getDictionary(locale).opportunities.categories[category]
+    return pageMetadata({
+      locale,
+      route: "opportunities",
+      rest: { es: [CATEGORY_SLUGS.es[category]], en: [CATEGORY_SLUGS.en[category]] },
+      title: t.metaTitle,
+      description: t.metaDescription,
+    })
+  }
   const property = await fetchProperty(id)
   if (!property) {
     return { robots: { index: false, follow: true } }
@@ -42,7 +57,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return metadata
 }
 
-export default function PropertyDetailPage() {
+export default async function PropertyDetailPage({ params }: Props) {
+  const { lang, id } = await params
+  const category = categoryFromSlug(lang as Locale, id)
+  if (category) return <OpportunitiesView locale={lang as Locale} active={category} />
   return (
     <main className="min-h-screen bg-background">
       <NavBar />

@@ -40,9 +40,12 @@
   --radius: 0.125rem;
 }
 
-* {
-  border-color: var(--color-border);
-  box-sizing: border-box;
+/* En la capa base para que las utilidades (border-copper, border-transparent…) puedan sobrescribirlo */
+@layer base {
+  * {
+    border-color: var(--color-border);
+    box-sizing: border-box;
+  }
 }
 
 html {

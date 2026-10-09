@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next"
+import { CATEGORIES, CATEGORY_SLUGS } from "@/lib/categories"
 import { guideSlugs, getGuides, type GuideId } from "@/lib/guides"
 import { defaultLocale, locales, localizedPath, SITE_URL, type Locale, type RouteKey } from "@/lib/i18n/config"
 
@@ -31,6 +32,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return [
     ...entries("home", always, "weekly", 1),
     ...entries("opportunities", always, "daily", 0.9),
+    ...CATEGORIES.flatMap((c) => entries("opportunities", (l) => [CATEGORY_SLUGS[l][c]], "daily", 0.85)),
     ...entries("guides", always, "weekly", 0.8),
     ...entries("assistant", always, "monthly", 0.7),
     ...entries("contact", always, "monthly", 0.6),

@@ -57,6 +57,7 @@ def on_startup() -> None:
 # portable: se comprueba con el inspector antes de hacer ALTER TABLE).
 NEW_COLUMNS = [
     ("properties", "description_html_en", "TEXT"),
+    ("properties", "category", "VARCHAR(32)"),
 ]
 
 

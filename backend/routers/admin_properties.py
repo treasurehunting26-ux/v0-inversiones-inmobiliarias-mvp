@@ -243,7 +243,10 @@ def admin_update_fields(
     if not prop:
         raise HTTPException(status_code=404, detail="Propiedad no encontrada")
     for field, value in data.model_dump(exclude_unset=True).items():
-        if value is not None:
+        if field == "category":
+            if value is not None:
+                prop.category = value or None
+        elif value is not None:
             setattr(prop, field, value.strip())
     prop.updated_at = datetime.utcnow()
     db.commit()
@@ -292,6 +295,7 @@ def admin_create_property(
         description_html=data.description_html,
         description_html_en=data.description_html_en or None,
         photos=data.photos or [],
+        category=data.category,
         status="draft",
         created_by="admin",
         dossier_slug=generate_dossier_slug(db, data.title),

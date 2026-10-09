@@ -270,6 +270,47 @@ export const es = {
     investment: "Inversión",
     horizon: "Horizonte",
     viewOpportunity: "Ver oportunidad",
+    categoriesLabel: "Categorías",
+    all: "Todas",
+    other: "Otras oportunidades",
+    categories: {
+      prime: {
+        label: "Colección Prime",
+        title: "Colección Prime",
+        intro:
+          "Residencial de muy alto valor en las mejores ubicaciones: villas y apartamentos listos para vivir o para alquiler de lujo.",
+        metaTitle: "Colección Prime | Villas y residencias de lujo en venta",
+        metaDescription:
+          "Villas y apartamentos de lujo seleccionados uno a uno en Marbella y otros mercados prime, listos para vivir o invertir.",
+      },
+      value_add: {
+        label: "Oportunidades de valor",
+        title: "Oportunidades de valor",
+        intro:
+          "Inmuebles para reformar o reposicionar, comprados por debajo de mercado. El valor está en la operación, no en la foto.",
+        metaTitle: "Inmuebles para reformar | Oportunidades de inversión de valor",
+        metaDescription:
+          "Propiedades para reformar o reposicionar con margen de revalorización, analizadas por nuestro equipo antes de publicarse.",
+      },
+      development: {
+        label: "Proyectos y desarrollo",
+        title: "Proyectos y desarrollo",
+        intro:
+          "Suelos, licencias y proyectos autorizados: hoteles boutique, promociones y desarrollos con su plan y plazos definidos.",
+        metaTitle: "Proyectos inmobiliarios y suelos | Inversión en desarrollo",
+        metaDescription:
+          "Proyectos autorizados, suelos y promociones para inversores: hoteles boutique y desarrollos con plan y plazos definidos.",
+      },
+      commercial: {
+        label: "Comercial e industrial",
+        title: "Comercial e industrial",
+        intro:
+          "Naves, centros logísticos y locales: activos productivos pensados para generar renta o para uso propio de empresa.",
+        metaTitle: "Activos comerciales e industriales en venta | Naves y logística",
+        metaDescription:
+          "Naves industriales, centros logísticos y locales comerciales seleccionados para inversores y empresas.",
+      },
+    },
   },
 
   property: {

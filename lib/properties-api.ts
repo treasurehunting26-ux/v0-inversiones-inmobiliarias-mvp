@@ -20,6 +20,8 @@ export type Property = {
   video_url?: string | null
   dossier_slug?: string | null
   dossier_html_url?: string | null
+  /** prime | value_add | development | commercial; null = sin clasificar */
+  category?: string | null
 }
 
 export type PropertyListResponse = {

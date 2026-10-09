@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 
 PropertyStatus = Literal["draft", "published", "archived"]
+PropertyCategory = Literal["prime", "value_add", "development", "commercial"]
 
 
 class PropertyCreate(BaseModel):
@@ -29,6 +30,7 @@ class PropertyCreate(BaseModel):
     description_html: Optional[str] = None
     description_html_en: Optional[str] = None
     photos: Optional[list[str]] = None
+    category: Optional[PropertyCategory] = None
 
 
 class PropertyFieldsUpdate(BaseModel):
@@ -39,6 +41,8 @@ class PropertyFieldsUpdate(BaseModel):
     investment_range: Optional[str] = Field(default=None, min_length=1, max_length=200)
     horizon: Optional[str] = Field(default=None, max_length=200)
     risk_notes: Optional[str] = Field(default=None, max_length=4000)
+    # "" = quitar la categoria (sin clasificar)
+    category: Optional[Literal["prime", "value_add", "development", "commercial", ""]] = None
 
 
 class ExtractFieldsRequest(BaseModel):
@@ -100,6 +104,7 @@ class PropertyAdminRead(BaseModel):
     video_url: Optional[str] = None
     dossier_slug: Optional[str] = None
     dossier_html_url: Optional[str] = None
+    category: Optional[str] = None
     has_dossier: bool = False
     has_dossier_en: bool = False
     dossier_en_kb: int = 0

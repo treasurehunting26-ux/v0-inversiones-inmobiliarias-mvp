@@ -5,8 +5,10 @@ import { Archive, CheckCircle2, Clock, FileCode, Trash2 } from "lucide-react"
 import {
   AdminProperty,
   deleteProperty,
+  updateFields,
   updateStatus,
 } from "@/lib/admin-api"
+import { CATEGORIES, CATEGORY_ADMIN_LABELS, type Category } from "@/lib/categories"
 import { PropertyDossierPanel } from "@/components/admin/property-dossier-panel"
 
 interface PropertyListProps {
@@ -26,6 +28,16 @@ export function PropertyList({
     setBusyId(p.id)
     try {
       await updateStatus(token, p.id, status)
+      onChanged()
+    } finally {
+      setBusyId(null)
+    }
+  }
+
+  async function setCategory(p: AdminProperty, category: Category | "") {
+    setBusyId(p.id)
+    try {
+      await updateFields(token, p.id, { category })
       onChanged()
     } finally {
       setBusyId(null)
@@ -90,6 +102,25 @@ export function PropertyList({
                 <p className="mt-1 text-sm text-muted-foreground">
                   {p.location} {"\u00B7"} {p.asset_type}
                 </p>
+                <label className="mt-3 flex flex-wrap items-center gap-2 text-sm">
+                  <span className="font-medium text-foreground">Categoría</span>
+                  <select
+                    value={p.category ?? ""}
+                    disabled={busy}
+                    onChange={(e) => setCategory(p, e.target.value as Category | "")}
+                    className="rounded-md border border-border bg-background px-2 py-1 text-sm text-foreground disabled:opacity-50"
+                  >
+                    <option value="">Sin clasificar</option>
+                    {CATEGORIES.map((c) => (
+                      <option key={c} value={c}>
+                        {CATEGORY_ADMIN_LABELS[c]}
+                      </option>
+                    ))}
+                  </select>
+                  {!p.category && (
+                    <span className="text-xs text-amber-700">Sin categoría: no sale en la portada</span>
+                  )}
+                </label>
                 <dl className="mt-3 grid grid-cols-1 gap-2 text-sm md:grid-cols-2">
                   <Info label="Inversion" value={p.investment_range} />
                   <Info label="Horizonte" value={p.horizon} />

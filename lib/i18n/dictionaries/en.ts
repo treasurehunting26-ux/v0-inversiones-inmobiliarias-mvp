@@ -267,6 +267,47 @@ export const en: Dictionary = {
     investment: "Investment",
     horizon: "Horizon",
     viewOpportunity: "View opportunity",
+    categoriesLabel: "Categories",
+    all: "All",
+    other: "Other opportunities",
+    categories: {
+      prime: {
+        label: "Prime Collection",
+        title: "Prime Collection",
+        intro:
+          "Very high-value residential in the best locations: villas and apartments ready to live in or for luxury rental.",
+        metaTitle: "Prime Collection | Luxury villas and residences for sale",
+        metaDescription:
+          "Luxury villas and apartments selected one by one in Marbella and other prime markets, ready to live in or invest.",
+      },
+      value_add: {
+        label: "Value-add opportunities",
+        title: "Value-add opportunities",
+        intro:
+          "Properties to renovate or reposition, bought below market value. The value lies in the deal, not the photo.",
+        metaTitle: "Properties to renovate | Value-add real estate investment",
+        metaDescription:
+          "Properties to renovate or reposition with upside potential, analysed by our team before being published.",
+      },
+      development: {
+        label: "Projects and development",
+        title: "Projects and development",
+        intro:
+          "Land, permits and approved projects: boutique hotels, residential schemes and developments with a defined plan and timeline.",
+        metaTitle: "Real estate projects and land | Development investment",
+        metaDescription:
+          "Approved projects, land and residential schemes for investors: boutique hotels and developments with a defined plan and timeline.",
+      },
+      commercial: {
+        label: "Commercial and industrial",
+        title: "Commercial and industrial",
+        intro:
+          "Warehouses, logistics centres and retail units: productive assets built to generate income or for owner occupation.",
+        metaTitle: "Commercial and industrial property for sale | Warehouses and logistics",
+        metaDescription:
+          "Industrial warehouses, logistics centres and retail units selected for investors and companies.",
+      },
+    },
   },
 
   property: {

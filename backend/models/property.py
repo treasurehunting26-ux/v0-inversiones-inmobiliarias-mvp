@@ -46,3 +46,7 @@ class Property(Base):
     # tal cual en /dossier/{slug} en lugar de construir la pagina con
     # description_html: sustituye por completo al dossier generado aqui.
     dossier_html_url = Column(String, nullable=True)
+
+    # Categoria de inversion: prime | value_add | development | commercial.
+    # Solo "prime" aparece en la portada; null = sin clasificar.
+    category = Column(String, nullable=True, index=True)

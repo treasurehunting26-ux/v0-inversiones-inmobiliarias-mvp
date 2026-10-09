@@ -162,6 +162,18 @@ def main_test() -> None:
     assert pub["photos"] == ["https://x.public.blob.vercel-storage.com/cover.jpg"] and "description_html" not in pub
     assert client.get(f"/properties/{pid}").json()["description_html"] == DOSSIER
 
+    # 6b. Categoría: sin clasificar por defecto, filtro público, quitar con ""
+    assert pub["category"] is None
+    assert client.patch(f"/admin/properties/{pid}", headers=H, json={"category": "lujo"}).status_code == 422
+    r = client.patch(f"/admin/properties/{pid}", headers=H, json={"category": "prime"})
+    assert r.status_code == 200 and r.json()["category"] == "prime"
+    assert client.get("/properties?category=prime").json()["count"] == 1
+    assert client.get("/properties?category=value_add").json()["count"] == 0
+    assert client.get("/properties").json()["properties"][0]["category"] == "prime"
+    client.patch(f"/admin/properties/{pid}", headers=H, json={"category": ""})
+    assert client.get(f"/admin/properties/{pid}", headers=H).json()["category"] is None
+    client.patch(f"/admin/properties/{pid}", headers=H, json={"category": "prime"})
+
     # 7. Brigitte: texto del dossier como contexto
     s = TestSessionLocal()
     focus = ai_assistant.get_property_focus(s, pid)
