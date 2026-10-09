@@ -34,7 +34,7 @@ export const HERO_VIDEO_ON_DESKTOP = HERO_MEDIA.videoWidth >= 1280
  * Vídeo vacío = solo foto.
  */
 export const MARKET_MEDIA: { poster: string; video: string }[] = [
-  { poster: "/images/market-europa.png", video: "" },
+  { poster: "/images/market-europa.jpg", video: "" },
   { poster: "/images/market-latam.png", video: "" },
   { poster: "/images/market-dubai.jpg", video: "" },
 ]
