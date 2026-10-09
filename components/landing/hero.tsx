@@ -21,11 +21,29 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
 
   return (
     <section className="relative min-h-[100svh] overflow-hidden bg-noir">
-      {/* Fondo: vídeo a pantalla completa (móvil siempre; escritorio si es horizontal y nítido) */}
-      <div className={`absolute inset-0 ${landscape && !photoOnDesktop ? "" : "lg:hidden"}`}>
-        <HeroVideo label={t.videoLabel} className="h-full w-full object-cover" />
+      {/* Móvil y tableta: versión vertical si existe */}
+      <div className="absolute inset-0 lg:hidden">
+        <HeroVideo
+          label={t.videoLabel}
+          src={HERO_MEDIA.videoMobile || HERO_MEDIA.video}
+          poster={HERO_MEDIA.posterMobile || HERO_MEDIA.poster}
+          className="h-full w-full object-cover"
+        />
         <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
       </div>
+
+      {/* Escritorio: vídeo horizontal a pantalla completa (si es nítido) */}
+      {landscape && !photoOnDesktop && (
+        <div className="absolute inset-0 hidden lg:block">
+          <HeroVideo
+            label={t.videoLabel}
+            src={HERO_MEDIA.video}
+            poster={HERO_MEDIA.poster}
+            className="h-full w-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
+        </div>
+      )}
 
       {/* Escritorio con vídeo de poca resolución: foto a pantalla completa con zoom lento */}
       {photoOnDesktop && (
@@ -97,7 +115,12 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
             <div className="bg-rise relative hidden justify-self-end lg:block" style={{ animationDelay: "550ms" }}>
               <div className="absolute -inset-3 border border-gold-soft/40" aria-hidden />
               <div className="relative aspect-[9/16] h-[68vh] max-h-[720px] overflow-hidden shadow-[0_40px_80px_-30px_rgba(0,0,0,0.6)]">
-                <HeroVideo label={t.videoLabel} className="h-full w-full object-cover" />
+                <HeroVideo
+                  label={t.videoLabel}
+                  src={HERO_MEDIA.videoMobile || HERO_MEDIA.video}
+                  poster={HERO_MEDIA.posterMobile || HERO_MEDIA.poster}
+                  className="h-full w-full object-cover"
+                />
               </div>
             </div>
           )}
@@ -113,7 +136,17 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
   )
 }
 
-function HeroVideo({ label, className }: { label: string; className?: string }) {
+function HeroVideo({
+  label,
+  src,
+  poster,
+  className,
+}: {
+  label: string
+  src: string
+  poster: string
+  className?: string
+}) {
   const ref = useRef<HTMLVideoElement>(null)
 
   useEffect(() => {
@@ -140,8 +173,8 @@ function HeroVideo({ label, className }: { label: string; className?: string }) 
     <video
       ref={ref}
       className={className}
-      src={HERO_MEDIA.video}
-      poster={HERO_MEDIA.poster}
+      src={src}
+      poster={poster}
       muted
       loop
       playsInline
