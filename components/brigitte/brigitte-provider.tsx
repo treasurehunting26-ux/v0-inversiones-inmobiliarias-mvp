@@ -16,7 +16,7 @@ import { BrigitteError, requestHandoff, sendToBrigitte } from "@/lib/brigitte-ap
 import { submitContact } from "@/lib/contact-api"
 import { BrigitteWidget } from "./brigitte-widget"
 
-export type ChatMessage = { role: "user" | "assistant"; content: string }
+export type ChatMessage = { role: "user" | "assistant"; content: string; properties?: string[] }
 export type HandoffState = "idle" | "collecting" | "submitting" | "submitted"
 export type PropertyRef = { id: string; title: string }
 
@@ -44,7 +44,7 @@ type BrigitteContextValue = {
 
 const BrigitteContext = createContext<BrigitteContextValue | null>(null)
 
-const STORAGE_KEY = "brigitte:v1"
+const STORAGE_KEY = "brigitte:v2"
 
 type Persisted = {
   conversationId: string | null
@@ -157,7 +157,7 @@ export function BrigitteProvider({ children }: { children: ReactNode }) {
         const data = await sendToBrigitte({ message, conversationId, locale, propertyId })
         setConversationId(data.conversation_id)
         await wait(readingPause(data.response, Date.now() - started))
-        setMessages((prev) => [...prev, { role: "assistant", content: data.response }])
+        setMessages((prev) => [...prev, { role: "assistant", content: data.response, properties: data.properties ?? [] }])
         if (data.escalate_to_human && handoff === "idle") {
           setHandoffViaButton(false)
           setHandoff("collecting")

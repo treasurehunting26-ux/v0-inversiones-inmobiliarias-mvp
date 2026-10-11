@@ -5,6 +5,7 @@ import Link from "next/link"
 import { submitContact } from "@/lib/contact-api"
 import { useI18n } from "@/lib/i18n/client"
 import { localizedPath } from "@/lib/i18n/config"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 type Status = "idle" | "submitting" | "success" | "error"
 
@@ -51,12 +52,11 @@ export function ContactForm() {
           >
             {t.viewOpportunities}
           </Link>
-          <Link
-            href={localizedPath(locale, "assistant")}
+          <AdvisorLink
             className="text-sm font-light tracking-[0.01em] text-muted-foreground underline-offset-4 transition-colors hover:text-foreground hover:underline"
           >
             {t.talkToAdvisor}
-          </Link>
+          </AdvisorLink>
         </div>
       </div>
     )

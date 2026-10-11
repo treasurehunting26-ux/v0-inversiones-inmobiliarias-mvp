@@ -6,6 +6,7 @@ import { NavBar } from "@/components/landing/nav-bar"
 import { Footer } from "@/components/landing/footer"
 import { getGuide, getGuides, getGuideSlugsById } from "@/lib/guides"
 import { format, getDictionary, locales, localizedPath, pageMetadata, type Locale } from "@/lib/i18n"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 type Props = { params: Promise<{ lang: string; slug: string }> }
 
@@ -165,12 +166,11 @@ export default async function GuidePage({ params }: Props) {
           <p className="mt-5 text-base leading-relaxed text-[var(--color-noir-foreground)]/70">
             {t.ctaBody}
           </p>
-          <Link
-            href={localizedPath(locale, "assistant")}
+          <AdvisorLink
             className="mt-8 inline-flex items-center justify-center gap-2 border border-[var(--color-gold)] bg-[var(--color-gold)] px-9 py-4 text-sm tracking-[0.01em] text-[var(--color-noir)] transition-colors hover:bg-transparent hover:text-[var(--color-gold)]"
           >
             {t.ctaButton}
-          </Link>
+          </AdvisorLink>
         </div>
       </section>
 

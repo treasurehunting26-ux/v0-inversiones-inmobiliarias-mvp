@@ -428,31 +428,38 @@ export const en: Dictionary = {
 
   brigitte: {
     name: "Brigitte",
-    role: "B&G Consulting virtual assistant",
-    launcher: "Chat with Brigitte",
-    open: "Open chat with Brigitte",
-    close: "Close chat",
+    role: "Investment advisor · B&G Consulting",
+    aiNotice: "AI-powered digital advisor. A member of our team reviews every case.",
+    open: "Speak to an advisor",
+    close: "Close",
     greeting:
-      "Hi, I'm Brigitte, B&G Consulting's virtual assistant. I can help you find opportunities that suit you and, whenever you like, put you in touch with someone from our team. What brings you here today?",
-    propertyGreeting: "I see you're looking at “{title}”. What would you like to know?",
+      "Welcome to B&G Consulting. I'm Brigitte. Tell me what you're looking for, whether that's an area, a budget or a type of investment, and I'll put together a selection of opportunities. If you prefer, I can arrange a call with one of our advisors straight away.",
+    propertyGreeting: "I see you're looking at “{title}”. What would you like to know about it?",
+    startersLabel: "To get started",
+    starters: [
+      "I'm looking for a luxury home in Marbella",
+      "I want to invest for rental income",
+      "I'm interested in projects and land",
+    ],
     placeholder: "Write your message…",
     send: "Send",
     typing: "Brigitte is typing",
-    talkToPerson: "Speak to a person",
+    talkToPerson: "Book a call with an advisor",
+    viewProperty: "View listing",
     handoffIntro:
-      "Of course. Just leave your name and how you'd like us to reach you, and someone from our team will write to you personally, with our whole conversation in front of them.",
-    namePlaceholder: "Your name",
-    emailPlaceholder: "Your email",
+      "With pleasure. Just leave your name and how you'd like us to reach you. The advisor will have our whole conversation in front of them.",
+    namePlaceholder: "Name",
+    emailPlaceholder: "Email",
     phonePlaceholder: "Phone or WhatsApp (optional)",
-    handoffSubmit: "Send",
+    handoffSubmit: "Request a call",
     handoffSending: "Sending…",
-    handoffRequired: "I just need your name and email so we can get back to you.",
+    handoffRequired: "I need your name and email so the advisor can contact you.",
     handoffThanks:
-      "Thank you, {name}. I've passed this on to our team and they'll write to you at {email} very soon. In the meantime, I'm still here if you'd like to ask anything else.",
+      "Thank you, {name}. I've prepared a brief for the advisor, who will write to you at {email} very soon. In the meantime, I'm here if you'd like to see more options.",
     handoffError: "I couldn't send that. Shall we try again?",
     genericError:
-      "Sorry, I'm having a technical issue right now. If you like, leave your details and someone from the team will write to you directly.",
-    disclaimer: "Brigitte is an AI assistant. She can make mistakes: our team confirms every detail.",
+      "Sorry, I'm having a technical issue. If you like, leave your details and an advisor will write to you directly.",
+    disclaimer: "Brigitte uses AI and can make mistakes: our team confirms every detail.",
   },
 
   notFound: {

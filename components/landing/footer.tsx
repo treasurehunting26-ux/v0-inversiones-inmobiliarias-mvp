@@ -4,6 +4,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { useI18n } from "@/lib/i18n/client"
 import { homeAnchor, localizedPath } from "@/lib/i18n/config"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 export function Footer() {
   const { locale, dict } = useI18n()
@@ -37,9 +38,9 @@ export function Footer() {
               <Link href={localizedPath(locale, "guides")} className={linkClass}>
                 {t.guides}
               </Link>
-              <Link href={localizedPath(locale, "assistant")} className={linkClass}>
+              <AdvisorLink className={linkClass}>
                 {t.talkToAdvisor}
-              </Link>
+              </AdvisorLink>
               <Link href={localizedPath(locale, "contact")} className={linkClass}>
                 {t.contact}
               </Link>

@@ -87,9 +87,21 @@ body {
 .bg-kenburns { animation: bg-kenburns 14s ease-out forwards; }
 .bg-cue { animation: bg-cue 2.4s ease-in-out infinite; }
 
+/* Panel de Brigitte */
+@keyframes bg-slide-in {
+  from { transform: translateX(100%); }
+  to { transform: none; }
+}
+@keyframes bg-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.bg-slide-in { animation: bg-slide-in 0.45s cubic-bezier(0.2, 0.7, 0.2, 1); }
+.bg-fade-in { animation: bg-fade-in 0.35s ease-out; }
+
 @media (prefers-reduced-motion: reduce) {
   .bg-rise { opacity: 1; animation: none; }
-  .bg-marquee, .bg-kenburns, .bg-cue { animation: none; }
+  .bg-marquee, .bg-kenburns, .bg-cue, .bg-slide-in, .bg-fade-in { animation: none; }
 }
 
 /* Aparición suave al entrar en pantalla (componente Reveal) */
