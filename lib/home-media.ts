@@ -35,6 +35,6 @@ export const HERO_VIDEO_ON_DESKTOP = HERO_MEDIA.videoWidth >= 1280
  */
 export const MARKET_MEDIA: { poster: string; video: string }[] = [
   { poster: "/images/market-europa.jpg", video: "" },
-  { poster: "/images/market-latam.jpg", video: "" },
+  { poster: "/images/market-latam.jpg", video: "https://cnujj30t80u2gqye.public.blob.vercel-storage.com/propiedades/videos/vista%20de%20caracas.mp4" },
   { poster: "/images/market-dubai.jpg", video: "" },
 ]
