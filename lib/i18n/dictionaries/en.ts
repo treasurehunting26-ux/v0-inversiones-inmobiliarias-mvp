@@ -24,11 +24,53 @@ export const en: Dictionary = {
 
   hero: {
     imageAlt: "Luxury villa with an infinity pool at sunset on the Costa del Sol",
-    eyebrow: "Europe · Latin America · Dubai",
+    eyebrow: "Marbella, Latin America and Dubai",
     title: "Exceptional real estate investments",
     body: "An exclusive selection of high-value assets, analysed and validated one by one by our team of advisors. Where wealth finds its best opportunity.",
     primary: "View opportunities",
     secondary: "Speak with an advisor",
+    titleLead: "Exceptional Real Estate",
+    titleAccent: "Investments",
+    videoLabel: "A walk through Villa Los Monteros, Marbella",
+    scroll: "Discover",
+  },
+
+  home: {
+    manifesto: {
+      eyebrow: "How we work",
+      text: "We don't publish endless catalogues. We study every asset one by one —location, title, potential and risk— and only present the ones that meet our standards.",
+    },
+    intro: {
+      eyebrow: "Real estate investment advisory",
+      titleLead: "Real estate investment",
+      titleAccent: "with judgement",
+      titleTail: "in Marbella, Latin America and Dubai",
+      body: [
+        "We select villas, luxury apartments, licensed land and industrial assets with verified potential. Every opportunity goes through a prior review of location, title, price and risk before it is published.",
+        "Each asset comes with its own private dossier and an advisor who accompanies you from the first enquiry to closing, with the discretion a transaction of this level requires.",
+      ],
+      pillars: [
+        { title: "Curated selection", detail: "Few opportunities, studied one by one." },
+        { title: "Title and risk review", detail: "Before publication, never after." },
+        { title: "Private dossier", detail: "Every asset, with its own presentation." },
+      ],
+      cta: "View the catalogue",
+    },
+    featured: {
+      eyebrow: "Featured opportunity",
+      cta: "View dossier",
+      investment: "Investment",
+    },
+    rail: {
+      eyebrow: "Current selection",
+      title: "Validated opportunities",
+      viewAll: "View the full catalogue",
+      prev: "Previous",
+      next: "Next",
+    },
+    ticker: {
+      label: "Now in portfolio",
+    },
   },
 
   credibility: {
@@ -59,17 +101,17 @@ export const en: Dictionary = {
     items: [
       {
         name: "Europe",
-        location: "Costa del Sol · Madrid · Lisbon",
+        location: "Costa del Sol, Madrid and Lisbon",
         description: "Established assets in the continent's most stable and sought-after markets.",
       },
       {
         name: "Latin America",
-        location: "Tulum · Mexico City · Punta del Este",
+        location: "Tulum, Mexico City and Punta del Este",
         description: "High-growth opportunities in emerging luxury destinations.",
       },
       {
         name: "Dubai",
-        location: "Palm Jumeirah · Downtown · Marina",
+        location: "Palm Jumeirah, Downtown and Marina",
         description: "Strong returns in one of the world's most dynamic markets.",
       },
     ],
@@ -185,7 +227,7 @@ export const en: Dictionary = {
     body: "We talk about your profile and present real opportunities, validated by our team. With complete discretion and no obligation.",
     primary: "Speak with an advisor",
     secondary: "View opportunities",
-    footnote: "No sign-up · No obligation · Complete confidentiality",
+    footnote: "No sign-up, no obligation and complete confidentiality.",
   },
 
   footer: {
@@ -207,7 +249,7 @@ export const en: Dictionary = {
     metaTitle: "Real estate investment opportunities | Validated assets",
     metaDescription:
       "Explore real estate opportunities selected and validated one by one by our team across Europe, Latin America and Dubai.",
-    eyebrow: "Catalogue · Verified assets",
+    eyebrow: "Assets verified one by one",
     title: "Investment opportunities, selected one by one",
     intro:
       "Every asset has been reviewed and approved by our team before being published. Choose the one that fits your profile and go deeper with a dedicated advisor.",
@@ -225,6 +267,67 @@ export const en: Dictionary = {
     investment: "Investment",
     horizon: "Horizon",
     viewOpportunity: "View opportunity",
+    categoriesLabel: "Categories",
+    all: "All",
+    other: "Other opportunities",
+    categories: {
+      prime: {
+        label: "Residential",
+        title: "Residential",
+        intro:
+          "Very high-value villas and apartments in the best locations, ready to live in or for luxury rental.",
+        metaTitle: "Luxury residential property for sale | Villas and apartments",
+        metaDescription:
+          "Luxury villas and apartments selected one by one in Marbella and other high-value markets, ready to live in or invest.",
+        aboutTitle: "Investing in luxury residential property",
+        about: [
+          "The Residential category brings together high-value villas, penthouses and apartments in established locations such as the Golden Mile, Sierra Blanca and Los Monteros in Marbella. They are assets to live in, to use as a second home or for luxury rental, with steady international demand.",
+          "Before publishing each property we review its land registry status, its price against comparable sales in the area and its condition. Every property has its own private dossier with plans, specifications and photography, and an advisor who supports the deal through to completion.",
+        ],
+      },
+      value_add: {
+        label: "Value-add opportunities",
+        title: "Value-add opportunities",
+        intro:
+          "Properties to renovate or reposition, bought below market value. The value lies in the deal, not the photo.",
+        metaTitle: "Properties to renovate | Value-add real estate investment",
+        metaDescription:
+          "Properties to renovate or reposition with upside potential, analysed by our team before being published.",
+        aboutTitle: "What is a value-add opportunity",
+        about: [
+          "A value-add opportunity is a property bought below market value because it needs renovation, a change of use or repositioning. The return does not depend on the market rising but on the work done on the asset.",
+          "Each listing shows the purchase price and estimated timeline. Together with the advisor, the investor reviews renovation costs, the permits required and the exit value, so the numbers are clear before any decision.",
+        ],
+      },
+      development: {
+        label: "Projects and development",
+        title: "Projects and development",
+        intro:
+          "Land, permits and approved projects: boutique hotels, residential schemes and developments with a defined plan and timeline.",
+        metaTitle: "Real estate projects and land | Development investment",
+        metaDescription:
+          "Approved projects, land and residential schemes for investors: boutique hotels and developments with a defined plan and timeline.",
+        aboutTitle: "Investing in projects and land",
+        about: [
+          "This category covers land, permits and approved projects: boutique hotels, residential schemes and developments with a defined construction plan. It is the strategy with the greatest upside and also the longest timeline.",
+          "For each project we verify the permit or approval, the status of the land and the expected schedule. The project description and technical documentation are shared with the investor in their private dossier.",
+        ],
+      },
+      commercial: {
+        label: "Commercial and industrial",
+        title: "Commercial and industrial",
+        intro:
+          "Warehouses, logistics centres and retail units: productive assets built to generate income or for owner occupation.",
+        metaTitle: "Commercial and industrial property for sale | Warehouses and logistics",
+        metaDescription:
+          "Industrial warehouses, logistics centres and retail units selected for investors and companies.",
+        aboutTitle: "Commercial and industrial assets",
+        about: [
+          "Industrial warehouses, logistics centres, cold-storage facilities and retail units: productive assets that generate income from business tenants or serve a company's own operations.",
+          "For these assets we analyse usable area, installations, zoning and permitted use, as well as the location relative to distribution routes. Each listing includes the main technical data and an advisor to answer questions about the deal.",
+        ],
+      },
+    },
   },
 
   property: {
@@ -325,7 +428,7 @@ export const en: Dictionary = {
 
   brigitte: {
     name: "Brigitte",
-    role: "Virtual assistant · B&G Consulting",
+    role: "B&G Consulting virtual assistant",
     launcher: "Chat with Brigitte",
     open: "Open chat with Brigitte",
     close: "Close chat",

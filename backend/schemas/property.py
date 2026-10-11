@@ -23,6 +23,8 @@ class PropertyRead(BaseModel):
     risk_notes: str
     # Portada para la tarjeta del catalogo (primera foto del dossier).
     photos: Optional[list[str]] = None
+    # prime | value_add | development | commercial (null = sin clasificar)
+    category: Optional[str] = None
 
     class Config:
         from_attributes = True

@@ -27,7 +27,7 @@ export function Footer() {
 
           <div className="flex gap-16">
             <nav className="flex flex-col gap-4">
-              <span className="text-xs font-light uppercase tracking-[0.18em] text-gold">{t.platform}</span>
+              <span className="text-sm font-light tracking-[0.01em] text-gold">{t.platform}</span>
               <Link href={homeAnchor(locale, "como-funciona")} className={linkClass}>
                 {t.howItWorks}
               </Link>
@@ -45,7 +45,7 @@ export function Footer() {
               </Link>
             </nav>
             <nav className="flex flex-col gap-4">
-              <span className="text-xs font-light uppercase tracking-[0.18em] text-gold">{t.markets}</span>
+              <span className="text-sm font-light tracking-[0.01em] text-gold">{t.markets}</span>
               {t.marketNames.map((name) => (
                 <span key={name} className="text-sm font-light text-noir-foreground/60">
                   {name}

@@ -27,11 +27,53 @@ export const es = {
 
   hero: {
     imageAlt: "Villa de lujo con piscina infinita al atardecer en la Costa del Sol",
-    eyebrow: "Europa · Latinoamérica · Dubái",
+    eyebrow: "Marbella, Latinoamérica y Dubái",
     title: "Inversiones inmobiliarias de excepción",
     body: "Una selección exclusiva de activos de alto valor, analizados y validados uno a uno por nuestro equipo de asesores. Donde el patrimonio encuentra su mejor oportunidad.",
     primary: "Ver oportunidades",
     secondary: "Hablar con un asesor",
+    titleLead: "Inversiones Inmobiliarias",
+    titleAccent: "de Excepción",
+    videoLabel: "Recorrido por Villa Los Monteros, Marbella",
+    scroll: "Descubrir",
+  },
+
+  home: {
+    manifesto: {
+      eyebrow: "Nuestra forma de trabajar",
+      text: "No publicamos catálogos interminables. Estudiamos cada activo uno a uno —ubicación, título, potencial y riesgo— y solo te presentamos los que superan nuestro criterio.",
+    },
+    intro: {
+      eyebrow: "Asesoría de inversión inmobiliaria",
+      titleLead: "Inversión inmobiliaria",
+      titleAccent: "con criterio",
+      titleTail: "en Marbella, Latinoamérica y Dubái",
+      body: [
+        "Seleccionamos villas, apartamentos de lujo, terrenos con licencia y activos industriales con potencial verificado. Cada oportunidad pasa por un análisis previo de ubicación, situación registral, precio y riesgo antes de publicarse.",
+        "Cada activo cuenta con su dossier privado y un asesor que te acompaña desde la primera consulta hasta el cierre, con la discreción que exige una operación de este nivel.",
+      ],
+      pillars: [
+        { title: "Selección curada", detail: "Pocas oportunidades, estudiadas una a una." },
+        { title: "Análisis registral y de riesgo", detail: "Antes de publicar, nunca después." },
+        { title: "Dossier privado", detail: "Cada activo, con su propia presentación." },
+      ],
+      cta: "Ver el catálogo",
+    },
+    featured: {
+      eyebrow: "Oportunidad destacada",
+      cta: "Ver dossier",
+      investment: "Inversión",
+    },
+    rail: {
+      eyebrow: "Selección actual",
+      title: "Oportunidades validadas",
+      viewAll: "Ver todo el catálogo",
+      prev: "Anterior",
+      next: "Siguiente",
+    },
+    ticker: {
+      label: "Ahora en cartera",
+    },
   },
 
   credibility: {
@@ -62,17 +104,17 @@ export const es = {
     items: [
       {
         name: "Europa",
-        location: "Costa del Sol · Madrid · Lisboa",
+        location: "Costa del Sol, Madrid y Lisboa",
         description: "Activos consolidados en los mercados más estables y demandados del continente.",
       },
       {
         name: "Latinoamérica",
-        location: "Tulum · Ciudad de México · Punta del Este",
+        location: "Tulum, Ciudad de México y Punta del Este",
         description: "Oportunidades de alto crecimiento en destinos emergentes de lujo.",
       },
       {
         name: "Dubái",
-        location: "Palm Jumeirah · Downtown · Marina",
+        location: "Palm Jumeirah, Downtown y Marina",
         description: "Rentabilidades excepcionales en uno de los mercados más dinámicos del mundo.",
       },
     ],
@@ -188,7 +230,7 @@ export const es = {
     body: "Conversamos sobre su perfil y le presentamos oportunidades reales, validadas por nuestro equipo. Con la máxima discreción y sin compromiso alguno.",
     primary: "Hablar con un asesor",
     secondary: "Ver oportunidades",
-    footnote: "Sin registro · Sin compromiso · Absoluta confidencialidad",
+    footnote: "Sin registro, sin compromiso y con absoluta confidencialidad.",
   },
 
   footer: {
@@ -210,7 +252,7 @@ export const es = {
     metaTitle: "Oportunidades de inversión inmobiliaria | Activos validados",
     metaDescription:
       "Explora oportunidades inmobiliarias seleccionadas y validadas una a una por nuestro equipo en Europa, Latinoamérica y Dubái.",
-    eyebrow: "Catálogo · Activos verificados",
+    eyebrow: "Activos verificados uno a uno",
     title: "Oportunidades de inversión, seleccionadas una a una",
     intro:
       "Cada activo ha sido revisado y aprobado por nuestro equipo antes de publicarse. Elige el que encaje con tu perfil y profundiza con un asesor dedicado.",
@@ -228,6 +270,67 @@ export const es = {
     investment: "Inversión",
     horizon: "Horizonte",
     viewOpportunity: "Ver oportunidad",
+    categoriesLabel: "Categorías",
+    all: "Todas",
+    other: "Otras oportunidades",
+    categories: {
+      prime: {
+        label: "Residencial",
+        title: "Residencial",
+        intro:
+          "Villas y apartamentos de muy alto valor en las mejores ubicaciones, listos para vivir o para alquiler de lujo.",
+        metaTitle: "Inmuebles residenciales de lujo en venta | Villas y apartamentos",
+        metaDescription:
+          "Villas y apartamentos de lujo seleccionados uno a uno en Marbella y otros mercados de alto valor, listos para vivir o invertir.",
+        aboutTitle: "Inversión en residencial de lujo",
+        about: [
+          "La categoría Residencial reúne villas, áticos y apartamentos de alto valor en ubicaciones consolidadas como la Milla de Oro, Sierra Blanca o Los Monteros en Marbella. Son activos para vivir, para segunda residencia o para alquiler de lujo, con una demanda internacional estable.",
+          "Antes de publicar cada inmueble revisamos su situación registral, el precio frente a operaciones comparables de la zona y el estado de la vivienda. Cada propiedad tiene su dossier privado con planos, calidades y fotografías, y un asesor que acompaña la operación hasta la firma.",
+        ],
+      },
+      value_add: {
+        label: "Oportunidades de valor",
+        title: "Oportunidades de valor",
+        intro:
+          "Inmuebles para reformar o reposicionar, comprados por debajo de mercado. El valor está en la operación, no en la foto.",
+        metaTitle: "Inmuebles para reformar | Oportunidades de inversión de valor",
+        metaDescription:
+          "Propiedades para reformar o reposicionar con margen de revalorización, analizadas por nuestro equipo antes de publicarse.",
+        aboutTitle: "Qué es una oportunidad de valor",
+        about: [
+          "Una oportunidad de valor es un inmueble que se compra por debajo de su precio de mercado porque necesita reforma, cambio de uso o reposicionamiento. La rentabilidad no depende de que el mercado suba, sino del trabajo que se hace sobre el activo.",
+          "En cada ficha indicamos el precio de compra y el plazo estimado. Junto al asesor se estudia el coste de la reforma, las licencias necesarias y el valor de salida, de forma que el inversor conozca los números antes de decidir.",
+        ],
+      },
+      development: {
+        label: "Proyectos y desarrollo",
+        title: "Proyectos y desarrollo",
+        intro:
+          "Suelos, licencias y proyectos autorizados: hoteles boutique, promociones y desarrollos con su plan y plazos definidos.",
+        metaTitle: "Proyectos inmobiliarios y suelos | Inversión en desarrollo",
+        metaDescription:
+          "Proyectos autorizados, suelos y promociones para inversores: hoteles boutique y desarrollos con plan y plazos definidos.",
+        aboutTitle: "Invertir en proyectos y suelo",
+        about: [
+          "Esta categoría incluye suelos, licencias y proyectos ya autorizados: hoteles boutique, promociones residenciales y desarrollos con su plan de obra definido. Es la estrategia con más potencial de revalorización y también la de plazo más largo.",
+          "Para cada proyecto verificamos la licencia o autorización, la situación del suelo y el calendario previsto. La memoria descriptiva y la documentación técnica se comparten con el inversor en su dossier privado.",
+        ],
+      },
+      commercial: {
+        label: "Comercial e industrial",
+        title: "Comercial e industrial",
+        intro:
+          "Naves, centros logísticos y locales: activos productivos pensados para generar renta o para uso propio de empresa.",
+        metaTitle: "Activos comerciales e industriales en venta | Naves y logística",
+        metaDescription:
+          "Naves industriales, centros logísticos y locales comerciales seleccionados para inversores y empresas.",
+        aboutTitle: "Activos comerciales e industriales",
+        about: [
+          "Naves industriales, centros logísticos, cámaras frigoríficas y locales comerciales: activos productivos que generan renta con contratos de empresa o que sirven para uso propio de una compañía.",
+          "En estos activos analizamos la superficie útil, las instalaciones, la zonificación y el uso permitido, además de la ubicación respecto a las vías de distribución. Cada ficha incluye los datos técnicos principales y un asesor para resolver dudas sobre la operación.",
+        ],
+      },
+    },
   },
 
   property: {
@@ -329,7 +432,7 @@ export const es = {
 
   brigitte: {
     name: "Brigitte",
-    role: "Asistente virtual · B&G Consulting",
+    role: "Asistente virtual de B&G Consulting",
     launcher: "Hablar con Brigitte",
     open: "Abrir chat con Brigitte",
     close: "Cerrar chat",

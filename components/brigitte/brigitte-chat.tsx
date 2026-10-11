@@ -151,7 +151,7 @@ export function BrigitteChat({ autoFocus = false }: { autoFocus?: boolean }) {
               <button
                 type="submit"
                 disabled={handoff === "submitting"}
-                className="w-full rounded-lg bg-noir px-4 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-noir-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
+                className="w-full rounded-lg bg-noir px-4 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-opacity hover:opacity-90 disabled:opacity-50"
               >
                 {handoff === "submitting" ? t.handoffSending : t.handoffSubmit}
               </button>

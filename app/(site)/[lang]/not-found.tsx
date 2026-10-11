@@ -16,7 +16,7 @@ export default function NotFound() {
         <p className="mx-auto mt-6 max-w-md text-base font-light text-noir-foreground/60">{dict.notFound.body}</p>
         <Link
           href={localizedPath(locale, "home")}
-          className="mt-10 inline-block border border-gold px-9 py-3.5 text-xs font-light uppercase tracking-[0.2em] text-gold transition-colors hover:bg-gold hover:text-noir"
+          className="mt-10 inline-block border border-gold px-9 py-3.5 text-sm font-light tracking-[0.01em] text-gold transition-colors hover:bg-gold hover:text-noir"
         >
           {dict.notFound.home}
         </Link>

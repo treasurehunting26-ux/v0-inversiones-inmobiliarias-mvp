@@ -6,11 +6,13 @@ import { useEffect, useState } from "react"
 import { useI18n } from "@/lib/i18n/client"
 import { homeAnchor, localizedPath } from "@/lib/i18n/config"
 import { LanguageSwitcher } from "@/components/i18n/language-switcher"
+import { CATEGORIES, categoryPathRest } from "@/lib/categories"
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false)
   const { locale, dict } = useI18n()
   const t = dict.nav
+  const cats = dict.opportunities.categories
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24)
@@ -22,7 +24,7 @@ export function NavBar() {
   return (
     <header
       className={`fixed top-0 z-50 w-full transition-colors duration-500 ${
-        scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-transparent"
+        scrolled ? "border-b border-noir-foreground/10 bg-noir/90 backdrop-blur-md" : "bg-gradient-to-b from-noir/70 to-transparent"
       }`}
     >
       <div className="mx-auto flex h-24 max-w-7xl items-center justify-between px-6 lg:h-28 lg:px-10">
@@ -43,22 +45,48 @@ export function NavBar() {
             { label: t.opportunities, href: localizedPath(locale, "opportunities") },
             { label: t.guides, href: localizedPath(locale, "guides") },
             { label: t.about, href: homeAnchor(locale, "nosotros") },
-          ].map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className="text-xs font-light uppercase tracking-[0.18em] text-noir-foreground/80 transition-colors hover:text-gold"
-            >
-              {item.label}
-            </Link>
-          ))}
+          ].map((item) =>
+            item.href === localizedPath(locale, "opportunities") ? (
+              // Oportunidades: desplegable con las categorías (al pasar el ratón o con teclado)
+              <div key={item.href} className="group relative">
+                <Link
+                  href={item.href}
+                  className="text-sm font-light tracking-[0.01em] text-noir-foreground/80 transition-colors hover:text-gold group-focus-within:text-gold"
+                >
+                  {item.label}
+                </Link>
+                <div className="invisible absolute left-1/2 top-full -translate-x-1/2 pt-5 opacity-0 transition-opacity duration-200 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="min-w-60 border border-noir-foreground/10 bg-noir/95 py-3 shadow-[0_24px_48px_-24px_rgba(0,0,0,0.6)] backdrop-blur-md">
+                    {CATEGORIES.map((c) => (
+                      <li key={c}>
+                        <Link
+                          href={localizedPath(locale, "opportunities", ...categoryPathRest(locale, c))}
+                          className="block whitespace-nowrap px-6 py-2.5 text-sm font-light text-noir-foreground/80 transition-colors hover:bg-noir-foreground/5 hover:text-gold"
+                        >
+                          {cats[c].label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="text-sm font-light tracking-[0.01em] text-noir-foreground/80 transition-colors hover:text-gold"
+              >
+                {item.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-5 sm:gap-7">
           <LanguageSwitcher />
           <Link
             href={localizedPath(locale, "assistant")}
-            className="hidden border border-gold/60 px-6 py-2.5 text-xs font-light uppercase tracking-[0.18em] text-gold transition-colors hover:bg-gold hover:text-noir sm:inline-block"
+            className="hidden border border-gold-soft/80 px-6 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
           >
             {t.talkToAdvisor}
           </Link>

@@ -76,17 +76,17 @@ export default async function GuidePage({ params }: Props) {
         <div className="mx-auto max-w-3xl">
           <Link
             href={localizedPath(locale, "guides")}
-            className="mb-8 inline-flex items-center gap-2 text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
+            className="mb-8 inline-flex items-center gap-2 text-sm tracking-[0.01em] text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
           >
             {t.backToAll}
           </Link>
           <div className="mb-5 flex items-center gap-3">
-            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">{t.categories[guide.category]}</span>
+            <span className="text-sm tracking-[0.01em] text-[var(--color-gold)]">{t.categories[guide.category]}</span>
             <span className="text-xs text-[var(--color-noir-foreground)]/40">·</span>
-            <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/60">{t.regions[guide.region]}</span>
+            <span className="text-sm tracking-[0.01em] text-[var(--color-noir-foreground)]/60">{t.regions[guide.region]}</span>
           </div>
           <h1 className="font-serif text-4xl font-light leading-[1.1] text-balance md:text-5xl">{guide.title}</h1>
-          <p className="mt-6 flex items-center gap-4 text-xs uppercase tracking-[0.2em] text-[var(--color-noir-foreground)]/50">
+          <p className="mt-6 flex items-center gap-4 text-sm tracking-[0.01em] text-[var(--color-noir-foreground)]/50">
             <span>{format(t.readingTime, { time: guide.readingTime })}</span>
             <span>·</span>
             <span>{format(t.updated, { date: guide.updated })}</span>
@@ -167,7 +167,7 @@ export default async function GuidePage({ params }: Props) {
           </p>
           <Link
             href={localizedPath(locale, "assistant")}
-            className="mt-8 inline-flex items-center justify-center gap-2 border border-[var(--color-gold)] bg-[var(--color-gold)] px-9 py-4 text-xs uppercase tracking-[0.2em] text-[var(--color-noir)] transition-colors hover:bg-transparent hover:text-[var(--color-gold)]"
+            className="mt-8 inline-flex items-center justify-center gap-2 border border-[var(--color-gold)] bg-[var(--color-gold)] px-9 py-4 text-sm tracking-[0.01em] text-[var(--color-noir)] transition-colors hover:bg-transparent hover:text-[var(--color-gold)]"
           >
             {t.ctaButton}
           </Link>

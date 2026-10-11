@@ -20,6 +20,8 @@ export type Property = {
   video_url?: string | null
   dossier_slug?: string | null
   dossier_html_url?: string | null
+  /** prime | value_add | development | commercial; null = sin clasificar */
+  category?: string | null
 }
 
 export type PropertyListResponse = {
@@ -57,4 +59,20 @@ export async function getDossier(slug: string): Promise<Property | null> {
 export function dossierHtmlFor(property: Pick<Property, "description_html" | "description_html_en">, locale: string): string | null {
   if (locale.startsWith("en") && property.description_html_en) return property.description_html_en
   return property.description_html ?? null
+}
+
+/**
+ * Propiedades publicadas para la portada (servidor). Se cachea 5 minutos:
+ * al publicar una propiedad aparece en la portada sin desplegar nada.
+ * Si la API falla, la portada se muestra igual sin las secciones dinámicas.
+ */
+export async function getPublishedProperties(): Promise<Property[]> {
+  try {
+    const res = await fetch(`${API_URL}/properties`, { next: { revalidate: 300 } })
+    if (!res.ok) return []
+    const data = (await res.json()) as PropertyListResponse
+    return data.properties ?? []
+  } catch {
+    return []
+  }
 }

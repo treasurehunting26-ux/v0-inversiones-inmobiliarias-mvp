@@ -57,12 +57,12 @@ export function PropertyCard({ property }: { property: Property }) {
         )}
         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
         <div className="absolute left-5 top-5 flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--color-noir-foreground)] backdrop-blur">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-sm font-medium tracking-[0.01em] text-[var(--color-noir-foreground)] backdrop-blur">
             {property.asset_type}
           </span>
         </div>
         <div className="absolute bottom-5 right-5">
-          <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
+          <span className="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.01em] text-[var(--color-gold)]">
             <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
             {t.validated}
           </span>
@@ -75,23 +75,23 @@ export function PropertyCard({ property }: { property: Property }) {
           <h3 className="font-serif text-2xl font-light leading-snug text-foreground text-balance">
             {property.title}
           </h3>
-          <p className="text-sm uppercase tracking-wider text-muted-foreground">{property.location}</p>
+          <p className="text-sm tracking-[0.01em] text-muted-foreground">{property.location}</p>
         </div>
 
         <div className={`mt-auto grid gap-4 border-t border-border pt-5 ${property.horizon ? "grid-cols-2" : "grid-cols-1"}`}>
           <div className="flex flex-col gap-1">
-            <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.investment}</span>
+            <span className="text-[0.82rem] tracking-[0.01em] text-muted-foreground">{t.investment}</span>
             <span className="text-sm font-semibold text-foreground">{property.investment_range}</span>
           </div>
           {property.horizon && (
             <div className="flex flex-col gap-1">
-              <span className="text-[0.7rem] uppercase tracking-wide text-muted-foreground">{t.horizon}</span>
+              <span className="text-[0.82rem] tracking-[0.01em] text-muted-foreground">{t.horizon}</span>
               <span className="text-sm font-semibold text-foreground">{property.horizon}</span>
             </div>
           )}
         </div>
 
-        <span className="inline-flex items-center gap-1.5 text-sm font-medium uppercase tracking-wider text-foreground">
+        <span className="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.01em] text-foreground">
           {t.viewOpportunity}
           <svg
             width="14"

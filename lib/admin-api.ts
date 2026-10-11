@@ -3,6 +3,8 @@
  * Todas las llamadas requieren X-Admin-Token.
  */
 
+import type { Category } from "@/lib/categories"
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || ""
 
 export type AdminProperty = {
@@ -28,6 +30,8 @@ export type AdminProperty = {
   /** Version en ingles del dossier (se muestra cuando la web esta en ingles). */
   has_dossier_en: boolean
   dossier_en_kb: number
+  /** prime | value_add | development | commercial; null = sin clasificar */
+  category: Category | null
 }
 
 /** Propiedad con el HTML del dossier (GET /admin/properties/{id}). */
@@ -261,7 +265,11 @@ export function getProperty(token: string, id: string): Promise<AdminPropertyDet
   return adminRequest(token, `/admin/properties/${id}`)
 }
 
-export function updateFields(token: string, id: string, fields: Partial<PropertyFields>): Promise<AdminProperty> {
+export function updateFields(
+  token: string,
+  id: string,
+  fields: Partial<PropertyFields> & { category?: Category | "" },
+): Promise<AdminProperty> {
   return adminRequest(token, `/admin/properties/${id}`, { method: "PATCH", body: JSON.stringify(fields) })
 }
 

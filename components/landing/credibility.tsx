@@ -4,7 +4,7 @@ export function Credibility({ t }: { t: Dictionary["credibility"] }) {
   return (
     <section className="border-y border-border bg-secondary py-16">
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
-        <p className="mb-12 text-center text-[0.7rem] font-light uppercase tracking-[0.3em] text-muted-foreground">
+        <p className="mb-12 text-center text-[0.82rem] font-light tracking-[0.01em] text-muted-foreground">
           {t.eyebrow}
         </p>
         <div className="grid grid-cols-1 gap-10 md:grid-cols-3 md:gap-14">

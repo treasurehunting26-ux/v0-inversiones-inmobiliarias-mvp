@@ -79,7 +79,7 @@ export function BrigitteWidget() {
             <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-noir bg-gold" aria-hidden="true" />
           </span>
           <span className="hidden flex-col items-start text-left sm:flex">
-            <span className="text-[10px] font-light uppercase tracking-[0.18em] text-noir-foreground/55">{t.name}</span>
+            <span className="text-[0.82rem] font-light tracking-[0.01em] text-noir-foreground/55">{t.name}</span>
             <span className="text-sm font-light text-noir-foreground transition-colors group-hover:text-gold">
               {t.launcher}
             </span>

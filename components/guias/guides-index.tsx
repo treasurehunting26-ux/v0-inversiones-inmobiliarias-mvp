@@ -56,7 +56,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                 key={c}
                 type="button"
                 onClick={() => setCategory(c)}
-                className={`rounded-full border px-4 py-2 text-xs uppercase tracking-[0.15em] transition-colors ${
+                className={`rounded-full border px-4 py-2 text-sm tracking-[0.01em] transition-colors ${
                   category === c
                     ? "border-[var(--color-gold)] bg-[var(--color-gold)] text-[var(--color-noir)]"
                     : "border-border text-muted-foreground hover:border-[var(--color-gold)] hover:text-foreground"
@@ -74,7 +74,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                   key={r}
                   type="button"
                   onClick={() => setRegion(r)}
-                  className={`rounded-full border px-3 py-1.5 text-xs uppercase tracking-[0.12em] transition-colors ${
+                  className={`rounded-full border px-3 py-1.5 text-sm tracking-[0.01em] transition-colors ${
                     region === r
                       ? "border-foreground bg-foreground text-background"
                       : "border-border text-muted-foreground hover:border-foreground hover:text-foreground"
@@ -103,7 +103,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
       {showFeatured && featured && (
         <section className="px-6 py-16">
           <div className="mx-auto max-w-5xl">
-            <p className="mb-6 text-xs uppercase tracking-[0.3em] text-[var(--color-gold)]">{t.featured}</p>
+            <p className="mb-6 text-sm tracking-[0.01em] text-[var(--color-gold)]">{t.featured}</p>
             <Link
               href={localizedPath(locale, "guides", featured.slug)}
               className="group grid overflow-hidden rounded-sm border border-border bg-card md:grid-cols-2"
@@ -120,11 +120,11 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
               </div>
               <div className="flex flex-col justify-center p-8 md:p-10">
                 <div className="mb-5 flex items-center gap-3">
-                  <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">
+                  <span className="text-sm tracking-[0.01em] text-[var(--color-gold)]">
                     {categoryLabel(featured.category)}
                   </span>
                   <span className="text-xs text-muted-foreground">·</span>
-                  <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="text-sm tracking-[0.01em] text-muted-foreground">
                     {regionLabel(featured.region)}
                   </span>
                 </div>
@@ -133,7 +133,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                 </h2>
                 <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{featured.excerpt}</p>
                 <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
-                  <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="text-sm tracking-[0.01em] text-muted-foreground">
                     {format(t.readingTime, { time: featured.readingTime })}
                   </span>
                   <span className="text-sm text-[var(--color-gold)] transition-transform group-hover:translate-x-1">
@@ -173,11 +173,11 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                   <div className="flex flex-1 flex-col justify-between p-8">
                     <div>
                       <div className="mb-5 flex items-center gap-3">
-                        <span className="text-xs uppercase tracking-[0.2em] text-[var(--color-gold)]">
+                        <span className="text-sm tracking-[0.01em] text-[var(--color-gold)]">
                           {categoryLabel(guide.category)}
                         </span>
                         <span className="text-xs text-muted-foreground">·</span>
-                        <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                        <span className="text-sm tracking-[0.01em] text-muted-foreground">
                           {regionLabel(guide.region)}
                         </span>
                       </div>
@@ -187,7 +187,7 @@ export function GuidesIndex({ guides }: { guides: Guide[] }) {
                       <p className="mt-4 text-sm leading-relaxed text-muted-foreground">{guide.excerpt}</p>
                     </div>
                     <div className="mt-8 flex items-center justify-between border-t border-border pt-5">
-                      <span className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
+                      <span className="text-sm tracking-[0.01em] text-muted-foreground">
                         {format(t.readingTime, { time: guide.readingTime })}
                       </span>
                       <span className="text-sm text-[var(--color-gold)] transition-transform group-hover:translate-x-1">

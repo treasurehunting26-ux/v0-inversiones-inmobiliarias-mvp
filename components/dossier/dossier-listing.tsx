@@ -35,7 +35,7 @@ export function DossierListing({ id, title, html }: { id: string; title: string;
       <header className="flex h-14 shrink-0 items-center justify-between gap-3 border-b border-noir-foreground/10 bg-noir px-4 sm:px-6">
         <Link
           href={localizedPath(locale, "opportunities")}
-          className="flex min-w-0 items-center gap-2 text-xs font-light uppercase tracking-[0.16em] text-noir-foreground/70 transition-colors hover:text-gold"
+          className="flex min-w-0 items-center gap-2 text-sm font-light tracking-[0.01em] text-noir-foreground/70 transition-colors hover:text-gold"
         >
           <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
             <path d="M13 8H3M3 8L7 4M3 8L7 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
@@ -52,7 +52,7 @@ export function DossierListing({ id, title, html }: { id: string; title: string;
           <button
             type="button"
             onClick={() => brigitte.open({ property: { id, title } })}
-            className="border border-gold/70 px-3 py-1.5 text-[10px] font-light uppercase tracking-[0.16em] text-gold transition-colors hover:bg-gold hover:text-noir sm:px-4 sm:text-xs"
+            className="border border-gold/70 px-3 py-1.5 text-[0.82rem] font-light tracking-[0.01em] text-gold transition-colors hover:bg-gold hover:text-noir sm:px-4 sm:text-sm"
           >
             {t.ctaButton}
           </button>

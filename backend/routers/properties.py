@@ -8,7 +8,7 @@ PROHIBIDO: POST, PATCH, DELETE.
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Optional
 
 from schemas.property import PropertyRead, PropertyDetailRead, PropertyListResponse
 from database import get_db
@@ -21,7 +21,10 @@ router = APIRouter(
 
 
 @router.get("", response_model=PropertyListResponse)
-def get_properties(db: Session = Depends(get_db)) -> PropertyListResponse:
+def get_properties(
+    category: Optional[str] = None,
+    db: Session = Depends(get_db),
+) -> PropertyListResponse:
     """
     GET /properties
     
@@ -31,9 +34,10 @@ def get_properties(db: Session = Depends(get_db)) -> PropertyListResponse:
     El asistente y frontend solo pueden leer propiedades publicadas.
     Nunca se exponen propiedades en draft o archived.
     """
-    properties = db.query(Property).filter(
-        Property.status == "published"
-    ).all()
+    query = db.query(Property).filter(Property.status == "published")
+    if category:
+        query = query.filter(Property.category == category)
+    properties = query.all()
     
     return PropertyListResponse(
         properties=[PropertyRead.model_validate(p) for p in properties],

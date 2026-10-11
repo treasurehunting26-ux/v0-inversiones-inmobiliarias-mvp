@@ -12,7 +12,8 @@ import { useBrigitte } from "@/components/brigitte/brigitte-provider"
 import { DossierListing } from "@/components/dossier/dossier-listing"
 import { isFullHtmlDocument } from "@/lib/dossier-import"
 
-export function PropertyDetail() {
+/** `initialData`: ficha ya cargada en el servidor (la página llega pintada, sin esqueleto). */
+export function PropertyDetail({ initialData }: { initialData?: Property | null } = {}) {
   const { locale, dict } = useI18n()
   const t = dict.property
   const brigitte = useBrigitte()
@@ -21,6 +22,7 @@ export function PropertyDetail() {
   const { data, error, isLoading } = useSWR<Property>(
     id ? `/properties/${id}` : null,
     propertyFetcher,
+    initialData ? { fallbackData: initialData } : undefined,
   )
 
   // Si el visitante abre el chat en esta ficha, Brigitte sabe de que activo habla.
@@ -31,7 +33,7 @@ export function PropertyDetail() {
     return () => setPageProperty(null)
   }, [data, setPageProperty])
 
-  if (isLoading) {
+  if (isLoading && !data) {
     return (
       <div className="mx-auto max-w-4xl px-6 pt-40 pb-28">
         <div className="h-8 w-40 animate-pulse rounded bg-card" />
@@ -51,13 +53,13 @@ export function PropertyDetail() {
         <div className="mt-2 flex flex-wrap items-center justify-center gap-3">
           <Link
             href={localizedPath(locale, "opportunities")}
-            className="inline-flex items-center rounded-none border border-border px-7 py-3 text-xs font-medium uppercase tracking-widest text-foreground transition-colors hover:bg-card"
+            className="inline-flex items-center rounded-none border border-border px-7 py-3 text-sm font-medium tracking-[0.01em] text-foreground transition-colors hover:bg-card"
           >
             {t.viewOpportunities}
           </Link>
           <Link
             href={localizedPath(locale, "assistant")}
-            className="inline-flex items-center rounded-none bg-[var(--color-noir)] px-7 py-3 text-xs font-medium uppercase tracking-widest text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90"
+            className="inline-flex items-center rounded-none bg-[var(--color-noir)] px-7 py-3 text-sm font-medium tracking-[0.01em] text-[var(--color-noir-foreground)] transition-opacity hover:opacity-90"
           >
             {t.talkToAdvisor}
           </Link>
@@ -92,7 +94,7 @@ export function PropertyDetail() {
         <div className="relative mx-auto max-w-4xl">
           <Link
             href={localizedPath(locale, "opportunities")}
-            className="inline-flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
+            className="inline-flex items-center gap-2 text-sm font-medium tracking-[0.01em] text-[var(--color-noir-foreground)]/60 transition-colors hover:text-[var(--color-gold)]"
           >
             <svg width="14" height="14" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path
@@ -107,10 +109,10 @@ export function PropertyDetail() {
           </Link>
 
           <div className="mt-8 flex flex-wrap items-center gap-3">
-            <span className="inline-flex items-center rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[var(--color-noir-foreground)] backdrop-blur">
+            <span className="inline-flex items-center rounded-full bg-[var(--color-noir-foreground)]/10 px-3 py-1 text-sm font-medium tracking-[0.01em] text-[var(--color-noir-foreground)] backdrop-blur">
               {data.asset_type}
             </span>
-            <span className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-wider text-[var(--color-gold)]">
+            <span className="inline-flex items-center gap-1.5 text-sm font-medium tracking-[0.01em] text-[var(--color-gold)]">
               <span className="h-1.5 w-1.5 rounded-full bg-[var(--color-gold)]" />
               {t.validatedByTeam}
             </span>
@@ -118,7 +120,7 @@ export function PropertyDetail() {
           <h1 className="mt-5 max-w-3xl font-serif text-4xl font-light leading-[1.08] text-balance text-[var(--color-noir-foreground)] md:text-5xl">
             {data.title}
           </h1>
-          <p className="mt-3 text-lg uppercase tracking-wider text-[var(--color-noir-foreground)]/60">{data.location}</p>
+          <p className="mt-3 text-lg tracking-[0.01em] text-[var(--color-noir-foreground)]/60">{data.location}</p>
         </div>
       </header>
 
@@ -127,7 +129,7 @@ export function PropertyDetail() {
         <div className="mt-12 grid gap-px border border-border bg-border sm:grid-cols-2 lg:grid-cols-3">
           {facts.map((fact) => (
             <div key={fact.label} className="flex flex-col gap-1.5 bg-background p-6">
-              <span className="text-xs uppercase tracking-widest text-muted-foreground">{fact.label}</span>
+              <span className="text-sm tracking-[0.01em] text-muted-foreground">{fact.label}</span>
               <span className="font-serif text-lg font-light text-foreground">{fact.value}</span>
             </div>
           ))}
@@ -156,7 +158,7 @@ export function PropertyDetail() {
           <button
             type="button"
             onClick={() => brigitte.open({ property: { id: data.id, title: data.title } })}
-            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-none border border-[var(--color-gold)] bg-[var(--color-gold)] px-8 py-4 text-xs font-medium uppercase tracking-widest text-[var(--color-noir)] transition-all hover:bg-transparent hover:text-[var(--color-gold)]"
+            className="inline-flex shrink-0 items-center justify-center gap-2 rounded-none border border-[var(--color-gold)] bg-[var(--color-gold)] px-8 py-4 text-sm font-medium tracking-[0.01em] text-[var(--color-noir)] transition-all hover:bg-transparent hover:text-[var(--color-gold)]"
           >
             {t.ctaButton}
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
