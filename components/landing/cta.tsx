@@ -1,6 +1,7 @@
 import Link from "next/link"
 import type { Dictionary, Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 export function CTA({ locale, t }: { locale: Locale; t: Dictionary["cta"] }) {
   return (
@@ -14,12 +15,11 @@ export function CTA({ locale, t }: { locale: Locale; t: Dictionary["cta"] }) {
           {t.body}
         </p>
         <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row">
-          <Link
-            href={localizedPath(locale, "assistant")}
+          <AdvisorLink
             className="border border-gold bg-gold px-9 py-3.5 text-sm font-light tracking-[0.01em] text-noir transition-colors hover:bg-transparent hover:text-gold"
           >
             {t.primary}
-          </Link>
+          </AdvisorLink>
           <Link
             href={localizedPath(locale, "opportunities")}
             className="border border-noir-foreground/30 px-9 py-3.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:border-noir-foreground"

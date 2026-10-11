@@ -75,10 +75,10 @@ async def fake_model(system_prompt, history, user_message, conversation_id=None)
 ai_assistant.call_ai_model = fake_model
 
 
-def out(reply, handoff=False, intent="low", **profile):
+def out(reply, handoff=False, intent="low", properties=None, **profile):
     base = {k: None for k in ai_assistant.PROFILE_FIELDS}
     base.update(profile)
-    return json.dumps({"reply": reply, "profile": base, "intent": intent, "handoff": handoff})
+    return json.dumps({"reply": reply, "profile": base, "intent": intent, "handoff": handoff, "properties": properties or []})
 
 
 def db():
@@ -145,6 +145,12 @@ def main_test() -> None:
     queue.append(out("Vale."))
     client.post("/ai/assistant", json={"message": "¿Y esta?", "conversation_id": conv_id, "property_id": "p2"})
     assert "VISITOR CONTEXT" not in calls[-1]["system"]
+
+    # 3b. Recomendaciones: solo ids publicados, sin duplicados, máximo 3
+    queue.append(out("Le encaja Villa Los Monteros.", properties=["p1", "p2", "inventada", "p1"]))
+    r = client.post("/ai/assistant", json={"message": "¿Qué me recomiendas?", "conversation_id": conv_id})
+    assert r.json()["properties"] == ["p1"], r.json()
+    assert "id: p1 |" in calls[-1]["system"]
 
     # 4. Salida no JSON -> se usa el texto, sin romper
     queue.append("Claro, te cuento lo que sé.")

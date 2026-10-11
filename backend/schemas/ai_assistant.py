@@ -70,6 +70,10 @@ class AssistantResponse(BaseModel):
         default=False,
         description="True cuando el visitante ha aceptado hablar con una persona: el chat muestra el formulario de contacto.",
     )
+    properties: list[str] = Field(
+        default_factory=list,
+        description="IDs de propiedades publicadas que Brigitte recomienda en esta respuesta (el chat muestra sus fichas).",
+    )
 
 
 class HandoffRequest(BaseModel):
