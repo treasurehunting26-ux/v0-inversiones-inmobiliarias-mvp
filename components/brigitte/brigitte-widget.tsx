@@ -3,7 +3,8 @@
 import { useEffect } from "react"
 import { useI18n } from "@/lib/i18n/client"
 import { useBrigitte } from "./brigitte-provider"
-import { BrigitteAvatar, BrigitteChat } from "./brigitte-chat"
+import { BrigitteAvatar } from "./brigitte-chat"
+import { PrivateEnquiry } from "./private-enquiry"
 
 /** Cabecera: identidad de asesora, con el aviso de IA siempre visible. */
 export function BrigitteHeader({ onClose }: { onClose?: () => void }) {
@@ -38,8 +39,36 @@ export function BrigitteHeader({ onClose }: { onClose?: () => void }) {
   )
 }
 
+/** Cabecera de la asesoría privada: la firma, sin asistente. */
+function EnquiryHeader({ onClose }: { onClose: () => void }) {
+  const { dict } = useI18n()
+  const t = dict.enquiry
+
+  return (
+    <div className="bg-noir px-6 pb-6 pt-7 sm:px-8">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm text-gold-soft">B&amp;G Consulting</p>
+          <p className="mt-1 font-serif text-3xl leading-tight text-noir-foreground">{t.title}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={t.close}
+          className="-mr-2 flex h-10 w-10 shrink-0 items-center justify-center text-noir-foreground/60 transition-colors hover:text-gold"
+        >
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      <p className="mt-4 max-w-sm text-sm leading-relaxed text-noir-foreground/70">{t.intro}</p>
+    </div>
+  )
+}
+
 /**
- * Panel lateral de Brigitte. No hay burbuja flotante: se abre desde los
+ * Panel lateral "Hablar con un asesor": solicitud privada. No hay burbuja flotante: se abre desde los
  * botones "Hablar con un asesor" de la web (y desde las fichas).
  */
 export function BrigitteWidget() {
@@ -75,12 +104,12 @@ export function BrigitteWidget() {
       <div
         role="dialog"
         aria-modal="true"
-        aria-label={t.name}
+        aria-label={dict.enquiry.title}
         className="bg-slide-in absolute inset-y-0 right-0 flex w-full flex-col overflow-hidden bg-background shadow-[-30px_0_80px_-30px_rgba(0,0,0,0.45)] sm:w-[460px]"
       >
-        <BrigitteHeader onClose={close} />
+        <EnquiryHeader onClose={close} />
         <div className="min-h-0 flex-1">
-          <BrigitteChat autoFocus />
+          <PrivateEnquiry />
         </div>
       </div>
     </div>

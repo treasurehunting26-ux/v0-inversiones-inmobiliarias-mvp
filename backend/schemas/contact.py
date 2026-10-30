@@ -8,7 +8,7 @@ Formulario breve: nombre, email, contexto.
 
 import re
 
-from typing import Optional
+from typing import Literal, Optional
 
 from pydantic import BaseModel, Field, field_validator
 
@@ -50,6 +50,12 @@ class ContactCreate(BaseModel):
         max_length=10,
         description="Idioma de la web desde la que escribe (es, en...)",
     )
+    # Solicitud privada (panel "Hablar con un asesor"): perfil elegido por el
+    # visitante. Opcionales: el formulario de contacto clasico no los envia.
+    source: Optional[Literal["contact_form", "private_enquiry"]] = Field(default=None)
+    investment_goal: Optional[str] = Field(default=None, max_length=120)
+    preferred_property_market: Optional[str] = Field(default=None, max_length=120)
+    budget_range: Optional[str] = Field(default=None, max_length=120)
 
 
 class ContactCreated(BaseModel):

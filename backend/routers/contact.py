@@ -64,7 +64,11 @@ def create_contact(
         name=data.name,
         email=data.email,
         qualification_status=QualificationStatus.UNQUALIFIED.value,
-        source="contact_form",
+        source=data.source or "contact_form",
+        investment_goal=data.investment_goal,
+        preferred_property_market=data.preferred_property_market,
+        budget_range=data.budget_range,
+        language=data.locale,
         created_at=now,
     )
 
@@ -72,8 +76,8 @@ def create_contact(
         id=str(uuid.uuid4()),
         investor_id=investor.id,
         reason=(
-            f"Contacto directo desde formulario web"
-            f"{f' (idioma: {data.locale})' if data.locale else ''}. Mensaje: {data.context}"
+            ("Solicitud privada desde la web" if data.source == "private_enquiry" else "Contacto directo desde formulario web")
+            + f"{f' (idioma: {data.locale})' if data.locale else ''}. Mensaje: {data.context}"
         ),
         created_at=now,
         status=EscalationStatus.OPEN.value,
@@ -88,7 +92,12 @@ def create_contact(
     # Aviso por correo (best-effort, no bloquea ni falla la respuesta).
     # Este mismo endpoint recibe tanto el formulario de contacto como los
     # escalados iniciados desde el asistente de IA (ver AssistantChat.tsx).
-    source = "Asistente de IA" if data.context.startswith("Escalado desde el asistente") else "Formulario de contacto"
+    if data.source == "private_enquiry":
+        source = "Solicitud privada (Hablar con un asesor)"
+    elif data.context.startswith("Escalado desde el asistente"):
+        source = "Asistente de IA"
+    else:
+        source = "Formulario de contacto"
     send_lead_notification(
         name=data.name,
         email=data.email,

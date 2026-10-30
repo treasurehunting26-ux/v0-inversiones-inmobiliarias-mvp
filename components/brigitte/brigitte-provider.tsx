@@ -28,6 +28,8 @@ type BrigitteContextValue = {
   /** true si el visitante pidio una persona con el boton (el formulario se presenta con su propio texto) */
   handoffViaButton: boolean
   isOpen: boolean
+  /** Propiedad desde la que se abrió el panel (para la solicitud privada) */
+  openedFor: PropertyRef | null
   /** true en /asistente: el chat va incrustado en la pagina y se oculta el flotante */
   embedded: boolean
   open: (opts?: { property?: PropertyRef }) => void
@@ -92,6 +94,7 @@ export function BrigitteProvider({ children }: { children: ReactNode }) {
   const [handoffError, setHandoffError] = useState<string | null>(null)
   const [handoffViaButton, setHandoffViaButton] = useState(false)
   const [isOpen, setIsOpen] = useState(false)
+  const [openedFor, setOpenedFor] = useState<PropertyRef | null>(null)
   const [embedded, setEmbedded] = useState(false)
   const [propertyId, setPropertyId] = useState<string | null>(null)
   const [greetedProperties, setGreetedProperties] = useState<string[]>([])
@@ -133,6 +136,7 @@ export function BrigitteProvider({ children }: { children: ReactNode }) {
   const open = useCallback(
     (opts?: { property?: PropertyRef }) => {
       const property = opts?.property ?? pageProperty.current
+      setOpenedFor(property ?? null)
       if (property) focusProperty(property)
       if (!embedded) setIsOpen(true)
     },
@@ -226,6 +230,7 @@ export function BrigitteProvider({ children }: { children: ReactNode }) {
     handoffError,
     handoffViaButton,
     isOpen,
+    openedFor,
     embedded,
     open,
     focus: focusProperty,
