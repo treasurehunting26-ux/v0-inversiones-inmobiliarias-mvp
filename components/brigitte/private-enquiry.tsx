@@ -201,7 +201,17 @@ export function PrivateEnquiry() {
                     onChange={(e) => setConsent(e.target.checked)}
                     className="mt-0.5 h-4 w-4 accent-[var(--color-copper-ink)]"
                   />
-                  {t.consent}
+                  <span>
+                    {t.consent}{" "}
+                    <a
+                      href={localizedPath(locale, "privacy")}
+                      target="_blank"
+                      rel="noopener"
+                      className="text-copper-ink underline underline-offset-2"
+                    >
+                      {t.privacyLink}
+                    </a>
+                  </span>
                 </label>
                 {error && <p className="text-sm text-destructive">{error}</p>}
                 <button

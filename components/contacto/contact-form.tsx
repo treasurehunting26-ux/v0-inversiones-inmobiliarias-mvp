@@ -124,7 +124,10 @@ export function ContactForm() {
       </button>
 
       <p className="text-xs font-light leading-relaxed text-muted-foreground/70">
-        {t.consent}
+        {t.consent}{" "}
+        <Link href={localizedPath(locale, "privacy")} className="underline underline-offset-2 hover:text-foreground">
+          {dict.footer.privacy}
+        </Link>
       </p>
     </form>
   )

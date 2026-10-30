@@ -56,10 +56,13 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-noir-foreground/10 pt-8">
-          <p className="text-xs font-light leading-relaxed text-noir-foreground/40">
+        <div className="mt-12 flex flex-col gap-4 border-t border-noir-foreground/10 pt-8 md:flex-row md:items-start md:justify-between">
+          <p className="max-w-3xl text-xs font-light leading-relaxed text-noir-foreground/40">
             © {new Date().getFullYear()} B&amp;G Consulting. {t.legal}
           </p>
+          <Link href={localizedPath(locale, "privacy")} className="shrink-0 text-xs text-noir-foreground/60 transition-colors hover:text-noir-foreground">
+            {t.privacy}
+          </Link>
         </div>
       </div>
     </footer>
