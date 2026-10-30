@@ -101,6 +101,29 @@ def main_test() -> None:
     assert s.query(Investor).count() == 2 and s.query(LeadEscalation).count() == 2, "un bloqueo no debe escribir"
     s.close()
 
+    # 4b. Solicitud privada: guarda el perfil elegido en el inversor
+    import contact_limit
+    if hasattr(contact_limit, "_hits"):
+        contact_limit._hits.clear()
+    s = TestSessionLocal()
+    before = s.query(Investor).count()
+    s.close()
+    r = client.post("/contact", json={
+        "name": "Ana", "email": "ana@example.com", "context": "Objetivo: renta", "locale": "es",
+        "source": "private_enquiry", "investment_goal": "Inversión para rentas",
+        "preferred_property_market": "Marbella y Costa del Sol", "budget_range": "1–2 M€",
+    }, headers={"X-Forwarded-For": "10.9.9.9"})
+    if r.status_code == 201:
+        s = TestSessionLocal()
+        inv = s.query(Investor).filter(Investor.email == "ana@example.com").one()
+        assert inv.source == "private_enquiry" and inv.budget_range == "1–2 M€" and inv.preferred_property_market.startswith("Marbella")
+        esc = s.query(LeadEscalation).filter(LeadEscalation.investor_id == inv.id).one()
+        assert esc.reason.startswith("Solicitud privada"), esc.reason
+        s.close()
+    else:
+        assert r.status_code == 429, r.text  # mismo IP de prueba: el límite sigue activo
+    assert client.post("/contact", json={"name": "X", "email": "x@example.com", "context": "c", "source": "otro"}).status_code in (422, 429)
+
     # 5. Lo público sigue abierto
     assert client.get("/properties").status_code == 200
     assert client.get("/health").json() == {"status": "ok"}

@@ -9,6 +9,8 @@ export type BrigitteReply = {
   conversation_id: string
   response: string
   escalate_to_human: boolean
+  /** Propiedades publicadas que Brigitte recomienda en esta respuesta (se muestran como fichas). */
+  properties?: string[]
 }
 
 /** Error con el mensaje que ya viene redactado para el visitante (ej. limite de mensajes). */

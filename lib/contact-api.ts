@@ -6,6 +6,11 @@ export interface ContactPayload {
   context: string
   /** Idioma en el que escribe el visitante (se muestra al equipo) */
   locale?: string
+  /** Solicitud privada: perfil elegido en el panel "Hablar con un asesor" */
+  source?: "contact_form" | "private_enquiry"
+  investment_goal?: string
+  preferred_property_market?: string
+  budget_range?: string
 }
 
 export interface ContactResponse {

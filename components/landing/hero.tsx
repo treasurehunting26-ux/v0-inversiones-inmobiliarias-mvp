@@ -5,6 +5,7 @@ import { useEffect, useRef } from "react"
 import type { Dictionary, Locale } from "@/lib/i18n"
 import { localizedPath } from "@/lib/i18n/config"
 import { HERO_MEDIA, HERO_VIDEO_ON_DESKTOP } from "@/lib/home-media"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 /**
  * Portada con vídeo.
@@ -101,12 +102,11 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
               >
                 {t.primary}
               </Link>
-              <Link
-                href={localizedPath(locale, "assistant")}
+              <AdvisorLink
                 className="border border-gold-soft/70 px-9 py-4 text-center text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:border-noir-foreground hover:bg-noir-foreground/10"
               >
                 {t.secondary}
-              </Link>
+              </AdvisorLink>
             </div>
           </div>
 

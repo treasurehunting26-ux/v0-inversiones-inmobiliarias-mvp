@@ -3,44 +3,78 @@
 import { useEffect } from "react"
 import { useI18n } from "@/lib/i18n/client"
 import { useBrigitte } from "./brigitte-provider"
-import { BrigitteAvatar, BrigitteChat } from "./brigitte-chat"
+import { BrigitteAvatar } from "./brigitte-chat"
+import { PrivateEnquiry } from "./private-enquiry"
 
-/** Cabecera comun: identidad de Brigitte, con el aviso de asistente virtual siempre visible. */
+/** Cabecera: identidad de asesora, con el aviso de IA siempre visible. */
 export function BrigitteHeader({ onClose }: { onClose?: () => void }) {
   const { dict } = useI18n()
   const t = dict.brigitte
 
   return (
-    <div className="flex items-center gap-3 bg-noir px-4 py-3.5">
-      <div className="relative">
-        <BrigitteAvatar size={38} />
-        <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-noir bg-gold" aria-hidden="true" />
+    <div className="bg-noir px-6 pb-5 pt-6">
+      <div className="flex items-start gap-4">
+        <BrigitteAvatar size={52} />
+        <div className="min-w-0 flex-1 pt-1">
+          <p className="font-serif text-2xl leading-tight text-noir-foreground">{t.name}</p>
+          <p className="mt-1 text-sm text-gold-soft">{t.role}</p>
+        </div>
+        {onClose && (
+          <button
+            type="button"
+            onClick={onClose}
+            aria-label={t.close}
+            className="-mr-2 flex h-10 w-10 shrink-0 items-center justify-center text-noir-foreground/60 transition-colors hover:text-gold"
+          >
+            <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+            </svg>
+          </button>
+        )}
       </div>
-      <div className="min-w-0 flex-1">
-        <p className="font-serif text-lg font-light leading-tight text-noir-foreground">{t.name}</p>
-        <p className="text-xs font-light text-noir-foreground/60">{t.role}</p>
-      </div>
-      {onClose && (
-        <button
-          type="button"
-          onClick={onClose}
-          aria-label={t.close}
-          className="flex h-8 w-8 shrink-0 items-center justify-center text-noir-foreground/60 transition-colors hover:text-gold"
-        >
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
-            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-      )}
+      <p className="mt-4 border-t border-noir-foreground/10 pt-3 text-[0.82rem] leading-snug text-noir-foreground/55">
+        {t.aiNotice}
+      </p>
     </div>
   )
 }
 
-/** Burbuja flotante + panel de chat, presente en todas las paginas publicas. */
+/** Cabecera de la asesoría privada: la firma, sin asistente. */
+function EnquiryHeader({ onClose }: { onClose: () => void }) {
+  const { dict } = useI18n()
+  const t = dict.enquiry
+
+  return (
+    <div className="bg-noir px-6 pb-6 pt-7 sm:px-8">
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <p className="text-sm text-gold-soft">B&amp;G Consulting</p>
+          <p className="mt-1 font-serif text-3xl leading-tight text-noir-foreground">{t.title}</p>
+        </div>
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label={t.close}
+          className="-mr-2 flex h-10 w-10 shrink-0 items-center justify-center text-noir-foreground/60 transition-colors hover:text-gold"
+        >
+          <svg width="18" height="18" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <path d="M4 4L12 12M12 4L4 12" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
+          </svg>
+        </button>
+      </div>
+      <p className="mt-4 max-w-sm text-sm leading-relaxed text-noir-foreground/70">{t.intro}</p>
+    </div>
+  )
+}
+
+/**
+ * Panel lateral "Hablar con un asesor": solicitud privada. No hay burbuja flotante: se abre desde los
+ * botones "Hablar con un asesor" de la web (y desde las fichas).
+ */
 export function BrigitteWidget() {
   const { dict } = useI18n()
   const t = dict.brigitte
-  const { isOpen, open, close } = useBrigitte()
+  const { isOpen, close } = useBrigitte()
 
   useEffect(() => {
     if (!isOpen) return
@@ -48,44 +82,36 @@ export function BrigitteWidget() {
       if (e.key === "Escape") close()
     }
     window.addEventListener("keydown", onKey)
-    return () => window.removeEventListener("keydown", onKey)
+    const previous = document.body.style.overflow
+    document.body.style.overflow = "hidden"
+    return () => {
+      window.removeEventListener("keydown", onKey)
+      document.body.style.overflow = previous
+    }
   }, [isOpen, close])
 
-  return (
-    <>
-      {isOpen && (
-        <div
-          role="dialog"
-          aria-modal="false"
-          aria-label={t.name}
-          className="fixed inset-0 z-[60] flex flex-col overflow-hidden bg-background shadow-[0_30px_80px_-20px_rgba(0,0,0,0.45)] sm:inset-auto sm:bottom-6 sm:right-6 sm:h-[min(640px,calc(100vh-3rem))] sm:w-[390px] sm:rounded-xl sm:border sm:border-border"
-        >
-          <BrigitteHeader onClose={close} />
-          <div className="min-h-0 flex-1">
-            <BrigitteChat autoFocus />
-          </div>
-        </div>
-      )}
+  if (!isOpen) return null
 
-      {!isOpen && (
-        <button
-          type="button"
-          onClick={() => open()}
-          aria-label={t.open}
-          className="group fixed bottom-5 right-5 z-[60] flex items-center gap-3 rounded-full border border-gold/40 bg-noir py-2 pl-2 pr-2 shadow-[0_18px_40px_-12px_rgba(0,0,0,0.5)] transition-colors hover:border-gold sm:bottom-6 sm:right-6 sm:pr-5"
-        >
-          <span className="relative">
-            <BrigitteAvatar size={40} />
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full border-2 border-noir bg-gold" aria-hidden="true" />
-          </span>
-          <span className="hidden flex-col items-start text-left sm:flex">
-            <span className="text-[0.82rem] font-light tracking-[0.01em] text-noir-foreground/55">{t.name}</span>
-            <span className="text-sm font-light text-noir-foreground transition-colors group-hover:text-gold">
-              {t.launcher}
-            </span>
-          </span>
-        </button>
-      )}
-    </>
+  return (
+    <div className="fixed inset-0 z-[70]">
+      {/* Fondo: clic fuera para cerrar */}
+      <button
+        type="button"
+        aria-label={t.close}
+        onClick={close}
+        className="bg-fade-in absolute inset-0 hidden cursor-default bg-noir/40 backdrop-blur-[2px] sm:block"
+      />
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-label={dict.enquiry.title}
+        className="bg-slide-in absolute inset-y-0 right-0 flex w-full flex-col overflow-hidden bg-background shadow-[-30px_0_80px_-30px_rgba(0,0,0,0.45)] sm:w-[460px]"
+      >
+        <EnquiryHeader onClose={close} />
+        <div className="min-h-0 flex-1">
+          <PrivateEnquiry />
+        </div>
+      </div>
+    </div>
   )
 }

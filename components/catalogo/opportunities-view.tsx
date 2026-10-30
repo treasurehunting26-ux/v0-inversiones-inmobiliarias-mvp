@@ -8,6 +8,7 @@ import { SITE_URL, localizedPath } from "@/lib/i18n/config"
 import { ORG_ID, breadcrumbSchema, jsonLd } from "@/lib/seo"
 import { getPublishedProperties } from "@/lib/properties-api"
 import { CATEGORIES, categoryPathRest, type Category } from "@/lib/categories"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 /**
  * Catálogo: una categoría por página, con menú para cambiar entre ellas.
@@ -89,12 +90,11 @@ export async function OpportunitiesView({ locale, active }: { locale: Locale; ac
           <div className="flex flex-col items-center gap-4 border border-border bg-card px-6 py-20 text-center">
             <p className="text-base font-semibold text-foreground">{t.emptyTitle}</p>
             <p className="max-w-md text-sm text-muted-foreground">{t.emptyBody}</p>
-            <Link
-              href={localizedPath(locale, "assistant")}
+            <AdvisorLink
               className="mt-2 inline-flex items-center bg-primary px-6 py-2.5 text-sm text-primary-foreground transition-opacity hover:opacity-90"
             >
               {t.leaveProfile}
-            </Link>
+            </AdvisorLink>
           </div>
         ) : active === "prime" ? (
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">

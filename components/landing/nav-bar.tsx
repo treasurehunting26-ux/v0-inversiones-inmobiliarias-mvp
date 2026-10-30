@@ -7,6 +7,7 @@ import { useI18n } from "@/lib/i18n/client"
 import { homeAnchor, localizedPath } from "@/lib/i18n/config"
 import { LanguageSwitcher } from "@/components/i18n/language-switcher"
 import { CATEGORIES, categoryPathRest } from "@/lib/categories"
+import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
 export function NavBar() {
   const [scrolled, setScrolled] = useState(false)
@@ -84,12 +85,11 @@ export function NavBar() {
 
         <div className="flex items-center gap-5 sm:gap-7">
           <LanguageSwitcher />
-          <Link
-            href={localizedPath(locale, "assistant")}
+          <AdvisorLink
             className="hidden border border-gold-soft/80 px-6 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
           >
             {t.talkToAdvisor}
-          </Link>
+          </AdvisorLink>
         </div>
       </div>
     </header>

@@ -8,13 +8,12 @@ import { localizedPath } from "@/lib/i18n/config"
 import { LanguageSwitcher } from "@/components/i18n/language-switcher"
 import { propertyFetcher } from "@/lib/properties-api"
 import { useBrigitte } from "./brigitte-provider"
-import { BrigitteChat } from "./brigitte-chat"
-import { BrigitteHeader } from "./brigitte-widget"
+import { PrivateEnquiry } from "./private-enquiry"
 
-/** Brigitte a pantalla completa (pagina /asistente): oculta la burbuja flotante. */
+/** Página /asistente: la solicitud privada a pantalla completa (destino sin JavaScript de "Hablar con un asesor"). */
 export function BrigittePage() {
   const { locale, dict } = useI18n()
-  const { setEmbedded, close, focus } = useBrigitte()
+  const { setEmbedded, close, open } = useBrigitte()
 
   useEffect(() => {
     setEmbedded(true)
@@ -28,7 +27,7 @@ export function BrigittePage() {
     const id = params.get("propiedad") || params.get("property")
     if (!id) return
     propertyFetcher(`/properties/${encodeURIComponent(id)}`)
-      .then((p) => focus({ id: p.id, title: p.title }))
+      .then((p) => open({ property: { id: p.id, title: p.title } }))
       .catch(() => {
         // Propiedad no publicada o inexistente: se conversa sin contexto.
       })
@@ -54,10 +53,14 @@ export function BrigittePage() {
       </header>
 
       <main className="flex min-h-0 flex-1 justify-center">
-        <div className="flex min-h-0 w-full max-w-2xl flex-col border-x border-border">
-          <BrigitteHeader />
+        <div className="flex min-h-0 w-full max-w-xl flex-col border-x border-border">
+          <div className="bg-noir px-6 pb-6 pt-7 sm:px-8">
+            <p className="text-sm text-gold-soft">B&amp;G Consulting</p>
+            <h1 className="mt-1 font-serif text-3xl leading-tight text-noir-foreground">{dict.enquiry.title}</h1>
+            <p className="mt-4 max-w-sm text-sm leading-relaxed text-noir-foreground/70">{dict.enquiry.intro}</p>
+          </div>
           <div className="min-h-0 flex-1">
-            <BrigitteChat autoFocus />
+            <PrivateEnquiry />
           </div>
         </div>
       </main>
