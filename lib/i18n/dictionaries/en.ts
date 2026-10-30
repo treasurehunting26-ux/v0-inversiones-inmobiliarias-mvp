@@ -239,6 +239,7 @@ export const en: Dictionary = {
     guides: "Investment guides",
     talkToAdvisor: "Speak with an advisor",
     contact: "Contact",
+    privacy: "Privacy policy",
     markets: "Markets",
     marketNames: ["Europe", "Latin America", "Dubai"],
     legal:
@@ -465,6 +466,7 @@ export const en: Dictionary = {
     phone: "Phone",
     phoneOptional: "Phone (optional)",
     consent: "I agree that B&G Consulting may use these details to contact me about this request.",
+    privacyLink: "Privacy policy",
     submit: "Send request",
     sending: "Sending…",
     required: "Please enter your name, a valid email and, if you choose WhatsApp or a call, your phone number.",

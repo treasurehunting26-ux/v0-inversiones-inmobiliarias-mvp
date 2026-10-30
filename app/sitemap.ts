@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next"
 import { CATEGORIES, CATEGORY_SLUGS } from "@/lib/categories"
 import { getPublishedProperties } from "@/lib/properties-api"
+import { LEGAL_ENTITY_COMPLETE } from "@/lib/legal/privacy"
 import { guideSlugs, getGuides, type GuideId } from "@/lib/guides"
 import { defaultLocale, locales, localizedPath, SITE_URL, type Locale, type RouteKey } from "@/lib/i18n/config"
 
@@ -45,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...entries("guides", always, "weekly", 0.8),
     ...entries("assistant", always, "monthly", 0.7),
     ...entries("contact", always, "monthly", 0.6),
+    ...(LEGAL_ENTITY_COMPLETE ? entries("privacy", always, "yearly", 0.2) : []),
     ...guideIds.flatMap((id) =>
       entries(
         "guides",

@@ -242,6 +242,7 @@ export const es = {
     guides: "Guías de inversión",
     talkToAdvisor: "Hablar con un asesor",
     contact: "Contacto",
+    privacy: "Política de privacidad",
     markets: "Mercados",
     marketNames: ["Europa", "Latinoamérica", "Dubái"],
     legal:
@@ -469,6 +470,7 @@ export const es = {
     phone: "Teléfono",
     phoneOptional: "Teléfono (opcional)",
     consent: "Acepto que B&G Consulting use estos datos para contactarme sobre esta solicitud.",
+    privacyLink: "Política de privacidad",
     submit: "Enviar solicitud",
     sending: "Enviando…",
     required: "Indique su nombre, un email válido y, si elige WhatsApp o llamada, su teléfono.",

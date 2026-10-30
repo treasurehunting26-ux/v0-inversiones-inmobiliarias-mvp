@@ -28,7 +28,7 @@ export const ogLocales: Record<Locale, string> = {
 }
 
 /** Claves internas de ruta = nombre de la carpeta en app/(site)/[lang]/ */
-export type RouteKey = "home" | "opportunities" | "guides" | "contact" | "assistant"
+export type RouteKey = "home" | "opportunities" | "guides" | "contact" | "assistant" | "privacy"
 
 /** Segmento visible en la URL para cada ruta e idioma. */
 export const routeSlugs: Record<Exclude<RouteKey, "home">, Record<Locale, string>> = {
@@ -36,6 +36,7 @@ export const routeSlugs: Record<Exclude<RouteKey, "home">, Record<Locale, string
   guides: { es: "guias", en: "guides" },
   contact: { es: "contacto", en: "contact" },
   assistant: { es: "asistente", en: "assistant" },
+  privacy: { es: "privacidad", en: "privacy" },
 }
 
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://bgestateconsulting.com").replace(/\/$/, "")
