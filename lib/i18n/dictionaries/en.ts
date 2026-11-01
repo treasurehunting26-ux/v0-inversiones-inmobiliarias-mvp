@@ -101,12 +101,12 @@ export const en: Dictionary = {
     items: [
       {
         name: "Europe",
-        location: "Costa del Sol, Madrid and Lisbon",
-        description: "Established assets in the continent's most stable and sought-after markets.",
+        location: "Marbella and the Costa del Sol",
+        description: "Villas and residences in one of Europe's most stable and sought-after markets.",
       },
       {
         name: "Latin America",
-        location: "Tulum, Mexico City and Punta del Este",
+        location: "Caracas and Margarita",
         description: "High-growth opportunities in emerging luxury destinations.",
       },
       {

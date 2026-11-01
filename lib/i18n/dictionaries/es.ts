@@ -104,12 +104,12 @@ export const es = {
     items: [
       {
         name: "Europa",
-        location: "Costa del Sol, Madrid y Lisboa",
-        description: "Activos consolidados en los mercados más estables y demandados del continente.",
+        location: "Marbella y Costa del Sol",
+        description: "Villas y residencias en uno de los mercados más estables y demandados de Europa.",
       },
       {
         name: "Latinoamérica",
-        location: "Tulum, Ciudad de México y Punta del Este",
+        location: "Caracas y Margarita",
         description: "Oportunidades de alto crecimiento en destinos emergentes de lujo.",
       },
       {
