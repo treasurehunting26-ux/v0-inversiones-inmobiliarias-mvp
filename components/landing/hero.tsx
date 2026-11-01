@@ -30,7 +30,7 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
           poster={HERO_MEDIA.posterMobile || HERO_MEDIA.poster}
           className="h-full w-full object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45" />
       </div>
 
       {/* Escritorio: vídeo horizontal a pantalla completa (si es nítido) */}
@@ -42,7 +42,7 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
             poster={HERO_MEDIA.poster}
             className="h-full w-full object-cover"
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45" />
         </div>
       )}
 
@@ -50,7 +50,7 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
       {photoOnDesktop && (
         <div className="absolute inset-0 hidden lg:block">
           <img src={HERO_MEDIA.poster} alt="" aria-hidden className="bg-kenburns h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-noir/70 via-noir/50 to-noir/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-black/10 to-black/45" />
         </div>
       )}
 
@@ -58,15 +58,15 @@ export function Hero({ locale, t }: { locale: Locale; t: Dictionary["hero"] }) {
       {!landscape && (
         <div className="absolute inset-0 hidden lg:block">
           <img src={HERO_MEDIA.poster} alt="" aria-hidden className="bg-kenburns h-full w-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-r from-noir/90 via-noir/70 to-noir/45" />
+          <div className="absolute inset-0 bg-gradient-to-r from-black/50 via-black/20 to-transparent" />
         </div>
       )}
 
-      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl items-center px-6 pb-24 pt-32 lg:px-10">
+      <div className="relative z-10 mx-auto flex min-h-[100svh] max-w-7xl items-center px-6 pb-24 pt-32 [text-shadow:0_2px_28px_rgba(0,0,0,0.45)] lg:px-10">
         <div className={`grid w-full items-center gap-14 ${landscape ? "" : "lg:grid-cols-[1.25fr_0.75fr]"}`}>
           <div className={landscape ? "mx-auto max-w-4xl text-center" : "text-center lg:text-left"}>
             <span
-              className="bg-rise inline-block text-base font-normal text-gold-soft"
+              className="bg-rise inline-block text-base font-normal text-white/90"
               style={{ animationDelay: "150ms" }}
             >
               {t.eyebrow}

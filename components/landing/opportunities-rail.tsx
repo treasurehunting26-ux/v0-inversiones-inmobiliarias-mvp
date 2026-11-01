@@ -77,7 +77,7 @@ export function OpportunitiesRail({
                     {p.location?.charAt(0) ?? "·"}
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-noir/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
                 {p.asset_type && (
                   <span className="absolute left-5 top-5 bg-noir-foreground/90 px-3 py-1 text-[0.82rem] font-normal tracking-[0.01em] text-noir">
                     {p.asset_type}

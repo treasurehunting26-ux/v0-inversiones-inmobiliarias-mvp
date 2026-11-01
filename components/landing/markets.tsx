@@ -28,7 +28,7 @@ export function Markets({ locale, t }: { locale: Locale; t: Dictionary["markets"
               alt={format(t.imageAlt, { name: market.name })}
             >
                 <div className="absolute inset-x-0 bottom-0 p-7">
-                  <div className="text-[0.82rem] font-light tracking-[0.01em] text-gold-soft">
+                  <div className="text-[0.82rem] font-normal tracking-[0.01em] text-white/90">
                     {market.location}
                   </div>
                   <h3 className="mt-2 font-serif text-3xl font-light text-noir-foreground">{market.name}</h3>
