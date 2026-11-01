@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import { NavBar } from "@/components/landing/nav-bar"
 import { Footer } from "@/components/landing/footer"
 import { ContactForm } from "@/components/contacto/contact-form"
+import { WhatsAppIcon, WhatsAppLink } from "@/components/whatsapp-link"
 import { getDictionary, pageMetadata, type Locale } from "@/lib/i18n"
 
 type Props = { params: Promise<{ lang: string }> }
@@ -14,7 +15,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ContactPage({ params }: Props) {
   const locale = (await params).lang as Locale
-  const t = getDictionary(locale).contact
+  const dict = getDictionary(locale)
+  const t = dict.contact
 
   return (
     <main className="min-h-screen bg-background">
@@ -30,6 +32,14 @@ export default async function ContactPage({ params }: Props) {
           <p className="mx-auto mt-6 max-w-xl text-base font-light leading-relaxed text-noir-foreground/60">
             {t.intro}
           </p>
+          <WhatsAppLink
+            label="WhatsApp"
+            message={dict.enquiry.whatsappIntro}
+            className="mt-8 inline-flex items-center gap-2.5 border border-gold-soft/60 px-7 py-3 text-sm text-noir-foreground transition-colors hover:border-gold hover:text-gold"
+          >
+            <WhatsAppIcon size={16} />
+            {dict.enquiry.directWhatsapp}
+          </WhatsAppLink>
         </div>
       </section>
 

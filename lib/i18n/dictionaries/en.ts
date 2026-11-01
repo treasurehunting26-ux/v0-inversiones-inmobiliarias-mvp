@@ -24,7 +24,7 @@ export const en: Dictionary = {
 
   hero: {
     imageAlt: "Luxury villa with an infinity pool at sunset on the Costa del Sol",
-    eyebrow: "Marbella, Latin America and Dubai",
+    eyebrow: "Spain, Latin America and Dubai",
     title: "Exceptional real estate investments",
     body: "An exclusive selection of high-value assets, analysed and validated one by one by our team of advisors. Where wealth finds its best opportunity.",
     primary: "View opportunities",
@@ -44,7 +44,7 @@ export const en: Dictionary = {
       eyebrow: "Real estate investment advisory",
       titleLead: "Real estate investment",
       titleAccent: "with judgement",
-      titleTail: "in Marbella, Latin America and Dubai",
+      titleTail: "in Spain, Latin America and Dubai",
       body: [
         "We select villas, luxury apartments, licensed land and industrial assets with verified potential. Every opportunity goes through a prior review of location, title, price and risk before it is published.",
         "Each asset comes with its own private dossier and an advisor who accompanies you from the first enquiry to closing, with the discretion a transaction of this level requires.",
@@ -239,6 +239,7 @@ export const en: Dictionary = {
     guides: "Investment guides",
     talkToAdvisor: "Speak with an advisor",
     contact: "Contact",
+    whatsapp: "WhatsApp",
     markets: "Markets",
     marketNames: ["Europe", "Latin America", "Dubai"],
     legal:
@@ -358,7 +359,7 @@ export const en: Dictionary = {
     eyebrow: "Speak to a person",
     title: "Speak directly with an advisor",
     intro:
-      "If you prefer direct contact, leave your details and an advisor will review your request personally. If you prefer, message us on WhatsApp at +34 681 96 44 84.",
+      "If you prefer direct contact, leave your details and an advisor will review your request personally. If you prefer, message us on WhatsApp.",
     form: {
       name: "Name",
       namePlaceholder: "Your full name",
@@ -471,8 +472,7 @@ export const en: Dictionary = {
     consentRequired: "We need your consent to be able to contact you.",
     error: "We couldn't send your request. Please try again or message us on WhatsApp.",
     directTitle: "Would you rather talk now?",
-    directWhatsapp: "WhatsApp",
-    directCall: "Call",
+    directWhatsapp: "Message us on WhatsApp",
     doneTitle: "Thank you, {name}.",
     doneBody: "An advisor will contact you {channel} {time}, with your request in front of them.",
     doneChannel: { whatsapp: "on WhatsApp", call: "by phone", email: "by email" },

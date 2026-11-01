@@ -24,8 +24,9 @@ export function organizationSchema(locale: Locale, description: string) {
     logo: `${SITE_URL}/brand/logo-bg-consulting-v2.png`,
     image: `${SITE_URL}/opengraph-image.png`,
     description,
-    address: { "@type": "PostalAddress", addressLocality: "Marbella", addressRegion: "Málaga", addressCountry: "ES" },
-    areaServed: ["Marbella", "Costa del Sol", "España", "Latinoamérica", "Dubái"],
+    legalName: "Farfalle Global Advisory - FZCO",
+    address: { "@type": "PostalAddress", addressLocality: "Dubai", addressCountry: "AE" },
+    areaServed: ["España", "Marbella", "Costa del Sol", "Venezuela", "Latinoamérica", "Dubái"],
     knowsLanguage: ["es", "en"],
   }
 }

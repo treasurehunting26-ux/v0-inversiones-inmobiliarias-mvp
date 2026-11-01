@@ -27,7 +27,7 @@ export const es = {
 
   hero: {
     imageAlt: "Villa de lujo con piscina infinita al atardecer en la Costa del Sol",
-    eyebrow: "Marbella, Latinoamérica y Dubái",
+    eyebrow: "España, Latinoamérica y Dubái",
     title: "Inversiones inmobiliarias de excepción",
     body: "Una selección exclusiva de activos de alto valor, analizados y validados uno a uno por nuestro equipo de asesores. Donde el patrimonio encuentra su mejor oportunidad.",
     primary: "Ver oportunidades",
@@ -47,7 +47,7 @@ export const es = {
       eyebrow: "Asesoría de inversión inmobiliaria",
       titleLead: "Inversión inmobiliaria",
       titleAccent: "con criterio",
-      titleTail: "en Marbella, Latinoamérica y Dubái",
+      titleTail: "en España, Latinoamérica y Dubái",
       body: [
         "Seleccionamos villas, apartamentos de lujo, terrenos con licencia y activos industriales con potencial verificado. Cada oportunidad pasa por un análisis previo de ubicación, situación registral, precio y riesgo antes de publicarse.",
         "Cada activo cuenta con su dossier privado y un asesor que te acompaña desde la primera consulta hasta el cierre, con la discreción que exige una operación de este nivel.",
@@ -242,6 +242,7 @@ export const es = {
     guides: "Guías de inversión",
     talkToAdvisor: "Hablar con un asesor",
     contact: "Contacto",
+    whatsapp: "WhatsApp",
     markets: "Mercados",
     marketNames: ["Europa", "Latinoamérica", "Dubái"],
     legal:
@@ -361,7 +362,7 @@ export const es = {
     eyebrow: "Punto de contacto humano",
     title: "Habla directamente con un asesor",
     intro:
-      "Si prefieres un contacto directo, déjanos tus datos y un asesor revisará tu solicitud personalmente. Si lo prefieres, escríbenos por WhatsApp al +34 681 96 44 84.",
+      "Si prefieres un contacto directo, déjanos tus datos y un asesor revisará tu solicitud personalmente. Si lo prefieres, escríbenos por WhatsApp.",
     form: {
       name: "Nombre",
       namePlaceholder: "Tu nombre completo",
@@ -475,8 +476,7 @@ export const es = {
     consentRequired: "Necesitamos su consentimiento para poder contactarle.",
     error: "No hemos podido enviar la solicitud. Inténtelo de nuevo o escríbanos por WhatsApp.",
     directTitle: "¿Prefiere hablar ahora?",
-    directWhatsapp: "WhatsApp",
-    directCall: "Llamar",
+    directWhatsapp: "Escribir por WhatsApp",
     doneTitle: "Gracias, {name}.",
     doneBody: "Un asesor le contactará {channel} {time}, con su solicitud delante.",
     doneChannel: { whatsapp: "por WhatsApp", call: "por teléfono", email: "por email" },

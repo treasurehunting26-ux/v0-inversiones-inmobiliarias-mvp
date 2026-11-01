@@ -8,8 +8,6 @@ import { priceFromRange } from "@/lib/seo"
 
 /** WhatsApp del equipo (formato internacional, sin "+" ni espacios). */
 export const WHATSAPP_NUMBER = "34681964484"
-export const PHONE_DISPLAY = "+34 681 96 44 84"
-export const PHONE_TEL = "+34681964484"
 
 export const GOALS = ["home", "income", "growth", "project", "commercial"] as const
 export const MARKETS = ["marbella", "spain", "latam", "dubai", "open"] as const

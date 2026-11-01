@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useI18n } from "@/lib/i18n/client"
 import { homeAnchor, localizedPath } from "@/lib/i18n/config"
 import { LanguageSwitcher } from "@/components/i18n/language-switcher"
+import { WhatsAppIcon, WhatsAppLink } from "@/components/whatsapp-link"
 import { CATEGORIES, categoryPathRest } from "@/lib/categories"
 import { AdvisorLink } from "@/components/brigitte/advisor-link"
 
@@ -85,6 +86,13 @@ export function NavBar() {
 
         <div className="flex items-center gap-5 sm:gap-7">
           <LanguageSwitcher />
+          <WhatsAppLink
+            label="WhatsApp"
+            message={dict.enquiry.whatsappIntro}
+            className="text-noir-foreground/70 transition-colors hover:text-gold"
+          >
+            <WhatsAppIcon size={18} />
+          </WhatsAppLink>
           <AdvisorLink
             className="hidden border border-gold-soft/80 px-6 py-2.5 text-sm font-light tracking-[0.01em] text-noir-foreground transition-colors hover:bg-gold-soft hover:text-noir sm:inline-block"
           >
