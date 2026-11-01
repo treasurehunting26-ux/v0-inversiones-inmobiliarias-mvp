@@ -11,21 +11,23 @@
 import type { Locale } from "@/lib/i18n"
 
 export const LEGAL_ENTITY = {
-  /** Razón social (ej. "B&G Consulting Inversiones, S.L.") */
-  name: "",
-  /** NIF / CIF */
-  taxId: "",
-  /** Domicilio social completo */
-  address: "",
+  /** Razón social del titular de la web */
+  name: "Farfalle Global Advisory - FZCO",
+  /** Licencia comercial (Dubai Integrated Economic Zones Authority, IFZA) */
+  taxId: "91470",
+  /** Domicilio social */
+  address: "DSO-IFZA, IFZA Properties, Dubai Silicon Oasis, Dubái (Emiratos Árabes Unidos)",
   /** Email para privacidad y ejercicio de derechos */
   email: "",
+  /** Representante en la UE (art. 27 RGPD): nombre y dirección, obligatorio para responsables fuera de la UE que se dirigen a residentes de la UE */
+  euRepresentative: "",
   phone: "+34 681 96 44 84",
   /** Fecha de la última actualización (AAAA-MM-DD) */
   updated: "2026-10-30",
 }
 
 export const LEGAL_ENTITY_COMPLETE = Boolean(
-  LEGAL_ENTITY.name && LEGAL_ENTITY.taxId && LEGAL_ENTITY.address && LEGAL_ENTITY.email,
+  LEGAL_ENTITY.name && LEGAL_ENTITY.taxId && LEGAL_ENTITY.address && LEGAL_ENTITY.email && LEGAL_ENTITY.euRepresentative,
 )
 
 export type PrivacySection = { title: string; paragraphs?: string[]; items?: string[] }
@@ -39,6 +41,7 @@ function entity(locale: Locale) {
     taxId: LEGAL_ENTITY.taxId || m,
     address: LEGAL_ENTITY.address || m,
     email: LEGAL_ENTITY.email || m,
+    euRepresentative: LEGAL_ENTITY.euRepresentative || m,
     phone: LEGAL_ENTITY.phone,
   }
 }
@@ -51,16 +54,20 @@ export function privacyPolicy(locale: Locale): { title: string; intro: string; u
       intro:
         "This policy explains how B&G Consulting handles the personal data of the people who visit this website, contact us or may be interested in our real estate opportunities, in accordance with the General Data Protection Regulation (GDPR) and the Spanish Organic Law 3/2018 (LOPDGDD).",
       updatedLabel: "Last updated",
-      draftNotice: "Draft pending legal review and company details.",
+      draftNotice: "Draft pending legal review, privacy email and EU representative.",
       sections: [
         {
           title: "1. Data controller",
           items: [
-            `Company: ${e.name}`,
-            `Tax ID: ${e.taxId}`,
-            `Registered address: ${e.address}`,
+            `Company: ${e.name}, trading as B&G Consulting`,
+            `Trade licence no.: ${e.taxId} (Dubai Integrated Economic Zones Authority)`,
+            `Registered address: ${e.address.replace("Dubái (Emiratos Árabes Unidos)", "Dubai (United Arab Emirates)")}`,
             `Email: ${e.email}`,
             `Phone and WhatsApp: ${e.phone}`,
+            `Representative in the European Union (Art. 27 GDPR): ${e.euRepresentative}`,
+          ],
+          paragraphs: [
+            "Although the controller is established outside the European Union, this processing is subject to the GDPR because our services are offered to people in the European Union (Art. 3(2) GDPR).",
           ],
         },
         {
@@ -112,7 +119,7 @@ export function privacyPolicy(locale: Locale): { title: string; intro: string; u
         {
           title: "7. International transfers",
           paragraphs: [
-            "Some of these providers may process data outside the European Economic Area, mainly in the United States. In those cases transfers are covered by the EU–US Data Privacy Framework or by the European Commission's standard contractual clauses.",
+            "The controller is established in the United Arab Emirates, so your data are processed there. In addition, some providers may process data outside the European Economic Area, mainly in the United States; in those cases transfers are covered by the EU–US Data Privacy Framework or by the European Commission's standard contractual clauses.",
           ],
         },
         {
@@ -151,16 +158,20 @@ export function privacyPolicy(locale: Locale): { title: string; intro: string; u
     intro:
       "Esta política explica cómo trata B&G Consulting los datos personales de quienes visitan esta web, se ponen en contacto con nosotros o pueden estar interesados en nuestras oportunidades inmobiliarias, conforme al Reglamento General de Protección de Datos (RGPD) y a la Ley Orgánica 3/2018 (LOPDGDD).",
     updatedLabel: "Última actualización",
-    draftNotice: "Borrador pendiente de revisión legal y de los datos de la empresa.",
+    draftNotice: "Borrador pendiente de revisión legal, del email de privacidad y del representante en la UE.",
     sections: [
       {
         title: "1. Responsable del tratamiento",
         items: [
-          `Razón social: ${e.name}`,
-          `NIF: ${e.taxId}`,
+          `Razón social: ${e.name}, que opera con la marca B&G Consulting`,
+          `Licencia comercial n.º: ${e.taxId} (Dubai Integrated Economic Zones Authority)`,
           `Domicilio: ${e.address}`,
           `Email: ${e.email}`,
           `Teléfono y WhatsApp: ${e.phone}`,
+          `Representante en la Unión Europea (art. 27 RGPD): ${e.euRepresentative}`,
+        ],
+        paragraphs: [
+          "Aunque el responsable está establecido fuera de la Unión Europea, este tratamiento está sujeto al RGPD porque ofrecemos nuestros servicios a personas que se encuentran en la Unión Europea (art. 3.2 RGPD).",
         ],
       },
       {
@@ -212,7 +223,7 @@ export function privacyPolicy(locale: Locale): { title: string; intro: string; u
       {
         title: "7. Transferencias internacionales",
         paragraphs: [
-          "Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo, principalmente en Estados Unidos. En esos casos las transferencias se amparan en el Marco de Privacidad de Datos UE-EE. UU. o en las cláusulas contractuales tipo de la Comisión Europea.",
+          "El responsable está establecido en los Emiratos Árabes Unidos, por lo que sus datos se tratan allí. Además, algunos proveedores pueden tratar datos fuera del Espacio Económico Europeo, principalmente en Estados Unidos; en esos casos las transferencias se amparan en el Marco de Privacidad de Datos UE-EE. UU. o en las cláusulas contractuales tipo de la Comisión Europea.",
         ],
       },
       {
