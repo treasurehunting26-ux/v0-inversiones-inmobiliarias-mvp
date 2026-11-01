@@ -109,7 +109,7 @@ export function DossierView({ property, locale = "es" }: DossierViewProps) {
             <div className="dossier-footer-sub dossier-mono">Presentación privada de inversión</div>
             <p className="dossier-footer-note">
               Este documento ha sido preparado exclusivamente para ti. Información y disponibilidad sujetas a
-              verificación directa con nuestro equipo. No constituye oferta pública ni asesoramiento financiero.
+              verificación directa con tu asesor. No constituye oferta pública ni asesoramiento financiero.
             </p>
             <Link href={`/asistente?propiedad=${property.id}`} className="dossier-cta dossier-mono">
               Hablar con un asesor

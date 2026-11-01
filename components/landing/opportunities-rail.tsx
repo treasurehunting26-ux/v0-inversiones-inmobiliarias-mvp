@@ -30,11 +30,7 @@ export function OpportunitiesRail({
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="flex items-center gap-4 text-sm font-light tracking-[0.01em] text-copper-ink">
-              <span className="h-px w-10 bg-copper" aria-hidden />
-              {t.eyebrow}
-            </span>
-            <h2 className="mt-5 font-serif text-4xl font-light leading-tight text-foreground md:text-5xl">{t.title}</h2>
+            <h2 className="font-serif text-4xl font-light leading-tight text-foreground md:text-5xl">{t.title}</h2>
           </div>
           <div className="flex items-center gap-3">
             <button
