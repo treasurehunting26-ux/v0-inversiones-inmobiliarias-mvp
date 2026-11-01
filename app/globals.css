@@ -20,7 +20,7 @@
   --color-secondary: #ede7dc;
   --color-secondary-foreground: #1f2f4d;
   --color-muted: #ede7dc;
-  --color-muted-foreground: #6b6860;
+  --color-muted-foreground: #4d4a44;
   --color-accent: #8c5a35;
   --color-accent-foreground: #f4f2ee;
   --color-border: #ddd5c7;
@@ -60,7 +60,7 @@ body {
 
 /* Muted foreground without alpha for readability */
 @theme inline {
-  --color-muted-foreground: #6b6860;
+  --color-muted-foreground: #4d4a44;
 }
 
 

@@ -22,7 +22,7 @@ export async function GET() {
     "",
     `> ${es.meta.description}`,
     "",
-    "B&G Consulting es una asesoría de inversión inmobiliaria con sede en Marbella (España). Selecciona y valida uno a uno activos residenciales de lujo, oportunidades para reformar, proyectos y suelos, y activos comerciales e industriales en España, Latinoamérica y Dubái. Cada activo tiene un dossier privado y un asesor dedicado. Web en español e inglés.",
+    "B&G Consulting es una firma online de asesoría de inversión inmobiliaria, operada por Farfalle Global Advisory FZCO (Dubái). Selecciona y valida uno a uno activos residenciales de lujo, oportunidades para reformar, proyectos y suelos, y activos comerciales e industriales en España, Latinoamérica y Dubái. Cada activo tiene un dossier privado y un asesor dedicado. Web en español e inglés.",
     "",
     "## Categorías de inversión",
     ...CATEGORIES.map((c) => {

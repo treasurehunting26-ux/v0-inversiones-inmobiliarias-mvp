@@ -5,6 +5,7 @@ import Link from "next/link"
 import { useI18n } from "@/lib/i18n/client"
 import { homeAnchor, localizedPath } from "@/lib/i18n/config"
 import { AdvisorLink } from "@/components/brigitte/advisor-link"
+import { WhatsAppIcon, WhatsAppLink } from "@/components/whatsapp-link"
 
 export function Footer() {
   const { locale, dict } = useI18n()
@@ -44,6 +45,10 @@ export function Footer() {
               <Link href={localizedPath(locale, "contact")} className={linkClass}>
                 {t.contact}
               </Link>
+              <WhatsAppLink label={t.whatsapp} message={dict.enquiry.whatsappIntro} className={`${linkClass} inline-flex items-center gap-2`}>
+                <WhatsAppIcon size={14} />
+                {t.whatsapp}
+              </WhatsAppLink>
             </nav>
             <nav className="flex flex-col gap-4">
               <span className="text-sm font-light tracking-[0.01em] text-gold">{t.markets}</span>

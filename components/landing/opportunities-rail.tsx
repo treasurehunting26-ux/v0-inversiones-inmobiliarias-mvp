@@ -30,11 +30,7 @@ export function OpportunitiesRail({
       <div className="mx-auto max-w-7xl px-6 lg:px-10">
         <Reveal className="mb-12 flex flex-wrap items-end justify-between gap-6">
           <div>
-            <span className="flex items-center gap-4 text-sm font-light tracking-[0.01em] text-copper-ink">
-              <span className="h-px w-10 bg-copper" aria-hidden />
-              {t.eyebrow}
-            </span>
-            <h2 className="mt-5 font-serif text-4xl font-light leading-tight text-foreground md:text-5xl">{t.title}</h2>
+            <h2 className="font-serif text-4xl font-light leading-tight text-foreground md:text-5xl">{t.title}</h2>
           </div>
           <div className="flex items-center gap-3">
             <button
@@ -77,7 +73,7 @@ export function OpportunitiesRail({
                     {p.location?.charAt(0) ?? "·"}
                   </div>
                 )}
-                <div className="absolute inset-0 bg-gradient-to-t from-noir/60 via-transparent to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent" />
                 {p.asset_type && (
                   <span className="absolute left-5 top-5 bg-noir-foreground/90 px-3 py-1 text-[0.82rem] font-normal tracking-[0.01em] text-noir">
                     {p.asset_type}

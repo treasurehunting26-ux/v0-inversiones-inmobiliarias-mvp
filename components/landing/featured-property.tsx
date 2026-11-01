@@ -29,10 +29,10 @@ export function FeaturedProperty({
             className="absolute inset-0 h-full w-full object-cover transition-transform duration-[1600ms] ease-out group-hover:scale-[1.04]"
           />
         )}
-        <div className="absolute inset-0 bg-gradient-to-t from-noir/90 via-noir/30 to-noir/10" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/15 to-transparent" />
         <div className="relative mx-auto flex min-h-[78vh] max-w-7xl items-end px-6 pb-16 lg:px-10 lg:pb-20">
           <Reveal className="max-w-2xl">
-            <span className="text-base font-normal text-gold-soft">{t.eyebrow}</span>
+            <span className="text-base font-normal text-white/90">{t.eyebrow}</span>
             <h2 className="mt-5 font-serif text-4xl font-light leading-tight text-noir-foreground md:text-6xl">
               {property.title}
             </h2>

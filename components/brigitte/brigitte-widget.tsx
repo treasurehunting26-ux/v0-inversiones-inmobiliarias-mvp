@@ -99,7 +99,7 @@ export function BrigitteWidget() {
         type="button"
         aria-label={t.close}
         onClick={close}
-        className="bg-fade-in absolute inset-0 hidden cursor-default bg-noir/40 backdrop-blur-[2px] sm:block"
+        className="bg-fade-in absolute inset-0 hidden cursor-default bg-black/30 sm:block"
       />
       <div
         role="dialog"

@@ -6,7 +6,6 @@ import { OpportunitiesRail } from "@/components/landing/opportunities-rail"
 import { Ticker } from "@/components/landing/ticker"
 import { Markets } from "@/components/landing/markets"
 import { HowItWorks } from "@/components/landing/how-it-works"
-import { Features } from "@/components/landing/features"
 import { Faq } from "@/components/landing/faq"
 import { CTA } from "@/components/landing/cta"
 import { Footer } from "@/components/landing/footer"
@@ -39,7 +38,6 @@ export default async function Home({ params }: { params: Promise<{ lang: string 
       <Ticker t={t.home.ticker} properties={withCover.length ? withCover : properties} />
       <Markets locale={locale} t={t.markets} />
       <HowItWorks t={t.howItWorks} />
-      <Features t={t.features} />
       <Faq t={t.faq} />
       <CTA locale={locale} t={t.cta} />
       <Footer />

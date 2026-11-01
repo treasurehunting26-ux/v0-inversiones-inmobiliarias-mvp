@@ -8,7 +8,7 @@ export const es = {
   meta: {
     title: "B&G Consulting — Inversiones inmobiliarias de lujo",
     description:
-      "Accede a una selección exclusiva de activos inmobiliarios de alto valor en Europa, Latinoamérica y Dubái. Cada oportunidad analizada y validada por nuestro equipo de asesores.",
+      "Acceso privado a activos inmobiliarios de alto valor en España, Latinoamérica y Dubái. Cada oportunidad, analizada una a una y con su dossier privado.",
     keywords:
       "B&G Consulting, inversiones inmobiliarias de lujo, propiedades premium, invertir en inmuebles, oportunidades inmobiliarias internacionales, real estate investment",
     ogDescription:
@@ -27,9 +27,9 @@ export const es = {
 
   hero: {
     imageAlt: "Villa de lujo con piscina infinita al atardecer en la Costa del Sol",
-    eyebrow: "Marbella, Latinoamérica y Dubái",
+    eyebrow: "España, Latinoamérica y Dubái",
     title: "Inversiones inmobiliarias de excepción",
-    body: "Una selección exclusiva de activos de alto valor, analizados y validados uno a uno por nuestro equipo de asesores. Donde el patrimonio encuentra su mejor oportunidad.",
+    body: "Villas, residencias y activos de alto valor, seleccionados y analizados uno a uno antes de llegar a usted. Acceso privado y atención directa de principio a fin.",
     primary: "Ver oportunidades",
     secondary: "Hablar con un asesor",
     titleLead: "Inversiones Inmobiliarias",
@@ -47,10 +47,10 @@ export const es = {
       eyebrow: "Asesoría de inversión inmobiliaria",
       titleLead: "Inversión inmobiliaria",
       titleAccent: "con criterio",
-      titleTail: "en Marbella, Latinoamérica y Dubái",
+      titleTail: "en España, Latinoamérica y Dubái",
       body: [
-        "Seleccionamos villas, apartamentos de lujo, terrenos con licencia y activos industriales con potencial verificado. Cada oportunidad pasa por un análisis previo de ubicación, situación registral, precio y riesgo antes de publicarse.",
-        "Cada activo cuenta con su dossier privado y un asesor que te acompaña desde la primera consulta hasta el cierre, con la discreción que exige una operación de este nivel.",
+        "Seleccionamos villas, residencias de lujo, suelos con licencia y activos comerciales con potencial verificado. Cada oportunidad se analiza antes de publicarse: ubicación, situación registral, precio frente a comparables y riesgo.",
+        "Cada activo tiene su dossier privado y un asesor dedicado que le atiende directamente, desde la primera consulta hasta la firma, con la discreción que exige una operación de este nivel.",
       ],
       pillars: [
         { title: "Selección curada", detail: "Pocas oportunidades, estudiadas una a una." },
@@ -104,12 +104,12 @@ export const es = {
     items: [
       {
         name: "Europa",
-        location: "Costa del Sol, Madrid y Lisboa",
-        description: "Activos consolidados en los mercados más estables y demandados del continente.",
+        location: "Marbella y Costa del Sol",
+        description: "Villas y residencias en uno de los mercados más estables y demandados de Europa.",
       },
       {
         name: "Latinoamérica",
-        location: "Tulum, Ciudad de México y Punta del Este",
+        location: "Caracas y Margarita",
         description: "Oportunidades de alto crecimiento en destinos emergentes de lujo.",
       },
       {
@@ -122,22 +122,22 @@ export const es = {
 
   howItWorks: {
     eyebrow: "El proceso",
-    title: "Un proceso discreto, riguroso y a su medida",
+    title: "Así trabajamos con usted",
     steps: [
       {
-        title: "Conversamos sobre tu perfil",
+        title: "Nos cuenta qué busca",
         description:
-          "A través de una conversación natural, entendemos tu presupuesto, horizonte de inversión y tolerancia al riesgo. Sin formularios. Sin burocracia.",
+          "En dos minutos nos indica su objetivo, el mercado que le interesa y su presupuesto, o nos escribe por WhatsApp. Le respondemos personalmente.",
       },
       {
-        title: "Te mostramos activos validados",
+        title: "Recibe una selección a su medida",
         description:
-          "Cada propiedad en nuestra plataforma ha sido revisada y aprobada por nuestro equipo. Solo trabajamos con oportunidades que superan nuestros criterios.",
+          "Le presentamos solo los activos que encajan con su perfil, cada uno con su dossier privado: planos, calidades, cifras y riesgos documentados.",
       },
       {
-        title: "Un especialista te acompaña",
+        title: "Le acompañamos hasta la firma",
         description:
-          "Cuando estás listo para avanzar, un asesor se incorpora para guiarte. El criterio profesional acompaña cada decisión hasta el cierre.",
+          "Visitas, negociación, revisión legal y cierre, coordinados con abogados y notarios del país de la operación.",
       },
     ],
   },
@@ -199,27 +199,27 @@ export const es = {
       {
         question: "¿Cómo seleccionáis las oportunidades?",
         answer:
-          "Cada activo pasa por un análisis previo de ubicación, situación registral y potencial de revalorización. Solo publicamos los que superan ese filtro, de modo que recibas pocas opciones bien estudiadas en lugar de un catálogo extenso.",
+          "Cada activo pasa por un análisis previo de ubicación, situación registral y potencial de revalorización. Solo publicamos los que superan ese filtro, de modo que usted recibe opciones bien estudiadas en lugar de un catálogo interminable.",
       },
       {
         question: "¿En qué mercados trabajáis?",
         answer:
-          "Europa, Latinoamérica y Dubái. En cada uno contamos con criterio local para valorar precio, demanda y marco normativo antes de presentar una operación.",
+          "España, Latinoamérica y Dubái. Cada operación se valora con datos del mercado local y se formaliza con abogados y notarios del país.",
       },
       {
         question: "¿Qué rentabilidad puedo esperar?",
         answer:
-          "Depende del activo, del mercado y del plazo, por lo que no ofrecemos cifras genéricas. Para cada oportunidad concreta compartimos los supuestos de cálculo y los riesgos asociados, de forma que puedas valorarlos con tu propio asesor fiscal o financiero.",
+          "Depende del activo, del mercado y del plazo, por lo que no ofrecemos cifras genéricas. Para cada oportunidad concreta compartimos los supuestos de cálculo y los riesgos asociados, de forma que pueda valorarlos con su propio asesor fiscal o financiero.",
       },
       {
         question: "¿Qué importe mínimo se necesita para invertir?",
         answer:
-          "Varía según la operación y la estructura de entrada. Indícanos tu horizonte y capacidad de inversión y te orientamos sobre qué encaja en tu perfil.",
+          "Varía según la operación y la estructura de entrada. Indíquenos su horizonte y capacidad de inversión y le orientamos sobre qué encaja en su perfil.",
       },
       {
         question: "¿Cómo empieza el proceso?",
         answer:
-          "Con una primera conversación sin compromiso. A partir de tus objetivos, un asesor te acompaña en la preselección, la visita y la formalización de la compra.",
+          "Con una primera conversación sin compromiso. A partir de sus objetivos, su asesor le acompaña en la preselección, la visita y la formalización de la compra.",
       },
     ],
   },
@@ -227,7 +227,7 @@ export const es = {
   cta: {
     eyebrow: "Su próxima inversión",
     title: "Permítanos mostrarle lo que pocos llegan a ver",
-    body: "Conversamos sobre su perfil y le presentamos oportunidades reales, validadas por nuestro equipo. Con la máxima discreción y sin compromiso alguno.",
+    body: "Le presentamos oportunidades reales, analizadas una a una y adaptadas a su perfil. Con la máxima discreción y sin compromiso alguno.",
     primary: "Hablar con un asesor",
     secondary: "Ver oportunidades",
     footnote: "Sin registro, sin compromiso y con absoluta confidencialidad.",
@@ -242,6 +242,7 @@ export const es = {
     guides: "Guías de inversión",
     talkToAdvisor: "Hablar con un asesor",
     contact: "Contacto",
+    whatsapp: "WhatsApp",
     markets: "Mercados",
     marketNames: ["Europa", "Latinoamérica", "Dubái"],
     legal:
@@ -251,11 +252,11 @@ export const es = {
   opportunities: {
     metaTitle: "Oportunidades de inversión inmobiliaria | Activos validados",
     metaDescription:
-      "Explora oportunidades inmobiliarias seleccionadas y validadas una a una por nuestro equipo en Europa, Latinoamérica y Dubái.",
+      "Explora oportunidades inmobiliarias seleccionadas y analizadas una a una en España, Latinoamérica y Dubái.",
     eyebrow: "Activos verificados uno a uno",
     title: "Oportunidades de inversión, seleccionadas una a una",
     intro:
-      "Cada activo ha sido revisado y aprobado por nuestro equipo antes de publicarse. Elige el que encaje con tu perfil y profundiza con un asesor dedicado.",
+      "Cada activo se revisa y analiza antes de publicarse. Elige el que encaje con tu perfil y profundiza con un asesor dedicado.",
     disclaimer:
       "Las rentabilidades indicadas en cada ficha son estimaciones sobre supuestos concretos, no resultados garantizados: el valor de un inmueble puede fluctuar y la venta requiere plazos. Te recomendamos contrastar cada operación con tu asesor fiscal o financiero.",
     errorTitle: "No pudimos cargar las oportunidades",
@@ -295,7 +296,7 @@ export const es = {
           "Inmuebles para reformar o reposicionar, comprados por debajo de mercado. El valor está en la operación, no en la foto.",
         metaTitle: "Inmuebles para reformar | Oportunidades de inversión de valor",
         metaDescription:
-          "Propiedades para reformar o reposicionar con margen de revalorización, analizadas por nuestro equipo antes de publicarse.",
+          "Propiedades para reformar o reposicionar con margen de revalorización, analizadas una a una antes de publicarse.",
         aboutTitle: "Qué es una oportunidad de valor",
         about: [
           "Una oportunidad de valor es un inmueble que se compra por debajo de su precio de mercado porque necesita reforma, cambio de uso o reposicionamiento. La rentabilidad no depende de que el mercado suba, sino del trabajo que se hace sobre el activo.",
@@ -340,7 +341,7 @@ export const es = {
     viewOpportunities: "Ver oportunidades",
     talkToAdvisor: "Hablar con un asesor",
     back: "Volver al catálogo",
-    validatedByTeam: "Validada por nuestro equipo",
+    validatedByTeam: "Activo analizado y validado",
     dossierOf: "Dossier de {title}",
     facts: {
       assetType: "Tipo de activo",
@@ -361,7 +362,7 @@ export const es = {
     eyebrow: "Punto de contacto humano",
     title: "Habla directamente con un asesor",
     intro:
-      "Si prefieres un contacto directo, déjanos tus datos y un asesor revisará tu solicitud personalmente. Si lo prefieres, escríbenos por WhatsApp al +34 681 96 44 84.",
+      "Si prefieres un contacto directo, déjanos tus datos y un asesor revisará tu solicitud personalmente. Si lo prefieres, escríbenos por WhatsApp.",
     form: {
       name: "Nombre",
       namePlaceholder: "Tu nombre completo",
@@ -475,8 +476,7 @@ export const es = {
     consentRequired: "Necesitamos su consentimiento para poder contactarle.",
     error: "No hemos podido enviar la solicitud. Inténtelo de nuevo o escríbanos por WhatsApp.",
     directTitle: "¿Prefiere hablar ahora?",
-    directWhatsapp: "WhatsApp",
-    directCall: "Llamar",
+    directWhatsapp: "Escribir por WhatsApp",
     doneTitle: "Gracias, {name}.",
     doneBody: "Un asesor le contactará {channel} {time}, con su solicitud delante.",
     doneChannel: { whatsapp: "por WhatsApp", call: "por teléfono", email: "por email" },
@@ -492,11 +492,11 @@ export const es = {
   brigitte: {
     name: "Brigitte",
     role: "Asesora de inversión · B&G Consulting",
-    aiNotice: "Asesora digital con IA. Un asesor del equipo revisa cada caso.",
+    aiNotice: "Asesora digital con IA. Un asesor revisa cada caso.",
     open: "Hablar con un asesor",
     close: "Cerrar",
     greeting:
-      "Le doy la bienvenida a B&G Consulting. Soy Brigitte. Cuénteme qué busca, ya sea una zona, un presupuesto o un tipo de inversión, y le preparo una selección de oportunidades. Si lo prefiere, le organizo directamente una llamada con uno de nuestros asesores.",
+      "Le doy la bienvenida a B&G Consulting. Soy Brigitte. Cuénteme qué busca, ya sea una zona, un presupuesto o un tipo de inversión, y le preparo una selección de oportunidades. Si lo prefiere, le organizo directamente una llamada con un asesor.",
     propertyGreeting: "Veo que está mirando «{title}». ¿Qué le gustaría saber de esta propiedad?",
     startersLabel: "Para empezar",
     starters: [
@@ -522,7 +522,7 @@ export const es = {
     handoffError: "No he podido enviarlo. ¿Lo intentamos de nuevo?",
     genericError:
       "Disculpe, estoy teniendo un problema técnico. Si lo desea, déjeme sus datos y un asesor le escribirá directamente.",
-    disclaimer: "Brigitte usa IA y puede equivocarse: el equipo confirma cada detalle.",
+    disclaimer: "Brigitte usa IA y puede equivocarse: su asesor confirma cada detalle.",
   },
 
   notFound: {

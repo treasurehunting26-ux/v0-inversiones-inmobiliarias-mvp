@@ -5,7 +5,7 @@ export const en: Dictionary = {
   meta: {
     title: "B&G Consulting — Luxury real estate investment",
     description:
-      "Access an exclusive selection of high-value real estate in Europe, Latin America and Dubai. Every opportunity analysed and validated by our team of advisors.",
+      "Private access to high-value real estate in Spain, Latin America and Dubai. Every opportunity analysed one by one, with its own private dossier.",
     keywords:
       "B&G Consulting, luxury real estate investment, premium property, invest in property, international real estate opportunities, Marbella, Dubai",
     ogDescription:
@@ -24,9 +24,9 @@ export const en: Dictionary = {
 
   hero: {
     imageAlt: "Luxury villa with an infinity pool at sunset on the Costa del Sol",
-    eyebrow: "Marbella, Latin America and Dubai",
+    eyebrow: "Spain, Latin America and Dubai",
     title: "Exceptional real estate investments",
-    body: "An exclusive selection of high-value assets, analysed and validated one by one by our team of advisors. Where wealth finds its best opportunity.",
+    body: "Villas, residences and high-value assets, selected and analysed one by one before they reach you. Private access and direct attention from start to finish.",
     primary: "View opportunities",
     secondary: "Speak with an advisor",
     titleLead: "Exceptional Real Estate",
@@ -44,10 +44,10 @@ export const en: Dictionary = {
       eyebrow: "Real estate investment advisory",
       titleLead: "Real estate investment",
       titleAccent: "with judgement",
-      titleTail: "in Marbella, Latin America and Dubai",
+      titleTail: "in Spain, Latin America and Dubai",
       body: [
-        "We select villas, luxury apartments, licensed land and industrial assets with verified potential. Every opportunity goes through a prior review of location, title, price and risk before it is published.",
-        "Each asset comes with its own private dossier and an advisor who accompanies you from the first enquiry to closing, with the discretion a transaction of this level requires.",
+        "We select villas, luxury residences, licensed land and commercial assets with verified potential. Every opportunity is analysed before it is published: location, title, price against comparables and risk.",
+        "Each asset comes with its own private dossier and a dedicated advisor who looks after you directly, from the first enquiry to signing, with the discretion a transaction of this level requires.",
       ],
       pillars: [
         { title: "Curated selection", detail: "Few opportunities, studied one by one." },
@@ -101,12 +101,12 @@ export const en: Dictionary = {
     items: [
       {
         name: "Europe",
-        location: "Costa del Sol, Madrid and Lisbon",
-        description: "Established assets in the continent's most stable and sought-after markets.",
+        location: "Marbella and the Costa del Sol",
+        description: "Villas and residences in one of Europe's most stable and sought-after markets.",
       },
       {
         name: "Latin America",
-        location: "Tulum, Mexico City and Punta del Este",
+        location: "Caracas and Margarita",
         description: "High-growth opportunities in emerging luxury destinations.",
       },
       {
@@ -119,22 +119,22 @@ export const en: Dictionary = {
 
   howItWorks: {
     eyebrow: "The process",
-    title: "A discreet, rigorous process, tailored to you",
+    title: "How we work with you",
     steps: [
       {
-        title: "We talk about your profile",
+        title: "Tell us what you're looking for",
         description:
-          "Through a natural conversation, we understand your budget, investment horizon and appetite for risk. No forms. No red tape.",
+          "In two minutes you share your goal, the market you're interested in and your budget, or message us on WhatsApp. We reply to you personally.",
       },
       {
-        title: "We show you validated assets",
+        title: "Receive a selection made for you",
         description:
-          "Every property on our platform has been reviewed and approved by our team. We only work with opportunities that meet our criteria.",
+          "We present only the assets that fit your profile, each with its private dossier: plans, specifications, figures and risks, all documented.",
       },
       {
-        title: "A specialist guides you",
+        title: "We're with you until signing",
         description:
-          "When you're ready to move forward, an advisor steps in to guide you. Professional judgement supports every decision through to completion.",
+          "Viewings, negotiation, legal review and completion, coordinated with lawyers and notaries in the country of the transaction.",
       },
     ],
   },
@@ -201,7 +201,7 @@ export const en: Dictionary = {
       {
         question: "Which markets do you work in?",
         answer:
-          "Europe, Latin America and Dubai. In each one we rely on local expertise to assess price, demand and regulation before presenting a transaction.",
+          "Spain, Latin America and Dubai. Every transaction is assessed with local market data and completed with lawyers and notaries in that country.",
       },
       {
         question: "What return can I expect?",
@@ -216,7 +216,7 @@ export const en: Dictionary = {
       {
         question: "How does the process start?",
         answer:
-          "With an initial, no-obligation conversation. Based on your goals, an advisor guides you through shortlisting, viewings and completing the purchase.",
+          "With an initial, no-obligation conversation. Based on your goals, your advisor guides you through shortlisting, viewings and completing the purchase.",
       },
     ],
   },
@@ -224,7 +224,7 @@ export const en: Dictionary = {
   cta: {
     eyebrow: "Your next investment",
     title: "Let us show you what few get to see",
-    body: "We talk about your profile and present real opportunities, validated by our team. With complete discretion and no obligation.",
+    body: "We present real opportunities, analysed one by one and matched to your profile. With complete discretion and no obligation.",
     primary: "Speak with an advisor",
     secondary: "View opportunities",
     footnote: "No sign-up, no obligation and complete confidentiality.",
@@ -239,6 +239,7 @@ export const en: Dictionary = {
     guides: "Investment guides",
     talkToAdvisor: "Speak with an advisor",
     contact: "Contact",
+    whatsapp: "WhatsApp",
     markets: "Markets",
     marketNames: ["Europe", "Latin America", "Dubai"],
     legal:
@@ -248,11 +249,11 @@ export const en: Dictionary = {
   opportunities: {
     metaTitle: "Real estate investment opportunities | Validated assets",
     metaDescription:
-      "Explore real estate opportunities selected and validated one by one by our team across Europe, Latin America and Dubai.",
+      "Explore real estate opportunities selected and analysed one by one across Spain, Latin America and Dubai.",
     eyebrow: "Assets verified one by one",
     title: "Investment opportunities, selected one by one",
     intro:
-      "Every asset has been reviewed and approved by our team before being published. Choose the one that fits your profile and go deeper with a dedicated advisor.",
+      "Every asset is reviewed and analysed before being published. Choose the one that fits your profile and go deeper with a dedicated advisor.",
     disclaimer:
       "The returns shown on each listing are estimates based on specific assumptions, not guaranteed results: a property's value can fluctuate and selling takes time. We recommend reviewing every transaction with your tax or financial advisor.",
     errorTitle: "We couldn't load the opportunities",
@@ -292,7 +293,7 @@ export const en: Dictionary = {
           "Properties to renovate or reposition, bought below market value. The value lies in the deal, not the photo.",
         metaTitle: "Properties to renovate | Value-add real estate investment",
         metaDescription:
-          "Properties to renovate or reposition with upside potential, analysed by our team before being published.",
+          "Properties to renovate or reposition with upside potential, analysed one by one before being published.",
         aboutTitle: "What is a value-add opportunity",
         about: [
           "A value-add opportunity is a property bought below market value because it needs renovation, a change of use or repositioning. The return does not depend on the market rising but on the work done on the asset.",
@@ -337,7 +338,7 @@ export const en: Dictionary = {
     viewOpportunities: "View opportunities",
     talkToAdvisor: "Speak with an advisor",
     back: "Back to the catalogue",
-    validatedByTeam: "Validated by our team",
+    validatedByTeam: "Analysed and validated asset",
     dossierOf: "{title} dossier",
     facts: {
       assetType: "Asset type",
@@ -358,7 +359,7 @@ export const en: Dictionary = {
     eyebrow: "Speak to a person",
     title: "Speak directly with an advisor",
     intro:
-      "If you prefer direct contact, leave your details and an advisor will review your request personally. If you prefer, message us on WhatsApp at +34 681 96 44 84.",
+      "If you prefer direct contact, leave your details and an advisor will review your request personally. If you prefer, message us on WhatsApp.",
     form: {
       name: "Name",
       namePlaceholder: "Your full name",
@@ -471,8 +472,7 @@ export const en: Dictionary = {
     consentRequired: "We need your consent to be able to contact you.",
     error: "We couldn't send your request. Please try again or message us on WhatsApp.",
     directTitle: "Would you rather talk now?",
-    directWhatsapp: "WhatsApp",
-    directCall: "Call",
+    directWhatsapp: "Message us on WhatsApp",
     doneTitle: "Thank you, {name}.",
     doneBody: "An advisor will contact you {channel} {time}, with your request in front of them.",
     doneChannel: { whatsapp: "on WhatsApp", call: "by phone", email: "by email" },
@@ -488,11 +488,11 @@ export const en: Dictionary = {
   brigitte: {
     name: "Brigitte",
     role: "Investment advisor · B&G Consulting",
-    aiNotice: "AI-powered digital advisor. A member of our team reviews every case.",
+    aiNotice: "AI-powered digital advisor. An advisor reviews every case.",
     open: "Speak to an advisor",
     close: "Close",
     greeting:
-      "Welcome to B&G Consulting. I'm Brigitte. Tell me what you're looking for, whether that's an area, a budget or a type of investment, and I'll put together a selection of opportunities. If you prefer, I can arrange a call with one of our advisors straight away.",
+      "Welcome to B&G Consulting. I'm Brigitte. Tell me what you're looking for, whether that's an area, a budget or a type of investment, and I'll put together a selection of opportunities. If you prefer, I can arrange a call with an advisor straight away.",
     propertyGreeting: "I see you're looking at “{title}”. What would you like to know about it?",
     startersLabel: "To get started",
     starters: [
@@ -518,7 +518,7 @@ export const en: Dictionary = {
     handoffError: "I couldn't send that. Shall we try again?",
     genericError:
       "Sorry, I'm having a technical issue. If you like, leave your details and an advisor will write to you directly.",
-    disclaimer: "Brigitte uses AI and can make mistakes: our team confirms every detail.",
+    disclaimer: "Brigitte uses AI and can make mistakes: your advisor confirms every detail.",
   },
 
   notFound: {
